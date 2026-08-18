@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>昊铭磁材报价计算工具 v5.5.62</title>
+<title>昊铭磁材报价计算工具 v5.5.63</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2052,7 +2052,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo">
     <div class="icon"><svg width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25517d"/><stop offset="1" stop-color="#1a3c5e"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
     <div class="text">
-      <h1>昊铭磁材 <span class="ver-badge">v5.5.62</span></h1>
+      <h1>昊铭磁材 <span class="ver-badge">v5.5.63</span></h1>
       <div class="sub">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2284,6 +2284,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
             <label style="min-width:52px">单价</label>
             <input id="unitPrice" type="number" step="0.01" style="width:76px" onchange="sanitizeUnitPrice();onUnitPriceChange();calculate()" title="牌号单价（元/kg）">
             <span class="unit">元/kg</span>
+            <span id="unitPriceNote" style="font-size:11px;line-height:1.4"></span>
             <button id="savePriceBtn" type="button" class="save-price-btn" onclick="saveCurrentMaterialPrice()" title="将当前单价保存为该牌号的默认价">保存材料价</button>
             <button id="priceHistBtn" type="button" class="save-price-btn" onclick="showPriceHistory()" title="查看材料价格修改记录"><svg class="ic" aria-hidden="true"><use href="#ic-clipboard"/></svg> 记录</button>
             <button id="matSetBtn" type="button" class="save-price-btn" onclick="showMaterialSettings()" title="自定义所有材料价格 / 新增牌号"><svg class="ic" aria-hidden="true"><use href="#ic-gear"/></svg> 材料设置</button>
@@ -2311,7 +2312,8 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
           </div>
           <div class="f-row" style="margin-bottom:0">
             <label style="min-width:52px">合格率</label>
-            <input id="stockQualifyRate" type="number" step="0.01" value="0.9" style="width:68px" onchange="_qrManualOverride=true;sanitizeQualifyRate('stockQualifyRate');calculate()">
+            <input id="stockQualifyRate" type="number" step="0.01" value="0.9" style="width:68px" onchange="_qrManualOverride=true;updateQrHint('手动指定，自动调整已停用',false);sanitizeQualifyRate('stockQualifyRate');calculate()">
+            <span id="qrReasonHint" style="font-size:11px;color:var(--sub2);line-height:1.4"></span>
           </div>
           <div class="f-row" style="margin-bottom:0">
             <label style="min-width:52px">利润</label>
@@ -2354,11 +2356,11 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
             <span id="grindAxisLabel" style="font-size:var(--ui-font-small);color:var(--blue);font-weight:500;opacity:.8">轴L</span>
           </div>
           <div class="pf-row">
-            <label class="pf-check"><input type="checkbox" id="pfGranule" onchange="if(this.checked)document.getElementById('stockQualifyRate').value='0.85';calculate()">颗粒磨</label>
+            <label class="pf-check"><input type="checkbox" id="pfGranule" onchange="if(this.checked){document.getElementById('stockQualifyRate').value='0.85';updateQrHint('基础85%(颗粒磨)',true);}calculate()">颗粒磨</label>
             <input id="pfGranuleManual" type="number" step="0.0001" class="pf-price" placeholder="手动" onchange="calculate()">
             <input id="pfGranulePasses" type="number" value="1" min="1" max="10" class="pf-num"><span class="pf-unit"> 道</span>
             <span class="pf-sep"></span>
-            <label class="pf-check"><input type="checkbox" id="pfCarve" onchange="if(this.checked)document.getElementById('stockQualifyRate').value='0.85';calculate()">精雕</label>
+            <label class="pf-check"><input type="checkbox" id="pfCarve" onchange="if(this.checked){document.getElementById('stockQualifyRate').value='0.85';updateQrHint('基础85%(精雕)',true);}calculate()">精雕</label>
             <input id="pfCarveManual" type="number" step="0.0001" class="pf-price" placeholder="手动" onchange="calculate()">
             <input id="pfCarvePasses" type="number" value="1" min="1" max="10" class="pf-num"><span class="pf-unit"> 道</span>
           </div>
@@ -2851,6 +2853,7 @@ function _fullClearParseState() {
     _pendingX = '';
     _pendingAutoSave = false;
     _qrManualOverride = false;
+    updateQrHint('', false);
     _grindAxis = 'L';
     _knife1Override = -1; _knife2Override = -1; _knife3Override = -1;
     lossRateOverride = -1; slicingCoefOverride = -1; platingCoefOverride = -1;
@@ -3516,7 +3519,7 @@ function autoParse() {
       document.getElementById('pfHoleDia').value = '';
     }
     // 颗粒磨/精雕 默认合格率 85%（用户手动设过则不覆盖）
-    if ((hasGranule || hasCarveWord) && !_qrManualOverride) document.getElementById('stockQualifyRate').value = '0.85';
+    if ((hasGranule || hasCarveWord) && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.85'; updateQrHint('基础85%(颗粒磨/精雕)', true); }
     // 圆环关键词: 打孔
     if (ringHasHole) { 
       document.getElementById('pfDrill').checked = true; 
@@ -3620,13 +3623,16 @@ function autoParse() {
       _lastOverrides.qr = 1; qrPrChanged = true;
       _qrManualOverride = true; // P0: 智能输入指定QR，后续自动逻辑全部跳过
       document.getElementById('stockQualifyRate').value = qualifyRate;
+      updateQrHint('智能输入指定', false);
     } else if (qualifyRate >= 1 && qualifyRate <= 100) {
       _lastOverrides.qr = 1; qrPrChanged = true;
       _qrManualOverride = true; // P0: 智能输入指定QR（百分比形式）
       document.getElementById('stockQualifyRate').value = (qualifyRate / 100).toFixed(2);
+      updateQrHint('智能输入指定', false);
     } else if (_lastOverrides.qr) {
       _lastOverrides.qr = 0;
       _qrManualOverride = false; // 关键词移除，重置保护标记，避免残留值污染后续计算
+      updateQrHint('', false);
       // 同时恢复默认合格率值，让 auto 逻辑在下次计算时重新判定
       var _qrEl = document.getElementById('stockQualifyRate');
       if (_qrEl && _qrEl.value !== '0.9' && _qrEl.value !== '0.85') {
@@ -3903,6 +3909,7 @@ function clearSmartParse() {
   if (hint) hint.style.display = 'none';
   if (_autoCalcTimer) { clearTimeout(_autoCalcTimer); _autoCalcTimer = null; }
   _qrManualOverride = false; // 清空智能输入：重置 QR 手动保护
+  updateQrHint('', false);
   autoGrowSmartInput();
   // 同步清空页面所有计算结果
   clearResults();
@@ -3917,7 +3924,7 @@ function applyAndCalculate() {
   if (_pendingGrade) { const _pg_cur = document.getElementById('grade').value; if (_pg_cur !== _pendingGrade) { document.getElementById('grade').value = _pendingGrade; onGradeChange(); } }
   if (_pendingPlating) document.getElementById('plating').value = _pendingPlating;
   if (_pendingQty) document.getElementById('stockOrderQty').value = _pendingQty;
-  if (_pendingQr) { document.getElementById('stockQualifyRate').value = _pendingQr; _qrManualOverride = true; }
+  if (_pendingQr) { document.getElementById('stockQualifyRate').value = _pendingQr; _qrManualOverride = true; updateQrHint('智能输入指定', false); }
   if (_pendingPr) { document.getElementById('stockProfitRate').value = _pendingPr; }
   if (_pendingGrindAxis) _grindAxis = _pendingGrindAxis;
   // 更新磨型轴标签显示
@@ -4610,10 +4617,25 @@ function findGradeSeries(g) {
 }
 
 // ===== Event handlers =====
+// [v5.5.63] 牌号无价格源兜底提示：防静默按默认300元/kg错算（纯显示层）
+function refreshUnitPriceNote(g) {
+  var _upNote = document.getElementById('unitPriceNote');
+  if (!_upNote) return;
+  var _hasSrc = (priceOverrides[g] != null) || (PDF_PRICES[g] != null) || (customGrades && customGrades.indexOf(g) >= 0);
+  if (g && !_hasSrc) {
+    _upNote.textContent = '「' + g + '」无价格记录，当前按默认 300 元/kg 算，请在「材料设置」核实';
+    _upNote.style.color = 'var(--warn)';
+    _upNote.title = '该牌号不在内置价格表（2026.05.13），也未设置自定义价';
+  } else {
+    _upNote.textContent = '';
+    _upNote.title = '';
+  }
+}
 function onGradeChange() {
   const g = document.getElementById('grade').value;
   document.getElementById('gradePickLabel').textContent = g;
   document.getElementById('unitPrice').value = priceOverrides[g] || PDF_PRICES[g] || 300;
+  refreshUnitPriceNote(g);
   const ee = document.getElementById('editGrade');
   if (ee) ee.value = g;
   document.getElementById('editPrice').value = priceOverrides[g] || PDF_PRICES[g] || 300;
@@ -4665,7 +4687,8 @@ function resetToPdfPrice() {
   savePriceOverrides();
   document.getElementById('unitPrice').value = PDF_PRICES[g]||300;
   document.getElementById('editPrice').value = PDF_PRICES[g]||300;
-  document.getElementById('editNote').textContent = `已恢复 ${g} 标准价`;
+  document.getElementById('editNote').textContent = PDF_PRICES[g] != null ? `已恢复 ${g} 标准价` : `${g} 无内置标准价，已按默认 300 填充，请手动核实`;
+  refreshUnitPriceNote(g);
   logPriceChange({ grade: g, oldPrice: oldPrice, newPrice: PDF_PRICES[g] != null ? PDF_PRICES[g] : null, source: '恢复标准价' });
   calculate();
   refreshSavePriceBtn();
@@ -4732,7 +4755,7 @@ function parseSpec() {
     document.getElementById('ringInnerD').value = '';
     document.getElementById('ringH').value = '';
     // 大小头默认合格率 85%（用户手动设过则不覆盖）
-    if (!_qrManualOverride) document.getElementById('stockQualifyRate').value = '0.85';
+    if (!_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.85'; updateQrHint('基础85%(大小头)', true); }
     onDiscSpecChange();
     return;
   }
@@ -4755,7 +4778,7 @@ function parseSpec() {
     document.getElementById('dimH').value = hVal;
     if (innerD) { document.getElementById('pfDrill').checked = true; document.getElementById('pfHoleDia').value = innerD; }  // 圆环有孔
     // 圆环默认合格率 85%（用户手动设过则不覆盖）
-    if (innerD && !_qrManualOverride) document.getElementById('stockQualifyRate').value = '0.85';
+    if (innerD && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.85'; updateQrHint('基础85%(圆环)', true); }
     // 同步圆环快捷栏：仅真圆环（有内径 innerD）才填，避免普通圆片污染 ring 字段
     if (innerD) {
       document.getElementById('ringOuterD').value = dVal;
@@ -5093,8 +5116,20 @@ function getShapeDimsForQR() {
 //   表2 太小(整体最大维 c≤2mm)：≥1.5→0 / 1.0~1.5→4% / <1.0→5%
 //   表3 薄度(最薄维 a，仅 c>2 启用防与"太小"双罚；a>0.5 视为正常厚度不扣)：
 //        a≤0.3→20% / 0.3<a≤0.4→10% / 0.4<a≤0.5→5% / a>0.5→0
+// [v5.5.63] 合格率扣减原因提示：纯显示层，零算价改动
+function updateQrHint(txt, warn) {
+  var el = document.getElementById('qrReasonHint');
+  if (!el) return;
+  el.textContent = txt || '';
+  el.style.color = warn ? 'var(--warn)' : 'var(--sub2)';
+  el.title = txt || '';
+}
 function computeQualifyRate() {
-  if (_qrManualOverride) return; // 手动优先，完全跳过自动逻辑
+  if (_qrManualOverride) { // 手动优先，完全跳过自动逻辑；已有更具体来源标签（读取历史记录/智能输入指定）时不覆盖
+    var _curHint = document.getElementById('qrReasonHint');
+    if (!_curHint || !_curHint.textContent || _curHint.textContent === '手动指定，自动调整已停用') updateQrHint('手动指定，自动调整已停用', false);
+    return;
+  }
   const el = document.getElementById('stockQualifyRate');
   _thinWarn = false;
 
@@ -5105,24 +5140,35 @@ function computeQualifyRate() {
   const hasPF = _pfIds.some(id => document.getElementById(id)?.checked);
   const hasDrillHole = document.getElementById('pfDrill')?.checked && document.getElementById('pfHoleDia')?.value;
   let base = 0.90;
+  let baseWhy = '';
   if (shapeMode === 'disc') {
     const D = _discD || 0, H = _discH || 0;
     const chamfer = parseFloat(document.getElementById('chamferFee')?.value) || 0;
-    if (_discIsStepped || hasPF || D >= 18 || H >= 18 || chamfer > 0) base = 0.85;
+    if (_discIsStepped || hasPF || D >= 18 || H >= 18 || chamfer > 0) {
+      base = 0.85;
+      baseWhy = _discIsStepped ? '大小头' : (hasPF ? '带加工工序' : (D >= 18 ? '直径≥18' : (H >= 18 ? '厚度≥18' : '有倒角')));
+    }
   } else if (shapeMode === 'tile') {
     const tL = parseFloat(document.getElementById('tileLen').value) || 0;
     const tC = parseFloat(document.getElementById('tileChord').value) || 0;
     const tH = parseFloat(document.getElementById('tileArchH').value) || 0;
-    if (hasPF || tL >= 30 || tC >= 30 || tH >= 30) base = 0.85;
+    if (hasPF || tL >= 30 || tC >= 30 || tH >= 30) {
+      base = 0.85;
+      baseWhy = hasPF ? '带加工工序' : (tL >= 30 ? '长≥30' : (tC >= 30 ? '弦宽≥30' : '尺寸≥30'));
+    }
   } else {
     const Lv = parseFloat(document.getElementById('dimL').value) || 0;
     const Wv = parseFloat(document.getElementById('dimW').value) || 0;
     const Hv = parseFloat(document.getElementById('dimH').value) || 0;
-    if (hasPF || Lv >= 30 || Wv >= 30 || Hv >= 30) base = 0.85;
+    if (hasPF || Lv >= 30 || Wv >= 30 || Hv >= 30) {
+      base = 0.85;
+      baseWhy = hasPF ? '带加工工序' : (Lv >= 30 ? 'L≥30' : (Wv >= 30 ? 'W≥30' : 'H≥30'));
+    }
   }
 
   // 2) 几何因子(新三因子模型，取最重一档，不叠加)
   let geoDelta = 0;
+  let geoWhy = '';
   const dims = getShapeDimsForQR();
   if (dims && dims.length) {
     const ds = dims.map(d => Math.round(d * 100) / 100).filter(d => d > 0).sort((x, y) => x - y);
@@ -5130,27 +5176,29 @@ function computeQualifyRate() {
       const a = ds[0], c = ds[ds.length - 1];
       const ratio = a > 0 ? c / a : 0;
       // 表1 长细比 c/a
-      if (ratio > 80) geoDelta = Math.max(geoDelta, 0.12);
-      else if (ratio > 40) geoDelta = Math.max(geoDelta, 0.08);
-      else if (ratio > 20) geoDelta = Math.max(geoDelta, 0.05);
+      if (ratio > 80) { if (0.12 > geoDelta) { geoDelta = 0.12; geoWhy = '长细比 ' + ratio.toFixed(1); } }
+      else if (ratio > 40) { if (0.08 > geoDelta) { geoDelta = 0.08; geoWhy = '长细比 ' + ratio.toFixed(1); } }
+      else if (ratio > 20) { if (0.05 > geoDelta) { geoDelta = 0.05; geoWhy = '长细比 ' + ratio.toFixed(1); } }
       // 表2 太小(整体最大维 c ≤ 2mm)
-      if (c < 1.0) geoDelta = Math.max(geoDelta, 0.05);
-      else if (c < 1.5) geoDelta = Math.max(geoDelta, 0.04);
+      if (c < 1.0) { if (0.05 > geoDelta) { geoDelta = 0.05; geoWhy = '尺寸太小(最大维' + c + ')'; } }
+      else if (c < 1.5) { if (0.04 > geoDelta) { geoDelta = 0.04; geoWhy = '尺寸太小(最大维' + c + ')'; } }
       // 表3 薄度(仅 c > 2 时启用，避免与"太小"双罚)
       if (c > 2) {
-        if (a <= 0.3) geoDelta = Math.max(geoDelta, 0.20);
-        else if (a <= 0.4) geoDelta = Math.max(geoDelta, 0.10);
-        else if (a <= 0.5) geoDelta = Math.max(geoDelta, 0.05);
+        if (a <= 0.3) { if (0.20 > geoDelta) { geoDelta = 0.20; geoWhy = '壁薄 ' + a + 'mm'; } }
+        else if (a <= 0.4) { if (0.10 > geoDelta) { geoDelta = 0.10; geoWhy = '壁薄 ' + a + 'mm'; } }
+        else if (a <= 0.5) { if (0.05 > geoDelta) { geoDelta = 0.05; geoWhy = '壁薄 ' + a + 'mm'; } }
       }
     }
   }
 
   // 3) 工艺因子(加工难度，取最重一档，不叠加——杜绝旧逻辑重复扣减)
   let procDelta = 0;
+  let procWhy = '';
   if (hasPF) {
     const holeDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
     const isSmallHole = hasDrillHole && holeDia > 0 && holeDia <= 2;
     procDelta = isSmallHole ? 0.10 : 0.05;
+    procWhy = isSmallHole ? ('打孔D' + holeDia + '≤2') : '加工难度';
   }
 
   // 4) 合并(取最重，不叠加)
@@ -5160,6 +5208,23 @@ function computeQualifyRate() {
   // 5) 保底下限（批量模式仅 auto：通用坯>100块 或 合适坯>300kg → 薄刀0.27；合格率统一走几何/工艺风险模型，无批量特殊加成）
   qr = Math.max(0.50, qr);
   el.value = qr.toFixed(2);
+
+  // [v5.5.63] 扣减原因显示（只读展示，不参与任何计算）
+  (function(){
+    var _applied = Math.max(geoDelta, procDelta);
+    if (_applied > 0) {
+      var _why;
+      if (geoDelta === procDelta && geoWhy && procWhy) _why = geoWhy + ' / ' + procWhy;
+      else _why = (geoDelta >= procDelta) ? geoWhy : procWhy;
+      var _txt = (base === 0.85 ? ('基础85%(' + (baseWhy || '') + ')') : '基础90%') + ' − ' + Math.round(_applied * 100) + '%(' + _why + ')';
+      if ((base - _applied) < 0.50) _txt += ' → 保底50%';
+      updateQrHint(_txt, true);
+    } else if (base === 0.85) {
+      updateQrHint('基础85%(' + baseWhy + ')', true);
+    } else {
+      updateQrHint('', false);
+    }
+  })();
 }
 function sanitizeQualifyRate(id) {
   const el = document.getElementById(id);
@@ -6228,6 +6293,7 @@ function switchShape(mode) {
     _discIsStepped=false; _discStepD1=0; _discStepH1=0; _discStepD2=0; _discStepH2=0;
   } catch(e) {}
   _qrManualOverride = false; // 切换形状：重置 QR 手动保护，允许新形状自动设 QR
+  updateQrHint('', false);
   document.getElementById('stockQualifyRate').value = '0.9'; // 同时恢复默认合格率值
   const btnB = document.getElementById('shapeBtnBlock');
   const btnT = document.getElementById('shapeBtnTile');
@@ -8870,10 +8936,18 @@ function saveCurrentToHistory() {
   const dup = history.find(h => h.shapeMode === entry.shapeMode && h.spec === entry.spec && h.grade === entry.grade && h.plating === entry.plating && String(h.qty) === String(entry.qty) && Math.abs(_qNum(h.quote) - _qNum(entry.quote)) < 0.005);
   if (!dup) {
     history.unshift(entry);
-    if (history.length > 500) history.length = 500;
+    // [v5.5.63] 上限500：截断不再静默——明示被移出条数；接近上限(≥450)提前预警
+    var _capCut = 0;
+    if (history.length > 500) { _capCut = history.length - 500; history.length = 500; }
     try { localStorage.setItem('quoteHistory', JSON.stringify(history)); }
     catch(e) { try { localStorage.setItem('quoteHistory', JSON.stringify(safeDeepClone(history))); } catch(e2) {} }
-    showToast('保存成功', 'success', 1500, '<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>');
+    if (_capCut > 0) {
+      showToast('记录已达上限500条，最早 ' + _capCut + ' 条被移出，建议导出Excel/PDF备份', 'warn', 4500, '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg>');
+    } else if (history.length >= 450) {
+      showToast('保存成功（' + history.length + '/500 条，接近上限，建议导出备份）', 'success', 3000, '<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>');
+    } else {
+      showToast('保存成功', 'success', 1500, '<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>');
+    }
   } else {
     showToast('已存在相同记录，未重复添加', 'info', 1500, 'ℹ');
   }
@@ -9238,7 +9312,7 @@ function restoreHistory(id) {
     document.getElementById('stockOrderQty').value = h.qty || '20000';
     if (h.settings) {
       const s = h.settings;
-      if (s.qr) { document.getElementById('stockQualifyRate').value = s.qr; _qrManualOverride = true; }
+      if (s.qr) { document.getElementById('stockQualifyRate').value = s.qr; _qrManualOverride = true; updateQrHint('读取历史记录', false); }
       if (s.pr) document.getElementById('stockProfitRate').value = s.pr;
       if (s.chamfer) document.getElementById('chamferFee').value = s.chamfer;
       if (s.slicing) { var _scR = document.getElementById('slicingCoef'); _scR.value = s.slicing; _scR.setAttribute('data-manual','1'); }
@@ -10500,7 +10574,7 @@ var CloudSync = (function(){
       out.push(map[k]);
     }
     out.sort(function(a,b){ return Number(b.id)-Number(a.id); });
-    if(out.length>500) out.length=500;
+    if(out.length>500){ try{ console.warn('[云同步] 合并结果 '+out.length+' 条超上限，已按最新保留前500，其余被移出'); }catch(e){} out.length=500; } // [v5.5.63] 截断留痕（云端合并高频触发，用 console 避免toast刷屏）
     return out;
   }
   function mergeDels(dels, cloudDel){ var k; for(k in cloudDel){ if(cloudDel.hasOwnProperty(k)){ if(!dels[k]||Number(cloudDel[k])>Number(dels[k])) dels[k]=cloudDel[k]; } } return dels; }
@@ -10720,7 +10794,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.62</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.63</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -11412,6 +11486,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.5.63</span></td><td>三项防呆提示：① 合格率自动下调时在输入框旁显示扣减原因（如「基础85%(带加工工序) − 10%(打孔D1.5≤2)」），为什么降到80%一目了然；② 牌号无价格记录时单价旁常驻醒目提示，不再静默按默认300元/kg算；③ 报价记录接近/达到500条上限提前预警、截断时明示被移出条数；算价公式零改动</td></tr>
         <tr><td><span>v5.5.62</span></td><td>新增「☁ 云端同步」：报价记录保存后自动上云（GitHub 私有仓库存档），换电脑/换浏览器打开即自动同步，每 30 秒静默更新；钥匙仅存本机浏览器、公开页面零密钥；含防误删保护（新设备空库不会清空云端）、断网自动退避、删除/去重跨设备同步；算价公式与本地记录结构零改动</td></tr>
         <tr><td><span>v5.5.61</span></td><td>修复两个算价相关 Bug（均零改算价公式）：① 识别栏输入「打孔费2」误算为 4（按片/按条双通道叠加），改为按片¥2/片、按条¥2÷出刀数正确分流；②「合适圆柱毛坯」切换规格时残留上一款数据（如 H29 误显 12 刀、给出错报价），已根除残留并放开单刀上限（H29 正常显示 1 刀 ¥10.63）。另修正打孔费「每条/一条/裸条」写法识别一致性</td></tr>
         <tr><td><span>v5.5.60</span></td><td>行情新增「历史快照」：每次手动刷新固化一份完整市场价（首条为 2026-08-07 基线），旧记录永久保留、可在行情弹窗展开回看；算价零改动</td></tr>
