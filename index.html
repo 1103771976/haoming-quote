@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>昊铭磁材报价计算工具 v5.5.60</title>
+<title>昊铭磁材报价计算工具 v5.5.61</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2052,7 +2052,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo">
     <div class="icon"><svg width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25517d"/><stop offset="1" stop-color="#1a3c5e"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
     <div class="text">
-      <h1>昊铭磁材 <span class="ver-badge">v5.5.60</span></h1>
+      <h1>昊铭磁材 <span class="ver-badge">v5.5.61</span></h1>
       <div class="sub">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -3263,6 +3263,10 @@ function autoParse() {
     [/打孔费?\s*(\d+\.?\d*)\s*[\/\\]\s*条/, 'pfDrillManual', 'pfDrill', true],
     [/打孔费?\s*(\d+\.?\d*)\s*每条/, 'pfDrillManual', 'pfDrill', true],
     [/打孔费?\s*(\d+\.?\d*)\s*一条/, 'pfDrillManual', 'pfDrill', true],
+    // 2026-08-17 补：裸"条"（打孔费2条 / 打孔2条）也按条计价。原先三条规则均不命中，
+    // 仅靠 L3207 pfFeePatterns 兜底设 pfDrillManual 而 _drillPerBar=false，
+    // 造成 disc 侧（L7366 天然÷出刀数）与 block 侧（L6417 不÷c3）语义不一致。
+    [/打孔费?\s*(\d+\.?\d*)\s*条/, 'pfDrillManual', 'pfDrill', true],
     [/\u78e8\u578b(\d+\.?\d*)(?!\s*[\u9053\u6b21\u904d])(?![0-9*])/, 'pfGrindManual', 'pfGrind'],
     [/\u9897\u7c92\u78e8(\d+\.?\d*)(?!\s*[\u9053\u6b21\u904d])(?![0-9*])/, 'pfGranuleManual', 'pfGranule'],
     [/\u7cbe\u96d5(\d+\.?\d*)(?!\s*[\u9053\u6b21\u904d])(?![0-9*])/, 'pfCarveManual', 'pfCarve'],
@@ -3561,7 +3565,10 @@ function autoParse() {
       if (!_pfSigMap[_pk]) _pe.checked = false;   // 无信号 → 取消勾选（覆盖形状默认强制勾选）
     }
     // 识别词典优化：按片打孔费（打孔费0.2 = ¥0.2/片；带每片/元片后缀或裸打孔费；与按条打孔费0.2/条区分）
-    var _ppMatch = text.match(/打孔费\s*(\d+\.?\d*)\s*(?:元\/片|元每片|每片|一片)?(?!\s*[\/\\]?\s*条)/i);
+    // 2026-08-17 修复：原负向断言 (?!\s*[\/\\]?\s*条) 只挡"数字后紧跟条"，挡不住"每条/一条"，
+    // 导致按条写法（打孔费2每条 L3264、打孔费2一条 L3265）被本按片规则误吃 → 按条语义失效（不再÷出刀数）。
+    // 新断言排除：/条 \条 每条 一条 及裸"条"，确保按条写法只走 pfPricePatterns 按条通道。
+    var _ppMatch = text.match(/打孔费\s*(\d+\.?\d*)\s*(?:元\/片|元每片|每片|一片)?(?!\s*(?:[\/\\]\s*)?(?:每|一)?\s*条)/i);
     if (_ppMatch) {
       var _ppv = parseFloat(_ppMatch[1]);
       if (!isNaN(_ppv) && _ppv > 0) {
@@ -6541,6 +6548,7 @@ function autoCalcDisc() {
     document.getElementById('cylPrice').value = '';
     document.getElementById('cylBlankChips').innerHTML = '<span style="color:var(--sub);font-size:12px">D≤3.5 无心磨，无合适圆柱毛坯</span>';
     document.getElementById('cylBlankNote').textContent = '';
+    _cylCustomSpec = false;
     return;
   }
 
@@ -6554,7 +6562,8 @@ function autoCalcDisc() {
     // D≤2打孔时压低圆柱上限
     const holeDiaCyl = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
     const hasSmallHoleCyl = document.getElementById('pfDrill')?.checked && holeDiaCyl > 0 && holeDiaCyl <= 2;
-    const cylLimit = hasSmallHoleCyl ? (holeDiaCyl <= 1 ? 15 : 20) : 29;
+    // 单刀(k=1)：1根棒料出1片，圆柱坯高度仅受实际棒料高度限制，不受多刀堆叠上限约束
+    const cylLimit = (k === 1) ? 100 : (hasSmallHoleCyl ? (holeDiaCyl <= 1 ? 15 : 20) : 29);
     if (cylH <= cylLimit + 2) { bestKnives = k; bestH = cylH; break; }
   }
   // 芯片栏：显示常用圆柱规格（显示四舍五入，但传精确值）
@@ -6562,7 +6571,8 @@ function autoCalcDisc() {
   const sizes = [];
   for (let k = bestKnives; k >= Math.max(1, bestKnives - 3); k--) {
     const exactH = (H + t3) * k + overhead;
-    if (Math.round(exactH) <= 29) sizes.push({ k, h: exactH, hd: Math.round(exactH) });
+    // 单刀(k=1)圆柱坯高度可超29，仍显示；多刀维持≤29约束
+    if (k === 1 || Math.round(exactH) <= 29) sizes.push({ k, h: exactH, hd: Math.round(exactH) });
   }
         chipsEl.innerHTML = sizes.map(s =>
     `<span class="chip chip-blue" style="cursor:pointer" onclick="pickCylBlank(${s.k},${s.h})">${s.k}刀 D${D}×${s.hd}</span>`
@@ -6586,13 +6596,25 @@ function autoCalcDisc() {
       _cylKnives = bestKnives;
       document.getElementById('cylD').value = D;
       document.getElementById('cylH').value = bestH;
-      document.getElementById('cylBlankNote').textContent = `${bestKnives}刀 · ≤29mm`;
+      // 单刀(1根棒料出1片)圆柱坯高度可超29，文案须反映真实高度避免误导；多刀维持≤29表述
+      document.getElementById('cylBlankNote').textContent = bestKnives === 1
+        ? `${bestKnives}刀 · 单刀 D${D}×${bestH.toFixed(1)}mm`
+        : `${bestKnives}刀 · ≤29mm`;
 
       // 查圆柱价格（自动填入）
       const grade = document.getElementById('grade').value;
       const cylP = getCylPrice(D, grade);
       if (cylP > 0) document.getElementById('cylPrice').value = cylP;
     }
+  } else {
+    // bestKnives=0（无可行刀数）：清空上款残留的圆柱坯参数，避免污染当前款显示/报价
+    _cylKnives = 0;
+    _cylCustomSpec = false;
+    document.getElementById('cylD').value = '';
+    document.getElementById('cylH').value = '';
+    document.getElementById('cylPrice').value = '';
+    document.getElementById('cylBlankNote').textContent = '';
+    document.getElementById('cylBlankChips').innerHTML = '<span style="color:var(--sub);font-size:12px">无合适圆柱毛坯</span>';
   }
 }
 
@@ -7353,10 +7375,16 @@ function calculateDisc() {
         }
       }
     }
-    // 识别词典优化：按片打孔费（打孔费0.2 = ¥0.2/片，叠加在孔径费之上；无孔径时也生效）
+    // 识别词典优化：按片打孔费（打孔费0.2 = ¥0.2/片）
+    // 2026-08-17 修复双倍bug：原为 `+=`（叠加在孔径费之上），但"打孔费2"会被两条规则同时捕获——
+    //   ①L3207 pfFeePatterns → pfDrillManual=2 → 上面 L7366 算出 perBar/heightKnives
+    //   ②L3564 按片规则     → _discDrillFeePerPiece=2 → 此处再 += 2
+    // 导致用户输入"打孔费2"实得 4（径向 heightKnives=1 时 2+2）。
+    // 改为「覆盖」：显式按片打孔费即该项最终单价（元/片），语义与用户直觉一致（输入2就是2）。
+    // 按条写法（打孔费2/条 L3263、打孔2 L3269）因 L3564 负向断言不命中，_discDrillFeePerPiece=0，逻辑不变。
     if (_discDrillFeePerPiece > 0) {
       if (!document.getElementById('pfDrill')?.checked) document.getElementById('pfDrill').checked = true;
-      _drillFee += _discDrillFeePerPiece;
+      _drillFee = _discDrillFeePerPiece;
     }
     const _rawCost = _matNet + _totalSlice + platingFee + chamferFee + _grindFee + _drillFee + _coreRecovery + discShoulderFee + _segCutFee + discProcFee;
     const _yieldCost = sQR > 0 ? _rawCost * (2 - sQR) : 0;
@@ -10464,7 +10492,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.60</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.61</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -11156,6 +11184,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.5.61</span></td><td>修复两个算价相关 Bug（均零改算价公式）：① 识别栏输入「打孔费2」误算为 4（按片/按条双通道叠加），改为按片¥2/片、按条¥2÷出刀数正确分流；②「合适圆柱毛坯」切换规格时残留上一款数据（如 H29 误显 12 刀、给出错报价），已根除残留并放开单刀上限（H29 正常显示 1 刀 ¥10.63）。另修正打孔费「每条/一条/裸条」写法识别一致性</td></tr>
         <tr><td><span>v5.5.60</span></td><td>行情新增「历史快照」：每次手动刷新固化一份完整市场价（首条为 2026-08-07 基线），旧记录永久保留、可在行情弹窗展开回看；算价零改动</td></tr>
         <tr><td><span>v5.5.59</span></td><td>使用说明交互完善：① 选章快捷键在 ↑↓ 基础上加 j/k（vim 风）、PageUp/PageDown、Home/End；② 侧栏高亮项始终滚入可视区（之前仅 ≤680px 生效，桌面端侧栏可滚时也生效）；③ 打开弹窗聚焦当前章节导航项，键盘流不丢焦点；④ 行情 tooltip 补触摸适配（触屏点按价/牌号格显示推算明细、点别处隐藏），hover 之外的完整交互。纯交互层，算价零改动</td></tr>
         <tr><td><span>v5.5.58</span></td><td>修复主页面出现两条垂直滚动条：根因是 body 与 html 同时设 overflow-x:hidden 导致二者都被提升为滚动容器，在 Edge 中叠加出双滚动条。改为 overflow-x:clip（裁横向溢出但不创建滚动容器、不把 overflow-y 提升为 auto），页面恢复唯一滚动条且纵向可正常滚动。已全文件审计其他 overflow 规则，无同类隐患</td></tr>
