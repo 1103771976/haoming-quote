@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>昊铭磁材报价计算工具 v5.5.61</title>
+<title>昊铭磁材报价计算工具 v5.5.62</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2052,7 +2052,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo">
     <div class="icon"><svg width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25517d"/><stop offset="1" stop-color="#1a3c5e"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
     <div class="text">
-      <h1>昊铭磁材 <span class="ver-badge">v5.5.61</span></h1>
+      <h1>昊铭磁材 <span class="ver-badge">v5.5.62</span></h1>
       <div class="sub">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2570,6 +2570,7 @@ document.getElementById('appConfirmOk').onclick = function(){
       <button onclick="backupHistory()" id="histBackupBtn" class="tool-btn" style="font-size:12px"><svg class="ic" aria-hidden="true"><use href="#ic-save"/></svg> 备份</button>
       <button onclick="restoreFromBackup()" class="tool-btn" style="font-size:12px"><svg class="ic" aria-hidden="true"><use href="#ic-import"/></svg> 恢复</button>
       <button onclick="dedupHistory()" id="histDedupBtn" class="tool-btn" style="font-size:12px" title="按 规格+牌号+镀层+数量 完全一致只留最新一条"><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg> 一键去重</button>
+      <button onclick="showCloudSyncModal()" id="cloudSyncBtn" class="tool-btn" style="font-size:12px" title="报价记录云端同步：换电脑/换浏览器实时共享"><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg> ☁ 云同步<span id="cloudSyncState" style="color:var(--sub2);font-size:11px"></span></button>
       <div class="export-dropdown" style="position:relative;display:inline-block">
         <button onclick="toggleExportMenu()" class="tool-btn" style="font-size:12px"><svg class="ic" aria-hidden="true"><use href="#ic-export"/></svg> 导出 ▾</button>
         <div id="exportMenu" style="display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 16px rgba(0,0,0,.1);z-index:1002;min-width:120px;overflow:hidden">
@@ -2594,6 +2595,33 @@ document.getElementById('appConfirmOk').onclick = function(){
         <input id="clearPwd" type="password" placeholder="密码" style="display:none;width:60px;font-size:12px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;font-family:inherit" onkeydown="if(event.key==='Enter')confirmClearHistory()">
       </div>
       <button class="btn-cancel" onclick="hideHistory()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- 云端同步弹窗：报价记录跨设备共享 -->
+<div class="modal-overlay" id="cloudSyncModal" style="display:none" onclick="if(event.target===this)hideCloudSyncModal()">
+  <div class="modal" style="max-width:480px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <span style="font-size:17px;font-weight:700;color:var(--text);border-bottom:2px solid var(--blue);padding-bottom:2px">☁ 云端同步</span>
+      <span id="cloudStatusText" style="margin-left:auto;font-size:12px;color:var(--sub2)"></span>
+    </div>
+    <div style="font-size:13px;color:var(--sub);line-height:1.7;margin-bottom:10px">
+      保存报价自动上云，换电脑/换浏览器打开即自动同步，无需手动导入导出。<br>
+      钥匙仅存本浏览器（不会写进网页，公开页面无密钥）；换新设备时打开一次「钥匙链接」即可激活。
+    </div>
+    <div style="background:rgba(0,0,0,.025);border:1px solid rgba(0,0,0,.05);border-radius:var(--radius);padding:10px 12px;margin-bottom:10px">
+      <div style="font-size:12px;color:var(--sub2);margin-bottom:6px" id="cloudInfoLine">状态：检测中…</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input id="cloudKeyInput" type="password" placeholder="粘贴钥匙（ghp_ 或 github_pat_ 开头）" style="flex:1;min-width:0;font-size:13px;padding:6px 10px;border:1px solid rgba(0,0,0,.08);border-radius:var(--radius);background:#fff;font-family:inherit">
+        <button onclick="cloudSaveKey()" class="tool-btn" style="font-size:12px;white-space:nowrap">保存钥匙</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+      <button onclick="cloudFullSync()" class="tool-btn" style="font-size:12px"><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg> 立即同步</button>
+      <button onclick="cloudToggleAuto()" class="tool-btn" style="font-size:12px" id="cloudAutoBtn">自动同步：开</button>
+      <button onclick="cloudUnbind()" class="btn-cancel" style="font-size:12px;color:var(--sub2)">解绑钥匙</button>
+      <button onclick="hideCloudSyncModal()" class="btn-cancel" style="font-size:12px;margin-left:auto">关闭</button>
     </div>
   </div>
 </div>
@@ -10418,6 +10446,206 @@ function runSmokeTest() {
   else console.warn(fail+' 项失败，请排查');
 }
 
+// ===== 云端同步 CloudSync：报价记录跨设备实时共享 =====
+// 云端 = GitHub 私有仓库 haoming-quote-data 的 data.json（GitHub Contents API，api.github.com 走 CDN 国内可直连）
+// 安全：钥匙(令牌)仅存本浏览器 localStorage(hmcj_cloud_key)，绝不写入网页文件——公开页面零密钥
+// 策略：①本地内容监视(2s 比对字符串，变更即防抖推送)——对保存/删除/去重/导入等业务函数零侵入
+//       ②打开页面即拉取 + 每 30s 静默轮询 + 切回标签页即拉
+//       ③合并 = 按记录 id 并集；删除走墓碑(tombstone)；同 id 保留含 costDetail 者；总量上限 500(与本地 L8845 一致)
+//       ④防误删保险：只对「本机快照里出现过的 id」记墓碑——新设备空库首次推送绝不会把云端全部当已删除
+//       ⑤断网静默退避 2 分钟；钥匙失效(401)提示不弹刷；PUT 409(sha冲突)自动重试
+//       ⑥payload >600KB 时剔除 costDetail 明细（GitHub API 读取上限 1MB；明细可用「补全记录明细」重算），保证同步不因体积中断
+var CloudSync = (function(){
+  var API = 'https://api.github.com/repos/1103771976/haoming-quote-data/contents/data.json';
+  var K_KEY='hmcj_cloud_key', K_DEL='hmcj_cloud_deleted', K_ON='hmcj_cloud_sync', K_DEV='hmcj_cloud_device', K_LAST='hmcj_cloud_last';
+  var _sha=null, _lastLocal=null, _selfWrite=false, _pushing=false, _errUntil=0, _prevIds=null, _statusMsg='', _authToasted=false, _pushTimer=null, _ticks=0;
+  function key(){ try{ return (localStorage.getItem(K_KEY)||'').trim(); }catch(e){ return ''; } }
+  function on(){ try{ return localStorage.getItem(K_ON)!=='0'; }catch(e){ return true; } }
+  function localStr(){ try{ return localStorage.getItem('quoteHistory')||'[]'; }catch(e){ return '[]'; } }
+  function localRecs(){ try{ return JSON.parse(localStr())||[]; }catch(e){ return []; } }
+  function tomb(){ try{ return JSON.parse(localStorage.getItem(K_DEL)||'{}')||{}; }catch(e){ return {}; } }
+  function saveTomb(t){ try{ localStorage.setItem(K_DEL,JSON.stringify(t)); }catch(e){} }
+  function snapIds(){ _prevIds={}; localRecs().forEach(function(r){ if(r&&r.id!=null)_prevIds[String(r.id)]=1; }); }
+  function device(){ try{ var d=localStorage.getItem(K_DEV); if(!d){ d='PC-'+Math.random().toString(36).slice(2,6).toUpperCase(); localStorage.setItem(K_DEV,d); } return d; }catch(e){ return 'PC'; } }
+  function fmtTime(ts){ try{ return new Date(ts).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+  function b64(s){ try{ return btoa(unescape(encodeURIComponent(s))); }catch(e){ return ''; } }
+  function unb64(j){ try{ return decodeURIComponent(escape(atob((j.content||'').replace(/\s/g,'')))); }catch(e){ return ''; } }
+  function api(method, body, cb){
+    var h={'Authorization':'Bearer '+key(),'Accept':'application/vnd.github+json'};
+    // GET 加唯一防缓存参数：api.github.com 走 Fastly CDN 会缓存 GET（含 404），
+    // 不加会读到旧 sha/旧内容 → PUT 422 或用旧数据覆盖别人刚推的记录（真实翻车，已验证）
+    var url = (method||'GET')==='GET' ? (API + '?_=' + Date.now()) : API;
+    var opt={method:method||'GET',headers:h};
+    if(body){ h['Content-Type']='application/json'; opt.body=JSON.stringify(body); }
+    try{
+      fetch(url,opt).then(function(r){ return r.json().then(function(j){ cb(r.status,j); }); })
+        .catch(function(){ cb(0,null); });
+    }catch(e){ cb(0,null); }
+  }
+  function status(msg,isErr){ _statusMsg=msg||''; renderCloudStatus(); if(isErr&&msg){ try{ showToast(msg,'warn',2500); }catch(e){} } }
+  function markSync(){ try{ localStorage.setItem(K_LAST,String(Date.now())); }catch(e){} renderCloudStatus(); }
+  function netErr(){ _errUntil=Date.now()+120000; status('网络不通，稍后自动重试'); }
+  // 合并：并集 + 墓碑过滤(删除时间晚于创建时间才生效，被重新保存的记录可复活) + 上限500
+  function merge(local, cloudRecs, dels){
+    var map={}, out=[], k;
+    (cloudRecs||[]).forEach(function(r){ if(r&&r.id!=null) map[String(r.id)]=r; });
+    (local||[]).forEach(function(r){
+      if(!r||r.id==null) return;
+      var ex=map[String(r.id)];
+      if(!ex || (r.costDetail&&!ex.costDetail)) map[String(r.id)]=r; // 同 id：含明细者优先
+    });
+    for(k in map){ if(!map.hasOwnProperty(k)) continue;
+      var d=dels[k];
+      if(d && Number(d) > Number(map[k].id||0)) continue; // 删除晚于创建 → 墓碑生效
+      out.push(map[k]);
+    }
+    out.sort(function(a,b){ return Number(b.id)-Number(a.id); });
+    if(out.length>500) out.length=500;
+    return out;
+  }
+  function mergeDels(dels, cloudDel){ var k; for(k in cloudDel){ if(cloudDel.hasOwnProperty(k)){ if(!dels[k]||Number(cloudDel[k])>Number(dels[k])) dels[k]=cloudDel[k]; } } return dels; }
+  function pull(cb){
+    if(!key()){ cb&&cb(-1); return; }
+    api('GET',null,function(st,j){
+      if(st===401){ if(!_authToasted){ _authToasted=true; status('钥匙无效或已失效，请在云同步里重新绑定',true); } cb&&cb(st); return; }
+      if(st===0){ netErr(); cb&&cb(st); return; }
+      if(st===404){ _sha=null; cb&&cb(st); return; } // 云端未初始化：等本地变更时 push 自动建
+      if(st!==200){ cb&&cb(st); return; }
+      _sha=j.sha;
+      var data={}; try{ data=JSON.parse(unb64(j))||{}; }catch(e){}
+      var dels=mergeDels(tomb(), (data.deleted&&typeof data.deleted==='object')?data.deleted:{});
+      saveTomb(dels);
+      var merged=merge(localRecs(), Array.isArray(data.records)?data.records:[], dels);
+      var mStr=JSON.stringify(merged);
+      if(mStr!==localStr()){
+        _selfWrite=true;
+        try{ localStorage.setItem('quoteHistory',mStr); }catch(e){}
+        _selfWrite=false;
+        try{ if(document.getElementById('historyPanel').style.display!=='none') renderHistoryList(); }catch(e){}
+        _lastLocal=mStr; snapIds(); // 仅在本次确实写入时重置基准；期间本地新变更由监视器接管再推
+      }
+      markSync(); status('');
+      cb&&cb(200);
+    });
+  }
+  function push(cb, _retry){
+    if(!key()||!on()){ cb&&cb(-1); return; }
+    if(_pushing){ setTimeout(function(){ push(cb); },1000); return; }
+    _retry=_retry||0;
+    _pushing=true;
+    api('GET',null,function(st,j){
+      if(st===401){ _pushing=false; if(!_authToasted){ _authToasted=true; status('钥匙无效或已失效，请在云同步里重新绑定',true); } cb&&cb(st); return; }
+      if(st===0){ _pushing=false; netErr(); cb&&cb(st); return; }
+      if(st===403||st===429){ _pushing=false; netErr(); cb&&cb(st); return; } // 限流/封禁：退避，勿盲目 PUT
+      var cloudRecs=[], cloudDel={};
+      if(st===200){ _sha=j.sha; var d0={}; try{ d0=JSON.parse(unb64(j))||{}; }catch(e){} cloudRecs=Array.isArray(d0.records)?d0.records:[]; cloudDel=(d0.deleted&&typeof d0.deleted==='object')?d0.deleted:{}; }
+      else _sha=null;
+      var dels=mergeDels(tomb(), cloudDel);
+      var localNow=localRecs();
+      var merged=merge(localNow, cloudRecs, dels);
+      // 快照 = 本次 payload 真正包含的本地状态（非完成时状态）：
+      // 若推送期间本地又变了（保存/删除），完成后 _lastLocal 只回退到快照，
+      // 监视器仍能检测到差异并再推一轮——否则变更被吞、删除会复活（真实踩坑，已复现）
+      var localSnap=localStr();
+      // 墓碑防膨胀：>100 条时清 90 天前的
+      var dk=Object.keys(dels);
+      if(dk.length>100){ var now=Date.now(); dk.forEach(function(k2){ if(now-Number(dels[k2])>7776000000) delete dels[k2]; }); }
+      saveTomb(dels);
+      var payload={v:1,updatedAt:Date.now(),device:device(),records:merged,deleted:dels};
+      var body=JSON.stringify(payload);
+      if(body.length>600*1024){ // 尺寸守卫：GitHub Contents API 读取上限 1MB(base64 后~1.33x)，超 600KB 剔除可重算的明细
+        payload.records=merged.map(function(r){ var c={}; for(var kk in r){ if(kk!=='costDetail')c[kk]=r[kk]; } return c; });
+        body=JSON.stringify(payload);
+      }
+      var putBody={message:'sync '+device()+' '+new Date().toISOString(), content:b64(body)};
+      if(_sha) putBody.sha=_sha;
+      api('PUT',putBody,function(st2,j2){
+        _pushing=false;
+        if(st2===200||st2===201){ if(j2&&j2.content&&j2.content.sha)_sha=j2.content.sha; _lastLocal=localSnap; markSync(); status(''); cb&&cb(st2); }
+        else if((st2===409||st2===422)&&_retry<3){ setTimeout(function(){ push(cb,_retry+1); },800); } // sha冲突/失效：重取重推（最多3次）
+        else if(st2===401){ if(!_authToasted){ _authToasted=true; status('钥匙无效或已失效，请在云同步里重新绑定',true); } cb&&cb(st2); }
+        else { status('云端同步失败('+st2+')，稍后自动重试'); cb&&cb(st2); }
+      });
+    });
+  }
+  function schedulePush(delay){ if(_pushTimer)clearTimeout(_pushTimer); _pushTimer=setTimeout(function(){ _pushTimer=null; push(); },delay||1500); }
+  // 本地内容监视：变了才推（含删除检测：快照里有、现在没有 → 记墓碑）
+  setInterval(function(){
+    _ticks++;
+    if(!key()||!on()||_selfWrite) return;
+    var cur=localStr();
+    if(_lastLocal===null){ _lastLocal=cur; snapIds(); return; }
+    if(cur!==_lastLocal){
+      var curIds={}; localRecs().forEach(function(r){ if(r&&r.id!=null)curIds[String(r.id)]=1; });
+      var dels=tomb(), changed=false, k;
+      if(_prevIds) for(k in _prevIds){ if(_prevIds.hasOwnProperty(k)&&!curIds[k]&&!dels[k]){ dels[k]=Date.now(); changed=true; } }
+      if(changed) saveTomb(dels);
+      _prevIds=curIds; _lastLocal=cur;
+      schedulePush(1500);
+    }
+  }, 2000);
+  // 轮询 + 聚焦即拉
+  setInterval(function(){ if(key()&&on()&&!document.hidden&&Date.now()>_errUntil) pull(); }, 30000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden&&key()&&on()&&Date.now()>_errUntil) pull(); });
+  function init(){
+    // #key= 激活：钥匙链接打开 → 存钥匙 → 清干净地址栏
+    var m=(location.hash||'').match(/^#key=([A-Za-z0-9_\-]+)/);
+    if(m&&m[1]){
+      localStorage.setItem(K_KEY,m[1]); _sha=null; _authToasted=false;
+      try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+      try{ showToast('云同步已激活，正在拉取云端报价记录…','success',2500); }catch(e){}
+    }
+    _lastLocal=localStr(); snapIds();
+    if(key()&&on()) setTimeout(function(){ pull(function(){ push(); }); },600);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+  return { key:key, on:on, pull:pull, push:push, init:init,
+    setKey:function(k){ try{ localStorage.setItem(K_KEY,(k||'').trim()); }catch(e){} _sha=null; _authToasted=false; _lastLocal=localStr(); snapIds(); },
+    clearKey:function(){ try{ localStorage.removeItem(K_KEY); }catch(e){} _sha=null; status(''); },
+    toggleAuto:function(){ var v=on()?'0':'1'; try{ localStorage.setItem(K_ON,v); }catch(e){} return on(); },
+    info:function(){ return { key:!!key(), auto:on(), last:Number(localStorage.getItem(K_LAST)||0), count:localRecs().length, status:_statusMsg }; },
+    dbg:function(){ return { ticks:_ticks, sha:_sha, lastLocalLen:_lastLocal==null?-1:_lastLocal.length, curLen:localStr().length, selfWrite:_selfWrite, pushing:_pushing, errUntilIn:_errUntil-Date.now(), prevIds:_prevIds?Object.keys(_prevIds).length:null, pushTimer:!!_pushTimer }; }
+  };
+})();
+function showCloudSyncModal(){ renderCloudStatus(); document.getElementById('cloudSyncModal').style.display='flex'; }
+function hideCloudSyncModal(){ document.getElementById('cloudSyncModal').style.display='none'; }
+function renderCloudStatus(){
+  try{
+    var st=document.getElementById('cloudStatusText'), info=document.getElementById('cloudInfoLine'), btn=document.getElementById('cloudSyncState');
+    if(!st) return;
+    var i=CloudSync.info();
+    st.textContent = i.key ? (i.status || '已激活') : '未激活';
+    st.style.color = i.key ? 'var(--sub2)' : '#c84a4a';
+    if(info){
+      var autoTxt=i.auto?'开':'关';
+      info.textContent = i.key
+        ? ('状态：已激活 · 自动同步：'+autoTxt+' · 本机记录 '+i.count+' 条' + (i.status?(' · '+i.status):'') + (i.last?(' · 上次同步 '+fmtTimeCs(i.last)):''))
+        : '状态：未激活（粘贴钥匙并保存，或在其它设备打开钥匙链接即可激活）';
+    }
+    var ab=document.getElementById('cloudAutoBtn'); if(ab) ab.textContent='自动同步：'+(i.auto?'开':'关');
+    if(btn) btn.textContent = i.key ? ('·'+(i.auto?'':'已暂停')) : '·未激活';
+  }catch(e){}
+}
+function fmtTimeCs(ts){ try{ return new Date(Number(ts)).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function cloudSaveKey(){
+  var v=document.getElementById('cloudKeyInput').value;
+  if(!v||!/^(ghp_|github_pat_)[A-Za-z0-9_\-]+$/.test(v.trim())){ showToast('钥匙格式不对（应以 ghp_ 或 github_pat_ 开头）','warn',2200); return; }
+  CloudSync.setKey(v); renderCloudStatus();
+  showToast('钥匙已保存，正在同步…','success',1800);
+  CloudSync.pull(function(){ CloudSync.push(function(){ renderCloudStatus(); }); });
+}
+function cloudFullSync(){
+  if(!CloudSync.key()){ showToast('请先粘贴钥匙并保存','warn',1800); return; }
+  showToast('正在同步…','info',1500);
+  CloudSync.pull(function(){ CloudSync.push(function(){ renderCloudStatus(); showToast('同步完成','success',1500); }); });
+}
+function cloudToggleAuto(){ var onNow=CloudSync.toggleAuto(); renderCloudStatus(); showToast('自动同步已'+(onNow?'开启':'关闭'), 'success',1500); }
+function cloudUnbind(){
+  showConfirm('解绑后本浏览器停止云同步（云端记录不受影响，钥匙可重新绑定）。确定解绑？', function(){
+    CloudSync.clearKey(); renderCloudStatus(); showToast('已解绑','success',1500);
+  });
+}
+
 // 开发模式自动运行（hash=#smoke）
 if(location.hash==='#smoke'){window.addEventListener('load',function(){runSmokeTest();});}
 
@@ -10492,7 +10720,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.61</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.62</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -11184,6 +11412,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.5.62</span></td><td>新增「☁ 云端同步」：报价记录保存后自动上云（GitHub 私有仓库存档），换电脑/换浏览器打开即自动同步，每 30 秒静默更新；钥匙仅存本机浏览器、公开页面零密钥；含防误删保护（新设备空库不会清空云端）、断网自动退避、删除/去重跨设备同步；算价公式与本地记录结构零改动</td></tr>
         <tr><td><span>v5.5.61</span></td><td>修复两个算价相关 Bug（均零改算价公式）：① 识别栏输入「打孔费2」误算为 4（按片/按条双通道叠加），改为按片¥2/片、按条¥2÷出刀数正确分流；②「合适圆柱毛坯」切换规格时残留上一款数据（如 H29 误显 12 刀、给出错报价），已根除残留并放开单刀上限（H29 正常显示 1 刀 ¥10.63）。另修正打孔费「每条/一条/裸条」写法识别一致性</td></tr>
         <tr><td><span>v5.5.60</span></td><td>行情新增「历史快照」：每次手动刷新固化一份完整市场价（首条为 2026-08-07 基线），旧记录永久保留、可在行情弹窗展开回看；算价零改动</td></tr>
         <tr><td><span>v5.5.59</span></td><td>使用说明交互完善：① 选章快捷键在 ↑↓ 基础上加 j/k（vim 风）、PageUp/PageDown、Home/End；② 侧栏高亮项始终滚入可视区（之前仅 ≤680px 生效，桌面端侧栏可滚时也生效）；③ 打开弹窗聚焦当前章节导航项，键盘流不丢焦点；④ 行情 tooltip 补触摸适配（触屏点按价/牌号格显示推算明细、点别处隐藏），hover 之外的完整交互。纯交互层，算价零改动</td></tr>
