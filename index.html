@@ -5183,7 +5183,8 @@ function computeQualifyRate() {
     const Lv = parseFloat(document.getElementById('dimL').value) || 0;
     const Wv = parseFloat(document.getElementById('dimW').value) || 0;
     const Hv = parseFloat(document.getElementById('dimH').value) || 0;
-    if (hasPF || Lv >= 30 || Wv >= 30 || Hv >= 30) {
+    // [v5.5.66] 异形基础恒为90%：不套用方块「大尺寸≥30/带加工→85%」规则（异形为定制件，基础不降）
+    if (shapeMode !== 'irregular' && (hasPF || Lv >= 30 || Wv >= 30 || Hv >= 30)) {
       base = 0.85;
       baseWhy = hasPF ? '带加工工序' : (Lv >= 30 ? 'L≥30' : (Wv >= 30 ? 'W≥30' : 'H≥30'));
     }
@@ -5220,8 +5221,21 @@ function computeQualifyRate() {
   if (hasPF) {
     const holeDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
     const isSmallHole = hasDrillHole && holeDia > 0 && holeDia <= 2;
-    procDelta = isSmallHole ? 0.10 : 0.05;
-    procWhy = isSmallHole ? ('打孔D' + holeDia + '≤2') : '加工难度';
+    // [v5.5.66 领域修正] 加工难度扣减：颗粒磨扣；磨型不扣(除非道数≥4)；其余按原档
+    const _chk = id => document.getElementById(id)?.checked;
+    const _set = (d, w) => { if (d > procDelta) { procDelta = d; procWhy = w; } };
+    if (_chk('pfGranule')) _set(0.05, '颗粒磨');
+    if (_chk('pfGrind')) {
+      const _gp = parseInt(document.getElementById('pfGrindPasses')?.value) || 1;
+      if (_gp >= 4) _set(0.05, '磨型' + _gp + '道'); // 磨型道数<4：不扣
+    }
+    if (isSmallHole) _set(0.10, '打孔D' + holeDia + '≤2');
+    else if (_chk('pfDrill')) _set(0.05, '打孔');
+    if (_chk('pfCarve')) _set(0.05, '精雕');
+    if (_chk('pfLaser')) _set(0.05, '镭雕');
+    if (_chk('pfJet')) _set(0.05, '喷码');
+    if (_chk('pfShoulder')) _set(0.05, '车肩');
+    if (_chk('pfMultiPunch')) _set(0.05, '多级冲');
   }
 
   // 4) 合并(取最重，不叠加)
