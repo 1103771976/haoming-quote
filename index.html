@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>昊铭磁材报价计算工具 v5.5.70</title>
+<title>昊铭磁材报价计算工具 v5.5.71</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2065,7 +2065,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo">
     <div class="icon"><svg width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25517d"/><stop offset="1" stop-color="#1a3c5e"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
     <div class="text">
-      <h1>昊铭磁材 <span class="ver-badge">v5.5.70</span></h1>
+      <h1>昊铭磁材 <span class="ver-badge">v5.5.71</span></h1>
       <div class="sub">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -4929,7 +4929,8 @@ const QR_DEFAULT = {
   proc: {                // 加工扣减（取最重一档，不叠加）
     granule: 0.05,       // 颗粒磨
     grindPassesGE4: 0.05,// 磨型≥4道（<4道不扣）
-    smallHole: 0.10,     // 打孔D≤2（小孔）
+    smallHole: 0.10,     // 打孔D≤2（小孔/打孔分段）
+    centerlessSeg: 0.10, // 无心磨分段(D≤2 圆片/圆环/大小头，calculateDisc L7652 同触发)
     drill: 0.05,         // 打孔
     carve: 0.05,         // 精雕
     laser: 0.05,         // 镭雕
@@ -4993,7 +4994,8 @@ const QR_FIELDS = [
   { sec:'加工扣减（取最重一档）', items:[
     { path:['proc','granule'], label:'颗粒磨', unit:'%' },
     { path:['proc','grindPassesGE4'], label:'磨型≥阈值道', unit:'%' },
-    { path:['proc','smallHole'], label:'打孔D≤阈值(小孔)', unit:'%' },
+    { path:['proc','centerlessSeg'], label:'无心磨分段(D≤2圆片)', unit:'%' },
+    { path:['proc','smallHole'], label:'打孔分段D≤阈值(小孔)', unit:'%' },
     { path:['proc','drill'], label:'打孔', unit:'%' },
     { path:['proc','carve'], label:'精雕', unit:'%' },
     { path:['proc','laser'], label:'镭雕', unit:'%' },
@@ -5423,12 +5425,12 @@ function computeQualifyRate() {
   // 3) 工艺因子(加工难度，取最重一档，不叠加——杜绝旧逻辑重复扣减)
   let procDelta = 0;
   let procWhy = '';
+  const _chk = id => document.getElementById(id)?.checked;
+  const _set = (d, w) => { if (d > procDelta) { procDelta = d; procWhy = w; } };
   if (hasPF) {
     const holeDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
     const isSmallHole = hasDrillHole && holeDia > 0 && holeDia <= C.thresholds.smallHoleLE;
     // [v5.5.66 领域修正] 加工难度扣减：颗粒磨扣；磨型不扣(除非道数≥阈值)；其余按原档（v5.5.67 由 QR_CONFIG.proc 驱动）
-    const _chk = id => document.getElementById(id)?.checked;
-    const _set = (d, w) => { if (d > procDelta) { procDelta = d; procWhy = w; } };
     if (_chk('pfGranule')) _set(C.proc.granule, '颗粒磨');
     if (_chk('pfGrind')) {
       const _gp = parseInt(document.getElementById('pfGrindPasses')?.value) || 1;
@@ -5441,6 +5443,11 @@ function computeQualifyRate() {
     if (_chk('pfJet')) _set(C.proc.jet, '喷码');
     if (_chk('pfShoulder')) _set(C.proc.shoulder, '车肩');
     if (_chk('pfMultiPunch')) _set(C.proc.multiPunch, '多级冲');
+  }
+  // [v5.5.71] 无心磨分段：D≤2 圆片/圆环/大小头自动走分段（与 calculateDisc L7652 触发一致），降低合格率
+  if (shapeMode === 'disc') {
+    const _cd = _discD || 0;
+    if (_cd > 0 && _cd <= 2) _set(C.proc.centerlessSeg, '无心磨分段D' + _cd + '≤2');
   }
 
   // 4) 合并(取最重，不叠加)
@@ -11040,7 +11047,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.70</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.71</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -11733,6 +11740,7 @@ const _TUTORIAL_HTML = `
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
         <tr><td><span>v5.5.70</span></td><td>合格率设置面板视觉对齐外面主表单：弹窗内输入框全部改用页面标准类 qr-modal-input（高30px/圆角/字号13px/居中/focus 蓝边光晕与利润率输入框完全一致），行/勾选/分区标题用 qr-modal-row/qr-modal-check/qr-modal-section，底部按钮改用页面 tool-btn 与实蓝主按钮；查漏补缺：新增「触发阈值」分区共14个——瓦片/方块任一边≥、圆片直径/厚度≥、太小/薄各档、长细比各档、薄度检查开关、磨型道数、小孔孔径，全部可手调，默认与旧硬编码逐位一致、算价公式零改动；扣减原因文案中的 直径≥18/厚度≥18/L≥30/小孔≤2 等数字也跟随阈值动态变化，不再自相矛盾</td></tr>
+<tr><td><span>v5.5.71</span></td><td>合格率查漏补缺·分段加工降合格率：旧版打孔分段(D≤2)已借「打孔D≤阈值(小孔)」扣减覆盖，但「无心磨分段(D≤2圆片/圆环/大小头)」一直没降合格率——本次补上 proc.centerlessSeg（默认10%，面板可手调），触发与 calculateDisc 的 D≤2 分段完全一致；面板「加工扣减」组新增「无心磨分段(D≤2圆片)」、原「打孔D≤阈值(小孔)」改名为「打孔分段D≤阈值(小孔)」让两种分段一目了然。算价公式字面值零改动（只往 procDelta 加一项，Math.max 不变）</td></tr>
 <tr><td><span>v5.5.69</span></td><td>合格率设置入口美化（符合整版面审美）：手写内联样式的按钮改为页面标准 qr-set-btn 类——静止浅蓝底蓝字（与 chip-blue 同源）、hover 实蓝底白字（与激活态/保存按钮同源），字号/圆角/过渡全用页面 token；常驻提示改挂 qr-set-hint；面板弹窗本身已全程用页面 token 不动。算价公式零改动</td></tr>
         <tr><td><span>v5.5.68</span></td><td>合格率设置入口显眼化：输入框右侧小灰钮「⚙ 设置」改为浅蓝底+蓝边+加粗的「⚙ 合格率设置」按钮，并补常驻提示「（点它可调合格率规则：基础/降档/几何/加工/保底）」，解决入口混在表单里看不见的问题；面板功能与算价公式零改动</td></tr>
         <tr><td><span>v5.5.67</span></td><td>新增「合格率参数设置」面板（合格率输入框旁 ⚙ 设置）：所有合格率参数集中可调——默认基础合格率（默认90%）、保底下限、降档触发（大小头/带加工/直径≥18/厚度≥18/倒角/任一边≥30/异形豁免）、几何因子阈值（长细比/太小/薄度）、加工扣减（颗粒磨/磨型≥4道/小孔/打孔/精雕/镭雕/喷码/车肩/多级冲），全部存本机浏览器、一键恢复出厂；默认配置与旧算法完全一致，算价公式零改动</td></tr>
