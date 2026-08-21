@@ -2992,7 +2992,7 @@ function autoParse() {
   // === 毛坯规格识别：毛坯/坯料/库存毛坯 + 一个或多个 A*B*C ===
   var blankSpecOverride = '';
   var blankSpecList = []; // 多毛坯候选列表
-  var blankKeywordMatch = text.match(/(?:\u5e93\u5b58\u6bdb\u576f|\u6bdb\u576f\u89c4\u683c|\u576f\u89c4\u683c|\u901a\u7528\u6bdb\u576f|\u901a\u7528\u576f|\u576f\u6599|\u6bdb\u576f|\u576f)/i);
+  var blankKeywordMatch = text.match(/(?:\u5e93\u5b58\u6750\u6599|\u5e93\u5b58\u6bdb\u576f|\u6bdb\u576f\u89c4\u683c|\u576f\u89c4\u683c|\u901a\u7528\u6bdb\u576f|\u901a\u7528\u576f|\u576f\u6599|\u6bdb\u576f|\u576f|\u6750\u6599)/i);
   if (blankKeywordMatch) {
     // 从关键词位置开始提取所有 A*B*C 规格
     var afterKeyword = text.substring(blankKeywordMatch.index);
