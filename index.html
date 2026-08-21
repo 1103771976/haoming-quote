@@ -3842,14 +3842,26 @@ function autoParse() {
     var it = items[ii];
     var ok = it.v.startsWith('◉');
     var dim = it.v.startsWith('◈');
-    html += '<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;' +
+    var _cellStyle = 'display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;' +
       (ok ? 'background:rgba(74,109,151,.07);color:var(--text2);font-weight:500' : 
-       (dim ? 'background:rgba(255,255,255,.5);color:var(--sub);font-weight:400' : 'color:var(--sub2)')) +
-      '"><span style="font-size:12px;color:var(--sub)">' + it.k + '</span> ' + it.v.replace('◉','<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>').replace('◌','<svg class="ic" aria-hidden="true"><use href="#ic-help"/></svg>').replace('◈','<svg class="ic" aria-hidden="true"><use href="#ic-gear"/></svg>').replace('○','<svg class="ic" aria-hidden="true"><use href="#ic-circle"/></svg>') + '</span>';
+       (dim ? 'background:rgba(255,255,255,.5);color:var(--sub);font-weight:400' : 'color:var(--sub2)'));
+    var _vHtml = it.v.replace('◉','<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>').replace('◌','<svg class="ic" aria-hidden="true"><use href="#ic-help"/></svg>').replace('◈','<svg class="ic" aria-hidden="true"><use href="#ic-gear"/></svg>').replace('○','<svg class="ic" aria-hidden="true"><use href="#ic-circle"/></svg>');
+    // [v5.5.65] 合格率：底部全局条也承载扣减原因(底部QrWhy)与实时数字(底部QrVal)，与输入框旁提示同步
+    if (it.k === '合格率') { _vHtml = '<span id="bottomQrVal">' + _vHtml + '</span> <span id="bottomQrWhy" style="font-size:11px"></span>'; }
+    html += '<span style="' + _cellStyle + '"><span style="font-size:12px;color:var(--sub)">' + it.k + '</span> ' + _vHtml + '</span>';
   }
   html += '</div>';
   r.style.display = ''; r.innerHTML = html;
-  
+  // [v5.5.65] 底部条重新渲染后，把输入框旁的合格率提示与数字回填到底部承载元素（保险，幂等）
+  (function(){
+    var _src = document.getElementById('qrReasonHint');
+    var bw = document.getElementById('bottomQrWhy');
+    if (bw && _src) { bw.textContent = _src.textContent || ''; bw.style.color = _src.style.color || ''; }
+    var bv = document.getElementById('bottomQrVal');
+    var _in = document.getElementById('stockQualifyRate');
+    if (bv && _in) bv.textContent = _in.value;
+  })();
+
   // 自动触发计算规则（方案C）：识别到「规格+牌号+镀层+数量」四项齐全才自动算（即时算、无防抖，加速批量测试）；任一缺失均不自动算——零默认假设，杜绝"默认NI/默认500"误导价；缺项下方提示"补全后自动报价"
   // 圆片未显式给镀层时工具默认NI（上方Apply块已把DOM plating补成NI），视为齐备，避免"显示NI却不算价"不一致；方块/瓦片未显式给镀层仍按原闸门拦截
   var _effPlating = plating || (shapeMode === 'disc' ? (document.getElementById('plating').value || '') : '');
@@ -5119,15 +5131,26 @@ function getShapeDimsForQR() {
 // [v5.5.63] 合格率扣减原因提示：纯显示层，零算价改动
 function updateQrHint(txt, warn) {
   var el = document.getElementById('qrReasonHint');
-  if (!el) return;
-  el.textContent = txt || '';
-  el.style.color = warn ? 'var(--warn)' : 'var(--sub2)';
-  el.title = txt || '';
+  if (el) {
+    el.textContent = txt || '';
+    el.style.color = warn ? 'var(--warn)' : 'var(--sub2)';
+    el.title = txt || '';
+  }
+  // [v5.5.65] 底部全局参数条合格率项的「原因」承载元素，与输入框旁提示同源同步
+  var bw = document.getElementById('bottomQrWhy');
+  if (bw) {
+    bw.textContent = txt || '';
+    bw.style.color = warn ? 'var(--warn)' : 'var(--sub2)';
+  }
 }
 function computeQualifyRate() {
   if (_qrManualOverride) { // 手动优先，完全跳过自动逻辑；已有更具体来源标签（读取历史记录/智能输入指定）时不覆盖
     var _curHint = document.getElementById('qrReasonHint');
     if (!_curHint || !_curHint.textContent || _curHint.textContent === '手动指定，自动调整已停用') updateQrHint('手动指定，自动调整已停用', false);
+    // [v5.5.65] 手动模式下底部全局条数字也需跟随输入框实时值
+    var _bv = document.getElementById('bottomQrVal');
+    var _in = document.getElementById('stockQualifyRate');
+    if (_bv && _in) _bv.textContent = _in.value;
     return;
   }
   const el = document.getElementById('stockQualifyRate');
@@ -5208,6 +5231,9 @@ function computeQualifyRate() {
   // 5) 保底下限（批量模式仅 auto：通用坯>100块 或 合适坯>300kg → 薄刀0.27；合格率统一走几何/工艺风险模型，无批量特殊加成）
   qr = Math.max(0.50, qr);
   el.value = qr.toFixed(2);
+  // [v5.5.65] 底部全局条合格率数字实时同步，避免滞后于输入框
+  var bv = document.getElementById('bottomQrVal');
+  if (bv) bv.textContent = qr.toFixed(2);
 
   // [v5.5.63] 扣减原因显示（只读展示，不参与任何计算）
   (function(){
