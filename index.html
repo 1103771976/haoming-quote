@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>昊铭磁材报价计算工具 v5.5.66</title>
+<title>昊铭磁材报价计算工具 v5.5.67</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2052,7 +2052,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo">
     <div class="icon"><svg width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25517d"/><stop offset="1" stop-color="#1a3c5e"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
     <div class="text">
-      <h1>昊铭磁材 <span class="ver-badge">v5.5.66</span></h1>
+      <h1>昊铭磁材 <span class="ver-badge">v5.5.67</span></h1>
       <div class="sub">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2314,6 +2314,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
             <label style="min-width:52px">合格率</label>
             <input id="stockQualifyRate" type="number" step="0.01" value="0.9" style="width:68px" onchange="_qrManualOverride=true;updateQrHint('手动指定，自动调整已停用',false);sanitizeQualifyRate('stockQualifyRate');calculate()">
             <span id="qrReasonHint" style="font-size:11px;color:var(--sub2);line-height:1.4"></span>
+            <button type="button" onclick="openQRSettings()" title="合格率参数设置（默认基础90%，可手调）" style="border:1px solid var(--border);background:#fff;color:var(--blue);cursor:pointer;padding:2px 9px;border-radius:var(--radius);font-size:12px;margin-left:6px">⚙ 设置</button>
           </div>
           <div class="f-row" style="margin-bottom:0">
             <label style="min-width:52px">利润</label>
@@ -4887,6 +4888,156 @@ let _lastExportData = null; // P2: CSV导出缓存
 var _lastDisc = null;       // 圆片三路线结果缓存（displayDiscResults 写入，供明细导出使用，零依赖）
 var _cylCustomSpec = false; // 圆柱坯自定义标志：圆环/大小头计算路径(L6147)读取；顶层声明避免 ReferenceError 导致报价 null
 
+// ===== 合格率参数配置（v5.5.67 起：所有参数集中可调，默认基础 90%）=====
+// 算价公式零改动：默认配置与旧算法逐位一致；仅把硬编码值抽成可配对象。
+const QR_DEFAULT = {
+  base: 0.90,            // 默认基础合格率（所有形状统一基础值）
+  floor: 0.50,           // 保底下限
+  drop: {                // 降档：在基础值上扣减（取最重一档，不叠加）
+    stepped: 0.05,       // 圆片·大小头
+    withPF: 0.05,        // 带加工工序（任意形状）
+    discDiaGE18: 0.05,   // 圆片·直径≥18
+    discHGE18: 0.05,     // 圆片·厚度≥18
+    discChamfer: 0.05,   // 圆片·有倒角
+    dimGE30: 0.05,       // 瓦片/方块·任一边≥30（异形豁免见下）
+    irregularExempt: true// 异形豁免大尺寸/加工降档（v5.5.66 领域规则：异形为定制件，基础不降）
+  },
+  geo: {                 // 几何因子（取最重一档，不叠加）
+    ratioGT80: 0.12,     // 长细比>80
+    ratioGT40: 0.08,     // 长细比>40
+    ratioGT20: 0.05,     // 长细比>20
+    cLT10: 0.05,         // 最大维<1.0（太小）
+    cLT15: 0.04,         // 最大维<1.5（太小）
+    aLE03: 0.20,         // 最薄维≤0.3（薄）
+    aLE04: 0.10,         // 最薄维≤0.4（薄）
+    aLE05: 0.05          // 最薄维≤0.5（薄）
+  },
+  proc: {                // 加工扣减（取最重一档，不叠加）
+    granule: 0.05,       // 颗粒磨
+    grindPassesGE4: 0.05,// 磨型≥4道（<4道不扣）
+    smallHole: 0.10,     // 打孔D≤2（小孔）
+    drill: 0.05,         // 打孔
+    carve: 0.05,         // 精雕
+    laser: 0.05,         // 镭雕
+    jet: 0.05,           // 喷码
+    shoulder: 0.05,      // 车肩
+    multiPunch: 0.05     // 多级冲
+  }
+};
+let QR_CONFIG = (function(){ try { var s = JSON.parse(localStorage.getItem('hmcj_qr_config')||'null'); if (s && typeof s==='object') return _mergeQR(s); } catch(e){} return JSON.parse(JSON.stringify(QR_DEFAULT)); })();
+function _mergeQR(saved){
+  var d = JSON.parse(JSON.stringify(QR_DEFAULT));
+  if (!saved || typeof saved!=='object') return d;
+  ['base','floor'].forEach(function(k){ if (typeof saved[k]==='number') d[k]=saved[k]; });
+  ['drop','geo','proc'].forEach(function(k){ if (saved[k] && typeof saved[k]==='object'){ for (var j in saved[k]){ if (saved[k].hasOwnProperty(j) && (typeof saved[k][j]==='number' || typeof saved[k][j]==='boolean')) d[k][j]=saved[k][j]; } } });
+  return d;
+}
+function saveQRConfig(){ try { localStorage.setItem('hmcj_qr_config', JSON.stringify(QR_CONFIG)); } catch(e){} }
+function resetQRConfig(){ QR_CONFIG = JSON.parse(JSON.stringify(QR_DEFAULT)); saveQRConfig(); }
+
+// 合格率设置面板（v5.5.67）：schema 驱动，全部参数可调，存本机浏览器
+const QR_FIELDS = [
+  { sec:'默认基础', items:[
+    { path:['base'], label:'默认基础合格率', pct:true },
+    { path:['floor'], label:'保底下限', pct:true }
+  ]},
+  { sec:'降档触发（在基础值上扣减）', items:[
+    { path:['drop','stepped'], label:'圆片·大小头' },
+    { path:['drop','withPF'], label:'带加工工序' },
+    { path:['drop','discDiaGE18'], label:'圆片·直径≥18' },
+    { path:['drop','discHGE18'], label:'圆片·厚度≥18' },
+    { path:['drop','discChamfer'], label:'圆片·有倒角' },
+    { path:['drop','dimGE30'], label:'瓦片/方块·任一边≥30' },
+    { path:['drop','irregularExempt'], label:'异形豁免降档', bool:true }
+  ]},
+  { sec:'几何因子（取最重一档）', items:[
+    { path:['geo','ratioGT80'], label:'长细比>80' },
+    { path:['geo','ratioGT40'], label:'长细比>40' },
+    { path:['geo','ratioGT20'], label:'长细比>20' },
+    { path:['geo','cLT10'], label:'最大维<1.0（太小）' },
+    { path:['geo','cLT15'], label:'最大维<1.5（太小）' },
+    { path:['geo','aLE03'], label:'最薄维≤0.3（薄）' },
+    { path:['geo','aLE04'], label:'最薄维≤0.4（薄）' },
+    { path:['geo','aLE05'], label:'最薄维≤0.5（薄）' }
+  ]},
+  { sec:'加工扣减（取最重一档）', items:[
+    { path:['proc','granule'], label:'颗粒磨' },
+    { path:['proc','grindPassesGE4'], label:'磨型≥4道' },
+    { path:['proc','smallHole'], label:'打孔D≤2（小孔）' },
+    { path:['proc','drill'], label:'打孔' },
+    { path:['proc','carve'], label:'精雕' },
+    { path:['proc','laser'], label:'镭雕' },
+    { path:['proc','jet'], label:'喷码' },
+    { path:['proc','shoulder'], label:'车肩' },
+    { path:['proc','multiPunch'], label:'多级冲' }
+  ]}
+];
+function _qrGet(path){ var o=QR_CONFIG; for (var i=0;i<path.length;i++) o=o[path[i]]; return o; }
+function _qrSet(path,val){ var o=QR_CONFIG; for (var i=0;i<path.length-1;i++) o=o[path[i]]; o[path[path.length-1]]=val; }
+function _qrFieldId(path){ return 'qr_'+path.join('_'); }
+function buildQRSettingsModal(){
+  var html = '<div class="modal-overlay" id="qrSettingsModal" style="display:none;z-index:1200" onclick="if(event.target===this)closeQRSettings()">'
+    + '<div class="modal" style="max-width:720px;max-height:88vh;overflow:auto;padding:0">'
+    + '<div style="position:sticky;top:0;z-index:10;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);padding:14px 20px;border-bottom:1px solid rgba(0,0,0,.06);display:flex;justify-content:space-between;align-items:center;gap:12px">'
+    + '<span style="font-weight:700;font-size:15px;color:var(--text)">合格率参数设置</span>'
+    + '<button onclick="closeQRSettings()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>'
+    + '</div>'
+    + '<div style="padding:16px 20px 4px">';
+  QR_FIELDS.forEach(function(group){
+    html += '<div style="margin:14px 0 6px;font-weight:700;font-size:13px;color:var(--blue);border-left:3px solid var(--blue);padding-left:8px">'+group.sec+'</div>';
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 18px">';
+    group.items.forEach(function(it){
+      var id = _qrFieldId(it.path);
+      if (it.bool){
+        html += '<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)"><input type="checkbox" id="'+id+'" onchange="onQRChange()"> '+it.label+'</label>';
+      } else {
+        html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--text)"><span>'+it.label+'</span><span style="display:flex;align-items:center;gap:4px"><input type="number" id="'+id+'" style="width:68px;text-align:right" onchange="onQRChange()"> %</span></div>';
+      }
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '<div style="position:sticky;bottom:0;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);padding:12px 20px;border-top:1px solid rgba(0,0,0,.06);display:flex;justify-content:space-between;gap:10px">'
+    + '<button onclick="resetQRConfig();populateQRSettings();recalcAfterQR();showToast(\'已恢复出厂默认（基础90%）\')" style="border:1px solid var(--border);background:#fff;color:var(--sub);padding:7px 14px;border-radius:var(--radius);cursor:pointer">恢复出厂</button>'
+    + '<button onclick="closeQRSettings()" style="border:none;background:var(--blue);color:#fff;padding:7px 18px;border-radius:var(--radius);cursor:pointer">完成</button>'
+    + '</div>';
+  html += '</div></div>';
+  var wrap = document.createElement('div');
+  wrap.innerHTML = html;
+  document.body.appendChild(wrap.firstElementChild);
+}
+function populateQRSettings(){
+  QR_FIELDS.forEach(function(group){
+    group.items.forEach(function(it){
+      var el = document.getElementById(_qrFieldId(it.path));
+      if (!el) return;
+      if (it.bool){ el.checked = !!_qrGet(it.path); }
+      else { el.value = Math.round(_qrGet(it.path)*1000)/10; } // 显示百分比（保留1位）
+    });
+  });
+}
+function onQRChange(){
+  QR_FIELDS.forEach(function(group){
+    group.items.forEach(function(it){
+      var el = document.getElementById(_qrFieldId(it.path));
+      if (!el) return;
+      if (it.bool){ _qrSet(it.path, el.checked); }
+      else { var v = parseFloat(el.value); if (isNaN(v)) v=0; _qrSet(it.path, v/100); }
+    });
+  });
+  saveQRConfig();
+  recalcAfterQR();
+}
+function recalcAfterQR(){
+  try { if (typeof computeQualifyRate==='function') computeQualifyRate(); if (typeof calculate==='function') calculate(); } catch(e){}
+}
+function openQRSettings(){
+  if (!document.getElementById('qrSettingsModal')) buildQRSettingsModal();
+  populateQRSettings();
+  document.getElementById('qrSettingsModal').style.display='flex';
+}
+function closeQRSettings(){ var m=document.getElementById('qrSettingsModal'); if(m) m.style.display='none'; }
+
 
 function autoCalcKnivesSilent() {
   const L = parseFloat(document.getElementById('dimL').value) || 0;
@@ -5156,39 +5307,45 @@ function computeQualifyRate() {
   const el = document.getElementById('stockQualifyRate');
   _thinWarn = false;
 
-  // 1) 形状基础值：带加工工序 或 大尺寸(≥30) → 0.85，否则 0.90
-  // 带加工判定：覆盖全部 8 种加工工序（L2635 初始化列表），
-  // 任一勾选即视为带加工 → base=0.85；打孔保留小孔(≤2mm)→−10% 特殊逻辑
+  const C = QR_CONFIG;
+  // 1) 形状基础值 + 降档（取最重一档，不叠加；由 QR_CONFIG 驱动，v5.5.67 起全部可调）
+  // 带加工判定：覆盖全部 8 种加工工序（L2635 初始化列表），任一勾选即视为带加工
   const _pfIds = ['pfGrind','pfGranule','pfCarve','pfDrill','pfLaser','pfJet','pfShoulder','pfMultiPunch'];
   const hasPF = _pfIds.some(id => document.getElementById(id)?.checked);
   const hasDrillHole = document.getElementById('pfDrill')?.checked && document.getElementById('pfHoleDia')?.value;
-  let base = 0.90;
+  let base = C.base;
+  let baseDrop = 0;
   let baseWhy = '';
+  const _considerDrop = (delta, why) => { if (delta > baseDrop) { baseDrop = delta; baseWhy = why; } };
   if (shapeMode === 'disc') {
     const D = _discD || 0, H = _discH || 0;
     const chamfer = parseFloat(document.getElementById('chamferFee')?.value) || 0;
-    if (_discIsStepped || hasPF || D >= 18 || H >= 18 || chamfer > 0) {
-      base = 0.85;
-      baseWhy = _discIsStepped ? '大小头' : (hasPF ? '带加工工序' : (D >= 18 ? '直径≥18' : (H >= 18 ? '厚度≥18' : '有倒角')));
-    }
+    if (_discIsStepped) _considerDrop(C.drop.stepped, '大小头');
+    if (hasPF) _considerDrop(C.drop.withPF, '带加工工序');
+    if (D >= 18) _considerDrop(C.drop.discDiaGE18, '直径≥18');
+    if (H >= 18) _considerDrop(C.drop.discHGE18, '厚度≥18');
+    if (chamfer > 0) _considerDrop(C.drop.discChamfer, '有倒角');
   } else if (shapeMode === 'tile') {
     const tL = parseFloat(document.getElementById('tileLen').value) || 0;
     const tC = parseFloat(document.getElementById('tileChord').value) || 0;
     const tH = parseFloat(document.getElementById('tileArchH').value) || 0;
-    if (hasPF || tL >= 30 || tC >= 30 || tH >= 30) {
-      base = 0.85;
-      baseWhy = hasPF ? '带加工工序' : (tL >= 30 ? '长≥30' : (tC >= 30 ? '弦宽≥30' : '尺寸≥30'));
-    }
+    if (hasPF) _considerDrop(C.drop.withPF, '带加工工序');
+    if (tL >= 30) _considerDrop(C.drop.dimGE30, '长≥30');
+    if (tC >= 30) _considerDrop(C.drop.dimGE30, '弦宽≥30');
+    if (tH >= 30) _considerDrop(C.drop.dimGE30, '尺寸≥30');
   } else {
     const Lv = parseFloat(document.getElementById('dimL').value) || 0;
     const Wv = parseFloat(document.getElementById('dimW').value) || 0;
     const Hv = parseFloat(document.getElementById('dimH').value) || 0;
-    // [v5.5.66] 异形基础恒为90%：不套用方块「大尺寸≥30/带加工→85%」规则（异形为定制件，基础不降）
-    if (shapeMode !== 'irregular' && (hasPF || Lv >= 30 || Wv >= 30 || Hv >= 30)) {
-      base = 0.85;
-      baseWhy = hasPF ? '带加工工序' : (Lv >= 30 ? 'L≥30' : (Wv >= 30 ? 'W≥30' : 'H≥30'));
+    // [v5.5.66] 异形基础恒为90%：默认豁免大尺寸/加工降档（QR_CONFIG.drop.irregularExempt 可关）
+    if (!(shapeMode === 'irregular' && C.drop.irregularExempt)) {
+      if (hasPF) _considerDrop(C.drop.withPF, '带加工工序');
+      if (Lv >= 30) _considerDrop(C.drop.dimGE30, 'L≥30');
+      if (Wv >= 30) _considerDrop(C.drop.dimGE30, 'W≥30');
+      if (Hv >= 30) _considerDrop(C.drop.dimGE30, 'H≥30');
     }
   }
+  base = C.base - baseDrop;
 
   // 2) 几何因子(新三因子模型，取最重一档，不叠加)
   let geoDelta = 0;
@@ -5200,17 +5357,17 @@ function computeQualifyRate() {
       const a = ds[0], c = ds[ds.length - 1];
       const ratio = a > 0 ? c / a : 0;
       // 表1 长细比 c/a
-      if (ratio > 80) { if (0.12 > geoDelta) { geoDelta = 0.12; geoWhy = '长细比 ' + ratio.toFixed(1); } }
-      else if (ratio > 40) { if (0.08 > geoDelta) { geoDelta = 0.08; geoWhy = '长细比 ' + ratio.toFixed(1); } }
-      else if (ratio > 20) { if (0.05 > geoDelta) { geoDelta = 0.05; geoWhy = '长细比 ' + ratio.toFixed(1); } }
+      if (ratio > 80) { if (C.geo.ratioGT80 > geoDelta) { geoDelta = C.geo.ratioGT80; geoWhy = '长细比 ' + ratio.toFixed(1); } }
+      else if (ratio > 40) { if (C.geo.ratioGT40 > geoDelta) { geoDelta = C.geo.ratioGT40; geoWhy = '长细比 ' + ratio.toFixed(1); } }
+      else if (ratio > 20) { if (C.geo.ratioGT20 > geoDelta) { geoDelta = C.geo.ratioGT20; geoWhy = '长细比 ' + ratio.toFixed(1); } }
       // 表2 太小(整体最大维 c ≤ 2mm)
-      if (c < 1.0) { if (0.05 > geoDelta) { geoDelta = 0.05; geoWhy = '尺寸太小(最大维' + c + ')'; } }
-      else if (c < 1.5) { if (0.04 > geoDelta) { geoDelta = 0.04; geoWhy = '尺寸太小(最大维' + c + ')'; } }
+      if (c < 1.0) { if (C.geo.cLT10 > geoDelta) { geoDelta = C.geo.cLT10; geoWhy = '尺寸太小(最大维' + c + ')'; } }
+      else if (c < 1.5) { if (C.geo.cLT15 > geoDelta) { geoDelta = C.geo.cLT15; geoWhy = '尺寸太小(最大维' + c + ')'; } }
       // 表3 薄度(仅 c > 2 时启用，避免与"太小"双罚)
       if (c > 2) {
-        if (a <= 0.3) { if (0.20 > geoDelta) { geoDelta = 0.20; geoWhy = '壁薄 ' + a + 'mm'; } }
-        else if (a <= 0.4) { if (0.10 > geoDelta) { geoDelta = 0.10; geoWhy = '壁薄 ' + a + 'mm'; } }
-        else if (a <= 0.5) { if (0.05 > geoDelta) { geoDelta = 0.05; geoWhy = '壁薄 ' + a + 'mm'; } }
+        if (a <= 0.3) { if (C.geo.aLE03 > geoDelta) { geoDelta = C.geo.aLE03; geoWhy = '壁薄 ' + a + 'mm'; } }
+        else if (a <= 0.4) { if (C.geo.aLE04 > geoDelta) { geoDelta = C.geo.aLE04; geoWhy = '壁薄 ' + a + 'mm'; } }
+        else if (a <= 0.5) { if (C.geo.aLE05 > geoDelta) { geoDelta = C.geo.aLE05; geoWhy = '壁薄 ' + a + 'mm'; } }
       }
     }
   }
@@ -5221,29 +5378,29 @@ function computeQualifyRate() {
   if (hasPF) {
     const holeDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
     const isSmallHole = hasDrillHole && holeDia > 0 && holeDia <= 2;
-    // [v5.5.66 领域修正] 加工难度扣减：颗粒磨扣；磨型不扣(除非道数≥4)；其余按原档
+    // [v5.5.66 领域修正] 加工难度扣减：颗粒磨扣；磨型不扣(除非道数≥4)；其余按原档（v5.5.67 由 QR_CONFIG.proc 驱动）
     const _chk = id => document.getElementById(id)?.checked;
     const _set = (d, w) => { if (d > procDelta) { procDelta = d; procWhy = w; } };
-    if (_chk('pfGranule')) _set(0.05, '颗粒磨');
+    if (_chk('pfGranule')) _set(C.proc.granule, '颗粒磨');
     if (_chk('pfGrind')) {
       const _gp = parseInt(document.getElementById('pfGrindPasses')?.value) || 1;
-      if (_gp >= 4) _set(0.05, '磨型' + _gp + '道'); // 磨型道数<4：不扣
+      if (_gp >= 4) _set(C.proc.grindPassesGE4, '磨型' + _gp + '道'); // 磨型道数<4：不扣
     }
-    if (isSmallHole) _set(0.10, '打孔D' + holeDia + '≤2');
-    else if (_chk('pfDrill')) _set(0.05, '打孔');
-    if (_chk('pfCarve')) _set(0.05, '精雕');
-    if (_chk('pfLaser')) _set(0.05, '镭雕');
-    if (_chk('pfJet')) _set(0.05, '喷码');
-    if (_chk('pfShoulder')) _set(0.05, '车肩');
-    if (_chk('pfMultiPunch')) _set(0.05, '多级冲');
+    if (isSmallHole) _set(C.proc.smallHole, '打孔D' + holeDia + '≤2');
+    else if (_chk('pfDrill')) _set(C.proc.drill, '打孔');
+    if (_chk('pfCarve')) _set(C.proc.carve, '精雕');
+    if (_chk('pfLaser')) _set(C.proc.laser, '镭雕');
+    if (_chk('pfJet')) _set(C.proc.jet, '喷码');
+    if (_chk('pfShoulder')) _set(C.proc.shoulder, '车肩');
+    if (_chk('pfMultiPunch')) _set(C.proc.multiPunch, '多级冲');
   }
 
   // 4) 合并(取最重，不叠加)
   let qr = base - Math.max(geoDelta, procDelta);
   if (geoDelta > 0) _thinWarn = true;
 
-  // 5) 保底下限（批量模式仅 auto：通用坯>100块 或 合适坯>300kg → 薄刀0.27；合格率统一走几何/工艺风险模型，无批量特殊加成）
-  qr = Math.max(0.50, qr);
+  // 5) 保底下限（由 QR_CONFIG.floor 驱动，v5.5.67 可调）
+  qr = Math.max(C.floor, qr);
   el.value = qr.toFixed(2);
   // [v5.5.65] 底部全局条合格率数字实时同步（保留 ◉/◈ + % 原格式），避免滞后但不变丑
   var bv = document.getElementById('bottomQrVal');
@@ -5256,11 +5413,12 @@ function computeQualifyRate() {
       var _why;
       if (geoDelta === procDelta && geoWhy && procWhy) _why = geoWhy + ' / ' + procWhy;
       else _why = (geoDelta >= procDelta) ? geoWhy : procWhy;
-      var _txt = (base === 0.85 ? ('基础85%(' + (baseWhy || '') + ')') : '基础90%') + ' − ' + Math.round(_applied * 100) + '%(' + _why + ')';
-      if ((base - _applied) < 0.50) _txt += ' → 保底50%';
+      var _basePct = Math.round(base * 100);
+      var _txt = '基础' + _basePct + '%' + (baseWhy ? ('(' + baseWhy + ')') : '') + ' − ' + Math.round(_applied * 100) + '%(' + _why + ')';
+      if ((base - _applied) < C.floor) _txt += ' → 保底' + Math.round(C.floor * 100) + '%';
       updateQrHint(_txt, true);
-    } else if (base === 0.85) {
-      updateQrHint('基础85%(' + baseWhy + ')', true);
+    } else if (baseDrop > 0) {
+      updateQrHint('基础' + Math.round(base * 100) + '%(' + baseWhy + ')', true);
     } else {
       updateQrHint('', false);
     }
@@ -10834,7 +10992,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.66</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.67</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -11526,6 +11684,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.5.67</span></td><td>新增「合格率参数设置」面板（合格率输入框旁 ⚙ 设置）：所有合格率参数集中可调——默认基础合格率（默认90%）、保底下限、降档触发（大小头/带加工/直径≥18/厚度≥18/倒角/任一边≥30/异形豁免）、几何因子阈值（长细比/太小/薄度）、加工扣减（颗粒磨/磨型≥4道/小孔/打孔/精雕/镭雕/喷码/车肩/多级冲），全部存本机浏览器、一键恢复出厂；默认配置与旧算法完全一致，算价公式零改动</td></tr>
         <tr><td><span>v5.5.66</span></td><td>合格率领域规则修正：① 异形基础合格率恒 90%（不再随大尺寸≥30/带加工降到 85%）；② 加工难度扣减按道数——颗粒磨扣 5%、磨型仅≥4道才扣 5%（&lt;4道不扣）、小孔≤2mm 扣 10%、其余打孔/精雕/镭雕/喷码/车肩/多级冲各扣 5%，取最重一档不叠加；③ 工具内帮助文案对齐新算法；算价核心公式零改动</td></tr>
         <tr><td><span>v5.5.65</span></td><td>合格率底部全局参数条实时显示扣减原因（如「基础85%(带加工工序) − 5%(颗粒磨)」）并同步数字，一眼看清为什么降到 80%；算价公式零改动</td></tr>
         <tr><td><span>v5.5.64</span></td><td>D28 修复：牌号无价格记录提示的源判定与单价兜底严格对齐，堵住自定义牌号缺失价格 override 时仍静默按默认价算的隐患；算价公式零改动</td></tr>
