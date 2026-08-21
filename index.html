@@ -5147,10 +5147,10 @@ function computeQualifyRate() {
   if (_qrManualOverride) { // 手动优先，完全跳过自动逻辑；已有更具体来源标签（读取历史记录/智能输入指定）时不覆盖
     var _curHint = document.getElementById('qrReasonHint');
     if (!_curHint || !_curHint.textContent || _curHint.textContent === '手动指定，自动调整已停用') updateQrHint('手动指定，自动调整已停用', false);
-    // [v5.5.65] 手动模式下底部全局条数字也需跟随输入框实时值
+    // [v5.5.65] 手动模式下底部全局条数字也需跟随输入框实时值（保留 ◉/◈ + % 原格式）
     var _bv = document.getElementById('bottomQrVal');
     var _in = document.getElementById('stockQualifyRate');
-    if (_bv && _in) _bv.textContent = _in.value;
+    if (_bv && _in) { var _qv = parseFloat(_in.value) || 0; _bv.textContent = (typeof qualifyRate !== 'undefined' && qualifyRate > 0 ? '◉ ' : '◈ ') + (_qv*100).toFixed(0) + '%'; }
     return;
   }
   const el = document.getElementById('stockQualifyRate');
@@ -5231,9 +5231,9 @@ function computeQualifyRate() {
   // 5) 保底下限（批量模式仅 auto：通用坯>100块 或 合适坯>300kg → 薄刀0.27；合格率统一走几何/工艺风险模型，无批量特殊加成）
   qr = Math.max(0.50, qr);
   el.value = qr.toFixed(2);
-  // [v5.5.65] 底部全局条合格率数字实时同步，避免滞后于输入框
+  // [v5.5.65] 底部全局条合格率数字实时同步（保留 ◉/◈ + % 原格式），避免滞后但不变丑
   var bv = document.getElementById('bottomQrVal');
-  if (bv) bv.textContent = qr.toFixed(2);
+  if (bv) bv.textContent = (typeof qualifyRate !== 'undefined' && qualifyRate > 0 ? '◉ ' : '◈ ') + (qr*100).toFixed(0) + '%';
 
   // [v5.5.63] 扣减原因显示（只读展示，不参与任何计算）
   (function(){
