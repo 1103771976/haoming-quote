@@ -11145,7 +11145,7 @@ const _TUTORIAL_HTML = `
   </div>
   <div class="step">
     <div class="step-num">3</div>
-    <div class="step-body"><h3>改合格率</h3><p>加：<span class="chip">合格率0.9</span>（0.9=90%合格，有精雕或颗粒磨自动变85%）</p></div>
+    <div class="step-body"><h3>改合格率</h3><p>加：<span class="chip">合格率0.9</span>（0.9=90%合格；方块/瓦片带加工或尺寸≥30 基础降到85%、异形基础恒90%；颗粒磨/精雕/磨型≥4道再降5%）</p></div>
   </div>
   <div class="step">
     <div class="step-num">4</div>
@@ -11159,9 +11159,9 @@ const _TUTORIAL_HTML = `
   <h2><svg class="ic" aria-hidden="true"><use href="#ic-wrench"/></svg><span>客户要额外加工（写上就自动加钱）</span></h2>
   <table>
     <tr><th>客户要求</th><th>加这个词</th><th>额外说明</th></tr>
-    <tr><td>要磨型</td><td>磨型</td><td>自动算磨型费，可不填价格</td></tr>
-    <tr><td>要颗粒磨</td><td>颗粒磨</td><td>合格率自动降到 85%</td></tr>
-    <tr><td>要精雕</td><td>精雕</td><td>合格率自动降到 85%</td></tr>
+    <tr><td>要磨型</td><td>磨型</td><td>自动算磨型费；磨型&lt;4道不影响合格率，≥4道降5%</td></tr>
+    <tr><td>要颗粒磨</td><td>颗粒磨</td><td>方块/瓦片合格率降到 80%（基础85%−5%），异形降到 85%</td></tr>
+    <tr><td>要精雕</td><td>精雕</td><td>方块/瓦片合格率降到 80%（基础85%−5%），异形降到 85%</td></tr>
     <tr><td>要打孔</td><td>打孔</td><td>如果是Φ6以上的孔，写 套孔</td></tr>
     <tr><td>要打Φ1.5的孔</td><td>打孔D1.5</td><td>D后面写孔径</td></tr>
     <tr><td>要镭雕</td><td>镭雕</td><td>自动加镭雕费</td></tr>
@@ -11220,9 +11220,9 @@ const _TUTORIAL_HTML = `
   <table>
     <tr><th>情况</th><th>合格率变化</th><th>为什么</th></tr>
     <tr><td>正常产品</td><td>90%（默认）</td><td>日常出货标准</td></tr>
-    <tr><td>有精雕或颗粒磨</td><td>降到 85%</td><td>工序多，损耗大</td></tr>
+    <tr><td>有精雕或颗粒磨</td><td>方块/瓦片降到 80%（基础85%再−5%），异形降到 85%</td><td>基础已降+加工难度再降</td></tr>
     <tr><td>最薄维 ≤ 0.3 / 0.4 / 0.5mm（且最长维 &gt; 2mm）</td><td>降 20% / 10% / 5%</td><td>太薄易崩边缺角（易碎几何风险）</td></tr>
-    <tr><td>圆环/大小头+加工</td><td>降到 85%</td><td>异形+加工双损耗</td></tr>
+    <tr><td>圆环/大小头+加工</td><td>磨型&lt;4道→85%，颗粒磨/精雕→80%</td><td>带加工基础85%、加工难度再降</td></tr>
   </table>
   <div class="tip warn"><strong><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg>手动设置了合格率后，工具不会再自动改。</strong>清空输入框重来才会恢复自动判断。</div>
 </div>
