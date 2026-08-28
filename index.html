@@ -5256,6 +5256,22 @@ function pickBestStockBlank() {
   document.getElementById('knifeThick2').value = savedThick[1];
   document.getElementById('knifeThick3').value = savedThick[2];
   autoCalcKnivesSilent();  // 用最优毛坯重算一次
+  // 超大规格：通用坯装不下时，自动建议合适坯（定制坯）填入 fitBlock（仅在未填时），让用户直接看到合适坯报价
+  try {
+    const _L = parseFloat(document.getElementById('dimL').value) || 0;
+    const _W = parseFloat(document.getElementById('dimW').value) || 0;
+    const _H = parseFloat(document.getElementById('dimH').value) || 0;
+    const _prodMax = Math.max(_L, _W, _H);
+    const _fbEl = document.getElementById('fitBlock');
+    const _fbVal = _fbEl ? _fbEl.value.trim() : '';
+    if (bestTotal <= 0 && _prodMax > 64 && !_fbVal) {
+      const pad = 2.27; // 0.27刀厚 + 1.5料头 + 0.5公差
+      const fL = Math.ceil((_L + pad) * 10) / 10;
+      const fW = Math.ceil((_W + pad) * 10) / 10;
+      const fH = Math.ceil((_H + pad) * 10) / 10;
+      if (_fbEl) _fbEl.value = fL.toFixed(1) + '*' + fW.toFixed(1) + '*' + fH.toFixed(1);
+    }
+  } catch (e) {}
 }
 // [v5.5.12 已移除] autoSlicingCoefSilent()：零调用死代码，功能已由 getAutoBatchMode()(L5765) 完整吸收
 // 原逻辑「刀数<100→0.0006 加价 / blanksNeeded>100→0 免切片」从未生效；现行口径见 BATCH_CONFIG + getAutoBatchMode
@@ -5676,7 +5692,8 @@ function calculate() {
   const _pcEl0 = document.getElementById('platingCoef');
   const _pcManual = _pcEl0 ? _pcEl0.hasAttribute('data-manual') : false;
   // 判断用户是否手动编辑过系数（值既不是基础值也不是基础值×2，或显式手填标记 data-manual）
-  const _isManualCoef = _pcManual || ((Math.abs(_currentCoef - _baseCoef) > 1e-8) && (Math.abs(_currentCoef - _baseCoef * 2) > 1e-8));
+  const _expectCoefs = _dt ? [_baseCoef, _baseCoef*2] : [_baseCoef];
+  const _isManualCoef = _pcManual || !_expectCoefs.some(v => Math.abs(_currentCoef - v) <= 1e-8);
   const _shouldDouble = _dt && prodArea > _dt;
   const _platingCoefAdj = _isManualCoef ? _currentCoef : (_shouldDouble ? _baseCoef * 2 : _baseCoef);
   // 自动更新输入框显示（用户手动编辑的不干预）
@@ -5700,9 +5717,19 @@ function calculate() {
     if (fr) { fr.scrapInfo = fSPP; fr.c1 = _fitCut.c1; fr.c2 = _fitCut.c2; fr.c3 = _fitCut.c3; fr.t1 = _fitCut.t1; fr.t2 = _fitCut.t2; fr.t3 = _fitCut.t3; fr.knifeTotal = _fitCut.knifeTotal; }
   }
 
-  displayResults(sr, fr, prodVol);
-  checkWarnings(sr, fr, knifeTotal);
-  renderCalcDetail(sr, fr);
+  let _s = sr, _f = fr;
+  if (!sr && !fr) {
+    showBlankWarning('库存毛坯(' + (document.getElementById('stockBlock').value || '').trim() + ')装不下此产品（出刀=0），未计算。请放大库存毛坯，或切「合适毛坯」模式填定制坯。');
+  } else {
+    if (!sr && fr) {
+      _s = fr; _f = null; if (_s) _s._isFitOnly = true;
+      const wbox = document.getElementById('warningsBox');
+      if (wbox) wbox.innerHTML = '<div style="margin:8px 0;padding:10px 14px;border:1px solid #dd9966;border-radius:6px;background:rgba(221,153,102,0.10);color:#9a6b2f;font-size:14px;line-height:1.6">⚠ 通用毛坯装不下此产品（出刀=0），已用「合适毛坯（定制坯）」报价展示。如需对比请放大通用毛坯。</div>';
+    }
+    displayResults(_s, _f, prodVol);
+    checkWarnings(_s, _f, knifeTotal);
+  }
+  renderCalcDetail(_s, _f);
   // —— 审计只读钩子（零算法改动，仅暴露 calcOne 权威结果供字段级对账）——
   try {
     window.__audit = {
@@ -5770,7 +5797,9 @@ function calculateTile() {
   const _pcElT = document.getElementById('platingCoef');
   const _pcManualT = _pcElT ? _pcElT.hasAttribute('data-manual') : false;
   const _pcValT = _pcElT ? parseFloat(_pcElT.value) : NaN;
-  const _platingCoefAdj = _pcManualT ? (isNaN(_pcValT) ? _baseCoef : _pcValT) : (_shouldDouble ? _baseCoef*2 : _baseCoef);
+  const _expectCoefsT = _dt ? [_baseCoef, _baseCoef*2] : [_baseCoef];
+  const _coefManualT = _pcManualT || !_expectCoefsT.some(v => Math.abs(_pcValT - v) <= 1e-8);
+  const _platingCoefAdj = _coefManualT ? (isNaN(_pcValT) ? _baseCoef : _pcValT) : (_shouldDouble ? _baseCoef*2 : _baseCoef);
   // 自动更新输入框显示（用户手动编辑的不干预）
   if (!_pcManualT) { _pcElT.value = _platingCoefAdj.toFixed(5); }
   const _minPa = PLATING_MIN_AREA[_platingType]||40;
@@ -5833,9 +5862,19 @@ function calculateTile() {
   }
 
   // 统一走结构化显示
-  displayResults(sr, fr, prodVol);
-  checkWarnings(sr, fr, kt);
-  renderCalcDetail(sr, fr);
+  let _s = sr, _f = fr;
+  if (!sr && !fr) {
+    showBlankWarning('库存毛坯(' + (document.getElementById('stockBlock').value || '').trim() + ')装不下此产品（出刀=0），未计算。请放大库存毛坯，或切「合适毛坯」模式填定制坯。');
+  } else {
+    if (!sr && fr) {
+      _s = fr; _f = null; if (_s) _s._isFitOnly = true;
+      const wbox = document.getElementById('warningsBox');
+      if (wbox) wbox.innerHTML = '<div style="margin:8px 0;padding:10px 14px;border:1px solid #dd9966;border-radius:6px;background:rgba(221,153,102,0.10);color:#9a6b2f;font-size:14px;line-height:1.6">⚠ 通用毛坯装不下此产品（出刀=0），已用「合适毛坯（定制坯）」报价展示。如需对比请放大通用毛坯。</div>';
+    }
+    displayResults(_s, _f, prodVol);
+    checkWarnings(_s, _f, kt);
+  }
+  renderCalcDetail(_s, _f);
   // —— 审计只读钩子（零算法改动，仅暴露 calcOne 权威结果供字段级对账）——
   try {
     window.__audit = {
@@ -6206,14 +6245,14 @@ function displayResults(stock, fit, prodVol) {
         '</tr>';
     };
     var html = '<table style="margin:0 auto;font-size:13px;line-height:1.5;border-collapse:collapse">';
-    html += makeRow('通用:', stock.yieldCost, stock.rawCost);
+    html += makeRow(stock._isFitOnly ? '合适:' : '通用:', stock.yieldCost, stock.rawCost);
     if (fit) html += makeRow('合适:', fit.yieldCost, fit.rawCost);
     html += '</table>';
     ssCosts.innerHTML = html;
   }
 
   // === Price Overview: 双卡片并排（通用毛坯 + 合适毛坯） ===
-  const poRoutes = [{label:'通用毛坯报价', quote:stock.quote, totalValue:stock.totalValue}];
+  const poRoutes = [{label: stock._isFitOnly ? '合适毛坯报价（通用坯装不下）' : '通用毛坯报价', quote:stock.quote, totalValue:stock.totalValue}];
   if (fit) poRoutes.push({label:'合适毛坯含税单价', quote:fit.quote, totalValue:fit.totalValue});
   // 报价最低的标记为最优
   const bestQ = Math.min(...poRoutes.map(r => r.quote));
@@ -6233,7 +6272,7 @@ function displayResults(stock, fit, prodVol) {
   const sbdDims = sbd.split('*').map(Number);
   const fbdDims = fbd.split('*').map(Number);
   const csRoutes = [
-    {label:'通用毛坯', result:stock, blankSpec:sbd, blankDims:sbdDims, cuts:[c1v,c2v,c3v], thicknesses:[t1v,t2v,t3v], knifeTotal:c1v*c2v*c3v}
+    {label: stock._isFitOnly ? '合适毛坯' : '通用毛坯', result:stock, blankSpec:sbd, blankDims:sbdDims, cuts:[c1v,c2v,c3v], thicknesses:[t1v,t2v,t3v], knifeTotal:c1v*c2v*c3v}
   ];
   if (fit) {
     const _fc = window.__fitCut;
@@ -6247,7 +6286,7 @@ function displayResults(stock, fit, prodVol) {
   buildCostStrip(csRoutes);
 
   // === 毛坯参数 ===
-  stock.knifeTotal = c1v*c2v*c3v;
+  if (!stock._isFitOnly) stock.knifeTotal = c1v*c2v*c3v;
   if (fit) fit.knifeTotal = (window.__fitCut && window.__fitCut.knifeTotal) ? window.__fitCut.knifeTotal : (c1v*c2v*c3v);
   const _scv = parseFloat(document.getElementById('slicingCoef').value); const scv = isNaN(_scv) ? 0.0004 : _scv;
   const _pcv = parseFloat(document.getElementById('platingCoef').value); const pcv = isNaN(_pcv) ? 0.00016 : _pcv;
@@ -6271,6 +6310,7 @@ function checkWarnings(stock, fit, knifeTotal) {
   const ws = [];
   // 出刀数为0（毛坯放不下产品）时优先提示，此时 sr 为 null 也不能漏
   if (knifeTotal <= 0) {
+    if (stock && stock._isFitOnly) return; // fit-only 已有橙字提示，不再写"无法放下"红字
     const wbox = document.getElementById('warningsBox');
     wbox.className = 'warn-box warn';
     wbox.innerHTML = '<div><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 毛坯无法放下当前产品（出刀数=0），请检查毛坯尺寸或产品规格</div>';
@@ -6330,6 +6370,17 @@ function clearResults() {
   document.getElementById('warningsBox').innerHTML = '';
   document.getElementById('warningsBox').innerHTML = '';
   clearCalcDetail();
+}
+
+// 毛坯装不下/无法计算时的红字预警（替代整片空白，避免"看不见=不计算"误判）
+function showBlankWarning(reason) {
+  clearResults();
+  const wbox = document.getElementById('warningsBox');
+  if (wbox) {
+    wbox.innerHTML = '<div style="margin:8px 0;padding:10px 14px;border:1px solid #c84a4a;border-radius:6px;background:rgba(200,74,74,0.08);color:#c84a4a;font-size:14px;line-height:1.6">⚠ 无法计算：' + reason + '</div>';
+  }
+  const po = document.getElementById('priceOverview');
+  if (po) po.innerHTML = '<div style="text-align:center;padding:24px;color:#c84a4a;font-size:15px;font-weight:600">⚠ 未计算</div><div style="text-align:center;color:var(--sub);font-size:13px;margin-top:6px">' + reason + '</div>';
 }
 
 function resetAll() {
@@ -7620,7 +7671,8 @@ function calculateDisc() {
   const _baseCoef = PLATING_DEFAULTS[_platingType] ?? 0.00016;
   const _pcEl = document.getElementById('platingCoef');
   const _pcManual = _pcEl ? _pcEl.hasAttribute('data-manual') : false;
-  const _isManualCoef = _pcManual || ((Math.abs(platingCoef - _baseCoef) > 1e-8) && (Math.abs(platingCoef - _baseCoef * 2) > 1e-8));
+  const _expectCoefs = _dt ? [_baseCoef, _baseCoef*2] : [_baseCoef];
+  const _isManualCoef = _pcManual || !_expectCoefs.some(v => Math.abs(platingCoef - v) <= 1e-8);
   const _shouldDouble = _dt && prodArea > _dt;
   const _platingCoefAdj = _isManualCoef ? platingCoef : (_shouldDouble ? _baseCoef * 2 : _baseCoef);
   if (!_isManualCoef) {
@@ -7947,7 +7999,7 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal) {
         '</tr>';
     };
     var html = '<table style="margin:0 auto;font-size:13px;line-height:1.5;border-collapse:collapse">';
-    html += makeRow('通用:', stock.yieldCost, stock.rawCost);
+    html += makeRow(stock._isFitOnly ? '合适:' : '通用:', stock.yieldCost, stock.rawCost);
     if (fit) html += makeRow('合适方块:', fit.yieldCost, fit.rawCost);
     if (cyl) html += makeRow('合适圆柱:', cyl.yieldCost, cyl.rawCost);
     html += '</table>';
@@ -8664,7 +8716,7 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
   // v5.5.22：通用毛坯卡片恒用自身排刀(k1/k2/k3)+自身刀厚(三轴平均)，不再套用合适排刀(_decC1~3 仅合适卡片用)
   var _dC1 = k1, _dC2 = k2, _dC3 = k3, _dT = ((ktd1 + ktd2 + ktd3) / 3);
   if (shapeMode === 'disc') { _dT = ktd1; }
-  html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + stockSpec.split('*')[0] + '切' + _showPL.toFixed(0) + '出' + _dC1 + '刀厚' + _dT.toFixed(2) + ' W' + stockSpec.split('*')[1] + '切' + _showPW.toFixed(_wIsThickness ? 1 : 0) + '出' + _dC2 + '刀厚' + _dT.toFixed(2) + ' H' + stockSpec.split('*')[2] + '切' + _showPH.toFixed(0) + '出' + _dC3 + '刀厚' + _dT.toFixed(2) + ' = ' + (_dC1*_dC2*_dC3) + '刀</div>';
+  html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + stockSpec.split('*')[0] + '切' + (+_showPL.toFixed(2)).toString() + '出' + _dC1 + '刀厚' + _dT.toFixed(2) + ' W' + stockSpec.split('*')[1] + '切' + (_wIsThickness ? _showPW.toFixed(1) : (+_showPW.toFixed(2)).toString()) + '出' + _dC2 + '刀厚' + _dT.toFixed(2) + ' H' + stockSpec.split('*')[2] + '切' + (+_showPH.toFixed(2)).toString() + '出' + _dC3 + '刀厚' + _dT.toFixed(2) + ' = ' + (_dC1*_dC2*_dC3) + '刀</div>';
   html += '<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,.06)">';
   if (stockDecomp) {
     html += '<div style="font-weight:600;color:var(--text)">净利用 <span style="color:var(--success)">' + stockDecomp.pNet.toFixed(1) + '%</span></div>';
@@ -8729,7 +8781,7 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
     let _fk3 = (_fcb && _fcb.c3) ? _fcb.c3 : k3;
     if (shapeMode !== 'disc') { _fk1 = _decC1; _fk2 = _decC2; _fk3 = _decC3; }
     const _ft = 0.27;
-    html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + fps[0] + '切' + _showPL.toFixed(0) + '出' + _fk1 + '刀厚' + _ft.toFixed(2) + ' W' + fps[1] + '切' + _showPW.toFixed(_wIsThickness ? 1 : 0) + '出' + _fk2 + '刀厚' + _ft.toFixed(2) + ' H' + fps[2] + '切' + _showPH.toFixed(0) + '出' + _fk3 + '刀厚' + _ft.toFixed(2) + ' = ' + (_fk1*_fk2*_fk3) + '刀</div>';
+    html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + fps[0] + '切' + (+_showPL.toFixed(2)).toString() + '出' + _fk1 + '刀厚' + _ft.toFixed(2) + ' W' + fps[1] + '切' + (_wIsThickness ? _showPW.toFixed(1) : (+_showPW.toFixed(2)).toString()) + '出' + _fk2 + '刀厚' + _ft.toFixed(2) + ' H' + fps[2] + '切' + (+_showPH.toFixed(2)).toString() + '出' + _fk3 + '刀厚' + _ft.toFixed(2) + ' = ' + (_fk1*_fk2*_fk3) + '刀</div>';
     html += '<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,.06)">';
     if (fitDecomp) {
       html += '<div style="font-weight:600;color:var(--text)">净利用 <span style="color:var(--success)">' + fitDecomp.pNet.toFixed(1) + '%</span></div>';
