@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>昊铭磁材报价计算工具 v5.5.78</title>
+<title>昊铭磁材报价计算工具 v5.5.79</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2065,7 +2065,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo">
     <div class="icon"><svg width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25517d"/><stop offset="1" stop-color="#1a3c5e"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
     <div class="text">
-      <h1>昊铭磁材 <span class="ver-badge">v5.5.78</span></h1>
+      <h1>昊铭磁材 <span class="ver-badge">v5.5.79</span></h1>
       <div class="sub">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2911,6 +2911,7 @@ function canonicalShapeCheck(t) {
     .replace(/(?:车肩|无心磨|多级冲|喷码|镭雕|精雕|颗粒磨)(?:价|费)?\s*\d*\.?\d*/gi, ' ')  // 修复C：剥离旋转体加工/表面处理类工艺词（含价/费数字）；车肩费0.2 / 无心磨0.1 等不再污染形状校验
     .replace(/\d+\.?\d*\s*[万千]/g, ' ')  // 修复B：剥离中文数量单位数字
     .replace(/(?<![Dd*×\u00d7xX])\d{3,}/g, ' ')  // 修复B补：剥离裸数量/大数（规格直径≤20，≥1000必是数量）
+    .replace(/(?:数量|下单量|订单量|下单|订单|订购)\s*[:：]?\s*\d+(?:\.\d+)?\s*[万千]?/gi, ' ')  // [v5.5.79 修复] 剥离数量/下单量/订单量/下单/订单/订购+数字token(含可选小数与万千)，避免紧凑写法 数量1 无空格时漏剥→圆片校验残留3数被判未识别而静默退回方块+清空数量(下游按500片错价)；关键词与 autoParse qtyKw 保持一致；算价公式零改动
     .replace(/磨型\s*轴?\s*\d*\.?\d*\s*道?/gi, ' ')  // 修复B补：剥离磨型轴/磨型道数等加工参数数字（轴/道为中文，用\s*包容）
     .replace(/道/g, ' ')  // 修复B补：清理磨型道数残留的"道"字
     .replace(/(?:第[一二三]刀(?:刀厚|切片|多线)?|刀厚|线径)\s*\d*\.?\d*/g, ' ')  // 修复G：剥离刀厚类参数词（帮助L3870/3871承诺的 第一刀0.4/刀厚0.27/线径0.4）。小数参数词不被"≥3位裸数"规则拦截，会溢出圆片"恰2数"上限致SPEC_EMPTY，与利润率/合格率同类。长分支"第[一二三]刀"须排在"刀厚"前
@@ -11129,7 +11130,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.78</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.79</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -11821,6 +11822,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.5.79</span></td><td>圆片+紧凑数量静默错价修复：修复智能输入含 圆片规格(D前缀如 D20*5) + 紧凑写法 数量1/数量50(数字紧贴数量无空格) 时，形状校验 canonicalShapeCheck 把规格判为未识别，触发 R1 闸门静默退回方块形状并清空订单数量，下游 L10036 把空数量当 500 片报价导致错价(用户写数量1却按500片算、且走方块计算路径双重错)。根因清理管道只剥3+位数(L2913)和行尾带空格的1-2位数(L2918)，紧凑 数量1 的 1 紧贴量字无空格→漏剥→残留3个数(20/5/1)→圆片需恰好2个数被判未识别。修复：在清理管道 L2913 后新增单行正则，剥离 数量/下单量/订单量/下单/订单/订购 + 数字(含可选小数与万千)，使清理后只剩规格维度；关键词与 autoParse qtyKw(L3195) 保持一致避免语义漂移。方块/圆环/异形闸门同样受益。算价公式零改动</td></tr>
         <tr><td><span>v5.5.78</span></td><td>数量解析 1–2 位裸数字补全(#571-d)：修复智能输入含 数量1/数量50/数量99 等 1–2 位裸数字（不带单位词）时订单数量解析为空，且下游 L10036 把空数量静默当 500 片报价导致错价。根因 autoParse 的数量兜底分支(L3201)只收 ≥3 位数，而 qtyUnit(L3193) 又要求跟单位词(个/片/件/只/颗/pcs/qty)，数量1 两路都不中。修复：在 qtyUnit 之后、≥3 兜底之前新增显式数量词捕获 数量N/下单量N/订单N（含可选小数），跑在加工词剥离副本 _qtyText 上，不影响 ≥3 兜底与单位词逻辑；万/千仍在后覆盖保证 数量1万=10000。算价公式零改动</td></tr>
         <tr><td><span>v5.5.77</span></td><td>数量解析劫持修复(#571-c)：修复智能输入含(数量10000 合格80 磨型3 颗粒磨3)组合时订单数量被误判为3的bug。根因 autoParse 的数量优先正则把 磨型3 颗粒磨3 误读成 3 颗(颗来自颗粒磨)，抢在三位数兜底分支前把数量设成加工参数3，导致切片系数/批量档误判、报价偏差。修复：数量提取前先把加工关键词后的裸数字(磨型N/颗粒磨N/无心磨N等)从副本剥离，qtyUnit 与兜底分支均改跑该副本，原 text/spec 不变、加工费识别仍用原 text。算价公式零改动</td></tr>
                         <tr><td><span>v5.5.76</span></td><td>倒角费非确定性修复：修复切到小尺寸再切回大尺寸时倒角费漏算为0的状态机缺陷(异形110*101.7*20本应≥30mm收0.3~0.5，但切走再切回整行消失导致报价偏低0.63/片)。根因倒角自动标记cfAuto在小于30mm分支被误置0，使切回大件时(!(cfAuto===0))守卫拦截自动重算；三处倒角自动分支统一cfAuto=1(仅手动填0才置0)，resetAll复位cfAuto，做到同输入同输出。另顺带排查出数量解析在(数量10000 合格80 磨型3 颗粒磨3)组合下被劫持为3的隐患，已在 v5.5.77 修复（见下）。算价公式零改动</td></tr>
