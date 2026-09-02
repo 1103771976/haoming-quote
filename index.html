@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>昊铭磁材报价计算工具 v5.5.81</title>
+<title>昊铭磁材报价计算工具 v5.5.82</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2065,7 +2065,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo">
     <div class="icon"><svg width="30" height="30" viewBox="0 0 30 30"><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#25517d"/><stop offset="1" stop-color="#1a3c5e"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
     <div class="text">
-      <h1>昊铭磁材 <span class="ver-badge">v5.5.81</span></h1>
+      <h1>昊铭磁材 <span class="ver-badge">v5.5.82</span></h1>
       <div class="sub">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)"><svg class="ic" aria-hidden="true"><use href="#ic-book"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2287,6 +2287,9 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
             <label>切片</label>
             <input id="slicingCoef" style="width:80px" type="number" step="0.00001" value="0.0004" onchange="calculate()" title="切片系数">
             <span id="slicingHint" style="font-size:12px;color:var(--sub)"></span>
+            <label style="margin-left:10px">切条费</label>
+            <input id="pfSliceManual" style="width:70px" type="number" step="0.0001" value="" placeholder="自动" onchange="calculate()" title="切条费自定义（元/片，留空=按面积×切片系数自动算）">
+            <span style="font-size:12px;color:var(--sub)">元/片</span>
           </div>
         </div>
       </div>
@@ -2837,7 +2840,7 @@ function _fullClearParseState() {
     // 清空所有输入类字段（含各形状专属字段与价格覆盖显示框）
     ['grade','plating','stockOrderQty','stockProfitRate','stockLossRate','stockFixtureFee',
      'stockQualifyRate','spec','dimL','dimW','dimH','stockBlock','fitBlock','knife1','knife2','knife3',
-     'scrapPrice','chamferFee','slicingCoef','platingCoef','pfGrindPasses','discD','discH','cylD','cylH','cylPrice','cylBlankNote',
+     'scrapPrice','chamferFee','slicingCoef','platingCoef','pfSliceManual','pfGrindPasses','discD','discH','cylD','cylH','cylPrice','cylBlankNote',
      'ringOuterD','ringInnerD','ringH','stepD1','stepH1','stepD2','stepH2','editPrice','unitPrice','pfHoleDia',
      'tileROuter','tileRInner','tileLen','tileChord','tileWall','tileArchH'
     ].forEach(function(id){ var e = document.getElementById(id); if(!e) return; if (e.tagName==='SPAN') e.textContent=''; else e.value=''; });
@@ -3221,8 +3224,11 @@ function autoParse() {
   var unitPriceOverride = upMatch ? parseInt(upMatch[1]) : 0;
   
   // 切片系数：切片系数0 / 切条费0 / 切片费0 / 切颗粒费0 — 统一切片系数，切条/切颗粒用同一系数不同公式
-  var sliceOverride = text.match(/(?:\u5207\u7247\u7cfb\u6570|\u5207\u6761\u8d39|\u5207\u7247\u8d39|\u5207\u9897\u7c92\u8d39|\u5207\u5272\u8d39|\u5207\u8d39|\u7ebf\u5207\u8d39|\u5207\u7cfb\u6570|\u5207\u6761|\u5207\u7247|\u5207\u9897\u7c92|\u5207\u5272)\s*(\d+\.?\d*)/);
+  var sliceOverride = text.match(/(?:\u5207\u7247\u7cfb\u6570|\u5207\u7247\u8d39|\u5207\u9897\u7c92\u8d39|\u5207\u5272\u8d39|\u5207\u8d39|\u7ebf\u5207\u8d39|\u5207\u7cfb\u6570|\u5207\u7247|\u5207\u9897\u7c92|\u5207\u5272)\s*(\d+\.?\d*)/);
   var slicingCoefOverride = sliceOverride ? parseFloat(sliceOverride[1]) : -1;
+  // 切条费自定义（2026-09-02 新增）：独立于切片系数。切条费X → 直接覆盖 barSliceFee（元/片），不再被切片系数串味
+  var barSliceFeeOverride = text.match(/\u5207\u6761\u8d39\s*(\d+\.?\d*)/);
+  barSliceFeeOverride = barSliceFeeOverride ? parseFloat(barSliceFeeOverride[1]) : -1;
   
   // 电镀系数：电镀系数0.00016 / 电镀系数0
   var plateOverride = text.match(/(?:\u7535\u9540\u7cfb\u6570|\u7535\u9540\u8d39|\u9540\u7cfb\u6570|\u9540\u8d39|\u7535\u9540|\u9540)\s*(\d+\.?\d*)/);
@@ -3702,6 +3708,7 @@ function autoParse() {
     }
     _applyOv(slicingCoefOverride, 0.0004, 'slicingCoef', 'sl');
     _applyOv(platingCoefOverride, 0.00016, 'platingCoef', 'pl');
+    _applyOv(barSliceFeeOverride, '', 'pfSliceManual', 'bs');
     _applyOv(scrapPriceOverride, 100, 'scrapPrice', 'sp');
     _applyOv(knifeThickOverride, 0.4, ['knifeThick1','knifeThick2','knifeThick3'], 'kt');
     // 单刀自定义覆盖（在全局刀厚之后，单独刀优先）
@@ -7786,7 +7793,7 @@ function calculateDisc() {
     } else {
       _barSliceArea = (_sliceSide * _gbW + _sliceSide * _gbW) / _c2;
     }
-    const _barSliceFee = _barSliceArea * slicingCoef;
+    const _barSliceFee = pfManualOrCalc('pfSliceManual', _barSliceArea * slicingCoef);
     const _totalSlice = _barSliceFee + discSliceFee;
     const _matNet = _sm - _spp;
     // 圆环打孔/套孔：D≤2走分段新公式，2<D<6走旧表，≥6套孔
@@ -7904,7 +7911,7 @@ function calculateDisc() {
   } else {
     fitBarSliceArea = (side * (fbd[1] || 0) + side * (fbd[1] || 0)) / (fitC2 || c2);
   }
-  const fitBarSliceFee = fitBarSliceArea * slicingCoef;
+  const fitBarSliceFee = pfManualOrCalc('pfSliceManual', fitBarSliceArea * slicingCoef);
   const fitTotalSlice = fitBarSliceFee + discSliceFee;
   const fitSingleMat = fitPrice / (fitKT || knifeTotal);
   const fitRawCost = fitSingleMat + fitTotalSlice + platingFee + chamferFee + (stockResult.grindFee || 0) + discShoulderFee + (stockResult.drillFee || 0) + (stockResult.coreRecovery || 0) + (stockResult.segCutFee || 0) + discProcFee;
@@ -11136,7 +11143,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.81</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.82</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
