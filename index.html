@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.5.89</title>
+<title>昊铭磁材报价计算工具 v5.5.97</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2065,7 +2065,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.5.89</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.5.97</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2315,7 +2315,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
           </div>
           <div class="f-row" style="margin-bottom:0" data-page-node-id="jymsA4pdKVM8uA8qwYIr4Q">
             <label style="min-width:52px" data-page-node-id="e1VHHgIyP445YJZ2KABhqN">镀系数</label>
-            <input id="platingCoef" type="number" step="0.00001" value="0.00016" style="width:92px" onchange="calculate()" oninput="this.setAttribute('data-manual','1')" data-page-node-id="deEDM4ZkcS5DmqaupGNHmv">
+            <input id="platingCoef" type="number" step="0.00001" value="0.00016" style="width:92px" onchange="sanitizePlatingCoef('platingCoef');calculate()" oninput="this.setAttribute('data-manual','1')" data-page-node-id="deEDM4ZkcS5DmqaupGNHmv">
           </div>
           <div class="f-row" id="platingDimRow" style="margin-bottom:0;width:100%;gap:10px;padding:8px 12px;background:rgba(122,79,176,0.05);border:1px solid var(--border-light);border-radius:8px" data-page-node-id="sL7AHtJmCnBOE4tDvDpaVo">
             <label style="min-width:52px" data-page-node-id="U8sLlEo5R17P3OkP98YKoY">电镀尺寸</label>
@@ -2613,7 +2613,7 @@ document.getElementById('appConfirmOk').onclick = function(){
     <div id="historyModalList" style="max-height:380px;overflow-y:auto" data-page-node-id="GLT0vOTuyLsVXBegUpDxTd"></div>
     <div class="btns" style="margin-top:10px;display:flex;justify-content:space-between;align-items:center" data-page-node-id="4y8KYVxUzeIfzLBC1xLhxF">
       <div style="display:flex;align-items:center;gap:4px" data-page-node-id="NweZzn13imyhgwO6ASjzFC">
-        <button class="btn-cancel" onclick="confirmClearHistory()" style="color:var(--sub2);border-color:var(--border);font-size:10px;opacity:.4" data-page-node-id="GOkCzjLRc67LH33rWX1T1y">清空全部</button>
+        <button id="btnClearHistory" class="btn-cancel" onclick="confirmClearHistory()" style="color:var(--sub2);border-color:var(--border);font-size:10px;opacity:.4" data-page-node-id="GOkCzjLRc67LH33rWX1T1y">清空全部</button>
         <input id="clearPwd" type="password" placeholder="密码" style="display:none;width:60px;font-size:12px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;font-family:inherit" onkeydown="if(event.key==='Enter')confirmClearHistory()" data-page-node-id="N5mMDV8PhekTe5luxlAWbF">
       </div>
       <button class="btn-cancel" onclick="hideHistory()" data-page-node-id="OLoPDc78m5JAPh2NtGeeRN">关闭</button>
@@ -2857,7 +2857,7 @@ function _fullClearParseState() {
      'scrapPrice','chamferFee','slicingCoef','platingCoef','pfSliceManual','pfGrindPasses','discD','discH','cylD','cylH','cylPrice','cylBlankNote',
      'ringOuterD','ringInnerD','ringH','stepD1','stepH1','stepD2','stepH2','editPrice','unitPrice','pfHoleDia',
      'tileROuter','tileRInner','tileLen','tileChord','tileWall','tileArchH'
-    ].forEach(function(id){ var e = document.getElementById(id); if(!e) return; if (e.tagName==='SPAN') e.textContent=''; else e.value=''; });
+    ].forEach(function(id){ var e = document.getElementById(id); if(!e) return; if (e.tagName==='SPAN') e.textContent=''; else { e.value=''; e.removeAttribute('data-manual'); } });
     // 复位为可计算的干净默认态
     var _pr = document.getElementById('stockProfitRate'); if (_pr) _pr.value = '1.05';
     var _lr = document.getElementById('stockLossRate'); if (_lr) _lr.value = '';
@@ -3428,23 +3428,25 @@ function autoParse() {
           var rv2 = parseFloat(tParts[1]);
           document.getElementById('tileROuter').value = rv2;
           document.getElementById('tileRInner').value = rv2;
-          document.getElementById('tileLen').value = tParts[2];
-          document.getElementById('tileChord').value = tParts[3];
+          document.getElementById('tileChord').value = tParts[2];
+          document.getElementById('tileLen').value = tParts[3];
           document.getElementById('tileWall').value = tParts[4];
           spec = '2R'+rv2+'*'+tParts[2]+'*'+tParts[3]+'*'+tParts[4];
         } else if (tParts.length >= 6) {
           document.getElementById('tileROuter').value = tParts[1];
           document.getElementById('tileRInner').value = tParts[2];
-          document.getElementById('tileLen').value = tParts[3];
-          document.getElementById('tileChord').value = tParts[4];
+          document.getElementById('tileChord').value = tParts[3];
+          document.getElementById('tileLen').value = tParts[4];
           document.getElementById('tileWall').value = tParts[5];
           spec = 'R'+tParts[1]+'*R'+tParts[2]+'*'+tParts[3]+'*'+tParts[4]+'*'+tParts[5];
         } else {
-          document.getElementById('tileRInner').value = tParts[1];
-          document.getElementById('tileLen').value = tParts[2];
-          document.getElementById('tileChord').value = tParts[2];
-          document.getElementById('tileWall').value = tParts[3];
-          spec = 'R'+tParts[1]+'*'+tParts[2]+'*'+tParts[3]+'*'+tParts[4]||'';
+          // [v5.5.97 修复] 双R 4段式 R外*R内*弦宽*壁厚：索引纠正
+          // tParts[1]=外弧R tParts[2]=内弧R tParts[3]=弦宽 tParts[4]=壁厚（原误把内弧R填外弧、弦宽填壁厚、丢弃壁厚）
+          document.getElementById('tileROuter').value = tParts[1];
+          document.getElementById('tileRInner').value = tParts[2];
+          document.getElementById('tileChord').value = tParts[3];
+          document.getElementById('tileWall').value = tParts[4];
+          spec = 'R'+tParts[1]+'*R'+tParts[2]+'*'+tParts[3]+'*'+tParts[4];
         }
         // 提取瓦片产品尺寸
         var _tL = parseFloat(document.getElementById('tileLen').value) || parseFloat(document.getElementById('tileChord').value) || 0;
@@ -3453,7 +3455,7 @@ function autoParse() {
         var _tCh = parseFloat(document.getElementById('tileChord').value) || 0;
         var _tWl = parseFloat(document.getElementById('tileWall').value) || 0;
         var _tH = _tR > 0 && _tCh > 0 ? _tWl + _tR - Math.sqrt(Math.max(0, _tR*_tR - _tCh*_tCh/4)) : 0;
-        // 自定义全拱高（用户2026-07-25）：① 规格第6个数 R外*R内*长*弦*壁*全拱高 ② 识别词「全拱高N」/「拱高N」（兼容「全拱高轴3」）
+        // 自定义全拱高（用户2026-07-25）：① 规格第6个数 R外*R内*弦*长*壁*全拱高 ② 识别词「全拱高N」/「拱高N」（兼容「全拱高轴3」）
         let _customArch = null;
         const _six = text.match(/(?:2)?R\s*\d+(?:\.\d+)?\s*\*\s*R?\s*\d+(?:\.\d+)?\s*\*\s*\d+(?:\.\d+)?\s*\*\s*\d+(?:\.\d+)?\s*\*\s*\d+(?:\.\d+)?\s*\*\s*(\d+(?:\.\d+)?)/i);
         if (_six) _customArch = parseFloat(_six[1]);
@@ -3730,9 +3732,11 @@ function autoParse() {
     if (_knife2Override >= 0.2) { document.getElementById('knifeThick2').value = _knife2Override; document.getElementById('knifeThick2').setAttribute('data-manual','1'); _needRecalc = true; }
     if (_knife3Override >= 0.2) { document.getElementById('knifeThick3').value = _knife3Override; document.getElementById('knifeThick3').setAttribute('data-manual','1'); _needRecalc = true; }
     _applyOv(fixtureFeeOverride, 0, 'stockFixtureFee', 'ff');
+    const _cfHad = !!(chamferFeeOverride < 0 && _lastOverrides && _lastOverrides.cf);  // 上一轮解析出过倒角覆盖、本轮已删除
     _applyOv(chamferFeeOverride, 0, 'chamferFee', 'cf');
     // 显式给了倒角值时清除自动标记(cfAuto)，否则残留的 cfAuto=1 会在 calculate 里把手动值反盖回自动值
     if (chamferFeeOverride >= 0 && _lastOverrides) _lastOverrides.cfAuto = 0;
+    else if (_cfHad && _lastOverrides) delete _lastOverrides.cfAuto;  // 删倒角关键词→清自动标记，恢复自动阶梯
     if (lossRateOverride >= 1.0 && lossRateOverride <= 1.5) document.getElementById('stockLossRate').value = lossRateOverride;
     if (_needRecalc && _autoGate) { try { if (shapeMode==='disc') { calcDiscKnives(); calculateDisc(); } else calculate(); } catch(e) {} }
     if (_autoGate) _autoCalcShown = true; // 标记「已自动算价」，供删牌号/镀层时精准清残留旧价（不误伤手动计算结果）
@@ -3744,7 +3748,7 @@ function autoParse() {
       var _wl = document.getElementById('tileWall').value;
       var _ln = document.getElementById('tileLen').value;
       if (_ro && _ri) {
-        document.getElementById('spec').value = 'R'+_ro+'*R'+_ri+'*'+(_ln||_cl)+'*'+_cl+'*'+_wl;
+        document.getElementById('spec').value = 'R'+_ro+'*R'+_ri+'*'+_cl+'*'+(_ln||_cl)+'*'+_wl;
       }
     }
     // 形状归一化 + 退化规格清脏：删规格/退化 → 回退方块 + 清spec框 + 清报价脏数据（阻断旧spec冻结）
@@ -3771,7 +3775,7 @@ function autoParse() {
   items.push({ k: '形状', v: '◉ ' + curShape });
   
   // 核心：规格/等级/镀层/数量（提示按形状区分）
-  var specHint = curShape==='瓦片' ? 'R外*R内*长*弦*壁' : (curShape==='圆片'?'D*H':(curShape==='圆环'?'D外*D内*H':(curShape==='大小头'?'D大*H大*D小*H小':'L*W*H')));
+  var specHint = curShape==='瓦片' ? 'R外*R内*弦*长*壁' : (curShape==='圆片'?'D*H':(curShape==='圆环'?'D外*D内*H':(curShape==='大小头'?'D大*H大*D小*H小':'L*W*H')));
   items.push({ k: '规格', v: spec ? '◉ ' + spec : '◌ 例: ' + specHint });
   items.push({ k: '等级', v: grade ? '◉ ' + grade : '◈ N52' });
   items.push({ k: '镀层', v: plating==='无镀层' ? '○ 裸磁' : plating ? '◉ ' + plating : '◈ NI' });
@@ -3786,13 +3790,13 @@ function autoParse() {
   }
 
   // ---- 覆盖参数（始终显示，从 DOM 读当前值） ----
-  var upNow = parseFloat(document.getElementById('unitPrice').value); upNow = isNaN(upNow) ? 300 : upNow;
+  var upNow = parseFloat(document.getElementById('unitPrice').value); upNow = isNaN(upNow) ? (PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300) : upNow;
   items.push({ k: '材料价', v: unitPriceOverride>0 ? '◉ ¥'+unitPriceOverride : '◈ ¥'+upNow });
   
   var scNow = parseFloat(document.getElementById('slicingCoef').value); scNow = isNaN(scNow)?0.0004:scNow;
   items.push({ k: '切片系数', v: slicingCoefOverride>=0 ? '◉ '+slicingCoefOverride.toFixed(4) : '◈ '+scNow.toFixed(4) });
 
-  var pcNow = parseFloat(document.getElementById('platingCoef').value); pcNow = isNaN(pcNow)?0.00016:pcNow;
+  var pcNow = parseFloat(document.getElementById('platingCoef').value); pcNow = isNaN(pcNow)?(PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016):pcNow;
   items.push({ k: '电镀系数', v: platingCoefOverride>=0 ? '◉ '+platingCoefOverride.toFixed(5) : '◈ '+pcNow.toFixed(5) });
 
   var spNow = parseFloat(document.getElementById('scrapPrice').value); spNow = isNaN(spNow) ? 100 : spNow;
@@ -4065,7 +4069,7 @@ function getAllProcessingCost() {
   
   out.qr = parseFloat((document.getElementById('stockQualifyRate')||{}).value) || 0.9;
   out.pr = parseFloat((document.getElementById('stockProfitRate')||{}).value) || 1.05;
-  out.oq = parseInt((document.getElementById('stockOrderQty')||{}).value) || 500;
+  out.oq = parseInt((document.getElementById('stockOrderQty')||{}).value) || 20000;
   out.ff = parseFloat((document.getElementById('stockFixtureFee')||{}).value) || 0;
   
   var cs = document.getElementById('costStrip');
@@ -4777,7 +4781,7 @@ function resetPlatingCoef() {
 }
 function updatePlatingNote() {
   const p = document.getElementById('plating').value;
-  const ma = PLATING_MIN_AREA[p]||40;
+  const ma = PLATING_MIN_AREA[p]??40;
   const dt = PLATING_DOUBLE_THRESHOLD[p];
   let n = `基准 ${(PLATING_DEFAULTS[p]??0.00016).toFixed(5)} · 最小面积 ${ma}mm²`;
   if (dt) n += ` · >${dt}翻倍`;
@@ -4947,6 +4951,8 @@ function autoCalcAndRun() {
 
 // 根据出刀数自动调整切片系数（刀数少加系数）
 function autoSliceByKnifeCount() {
+  // [死代码 · 仅作历史保留，勿修改逻辑] 此函数在 auto 批量档下被 _applyCfg 无条件覆盖，永不生效；
+  // 现行切片系数口径见 BATCH_CONFIG + getAutoBatchMode（阈值：blanks>100 或 定制坯总重>300kg）。
   const kt = parseInt(document.getElementById('knifeTotal').textContent) || 0;
   if (kt > 0 && kt < 100) {
     var _sc3 = document.getElementById('slicingCoef'); if (!_sc3.hasAttribute('data-manual')) _sc3.value = 0.0004;
@@ -5095,6 +5101,7 @@ const QR_FIELDS = [
 ];
 function _qrGet(path){ var o=QR_CONFIG; for (var i=0;i<path.length;i++) o=o[path[i]]; return o; }
 function _qrSet(path,val){ var o=QR_CONFIG; for (var i=0;i<path.length-1;i++) o=o[path[i]]; o[path[path.length-1]]=val; }
+function _qrDefault(path){ var o=QR_DEFAULT; for (var i=0;i<path.length;i++){ if (o==null) return 0; o=o[path[i]]; } return (typeof o==='number') ? o : 0; }
 function _qrFieldId(path){ return 'qr_'+path.join('_'); }
 function buildQRSettingsModal(){
   var html = '<div class="modal-overlay" id="qrSettingsModal" style="display:none;z-index:1200" onclick="if(event.target===this)closeQRSettings()">'
@@ -5145,7 +5152,12 @@ function onQRChange(){
       var el = document.getElementById(_qrFieldId(it.path));
       if (!el) return;
       if (it.bool){ _qrSet(it.path, el.checked); }
-      else { var v = parseFloat(el.value); if (isNaN(v)) v=0; _qrSet(it.path, (it.unit||'%')==='%' ? v/100 : v); }
+      else {
+        var v = parseFloat(el.value);
+        if (isNaN(v)) { _qrSet(it.path, _qrDefault(it.path)); }
+        else if ((it.unit||'%')==='%') { var r = v/100; _qrSet(it.path, r<0?0:(r>1?1:r)); }
+        else { _qrSet(it.path, v<0?0:v); }
+      }
     });
   });
   saveQRConfig();
@@ -5657,7 +5669,7 @@ function sanitizeProfitRate(id) {
   const el = document.getElementById(id);
   let v = parseFloat(el.value);
   if (isNaN(v) || v <= 0) v = 1.05;
-  if (v > 100) v = 100.0;
+  if (v > 10) v = 10.0;
   if (parseFloat(el.value) !== v) el.value = v;
 }
 // 材料单价校验：NaN/≤0 取牌号默认价
@@ -5668,6 +5680,14 @@ function sanitizeUnitPrice() {
   const def = PDF_PRICES[grade] || PDF_PRICES[grade.replace(/^N/,'')] || 300;
   if (isNaN(v) || v <= 0) { el.value = def; return; }
   if (v > 10000) console.warn('[单价异常] 当前单价 ' + v + ' 元/kg，可能过高，请核实');
+}
+// 电镀系数校验：NaN/<0 取当前镀种基准价，并清除 data-manual 标记
+function sanitizePlatingCoef(id) {
+  const el = document.getElementById(id);
+  let v = parseFloat(el.value);
+  const p = document.getElementById('plating').value;
+  const def = PLATING_DEFAULTS[p] ?? 0.00016;
+  if (isNaN(v) || v < 0) { el.value = def; el.removeAttribute('data-manual'); return; }
 }
 
 // ===== Core calc =====
@@ -5686,8 +5706,8 @@ function calculate() {
   sanitizeUnitPrice();
 
   // ===== 读取所有输入（形状无关） =====
-  const unitPrice = v(parseFloat(document.getElementById('unitPrice').value), 300);
-  const platingCoef = v(parseFloat(document.getElementById('platingCoef').value), 0.00016);
+  const unitPrice = v(parseFloat(document.getElementById('unitPrice').value), (PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300));
+  const platingCoef = v(parseFloat(document.getElementById('platingCoef').value), (PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016));
   const slicingCoef = v(parseFloat(document.getElementById('slicingCoef').value), 0.0004);
   const scrapPrice = v(parseFloat(document.getElementById('scrapPrice').value), 100);
   const sQR = v(parseFloat(document.getElementById('stockQualifyRate').value), 0.9);
@@ -5708,6 +5728,7 @@ function calculate() {
   const maxDim = Math.max(L, W, H);
   const chamferNeeded = maxDim >= 30;
   const chamferHint = document.getElementById('chamferHint');
+  if (document.getElementById('chamferFee').value === '' && _lastOverrides) delete _lastOverrides.cfAuto;
   let chamferFee = v(parseFloat(document.getElementById('chamferFee').value), 0);
   // 倒角阶梯（2026-07-20 用户新价）：方块 >=50:0.5 / >=40:0.2 / >=30:0.1；异形 >=50:0.5 / >=40:0.3 / >=30:0.2
   const isBlockShape = (shapeMode === 'block');
@@ -5723,7 +5744,7 @@ function calculate() {
   const knifeTotal = c1*c2*c3;
 
   // 加工费叠加到倒角费（共用chamferFee通道传给calcOne）
-  _lastPf = getProcessFees(L, H, 0, c1, c3, knifeTotal);
+  _lastPf = getProcessFees(L, H, Math.min(L,W,H), c1, c3, knifeTotal);
   chamferFee += _lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch + (_lastPf.core||0);
   const t1 = parseFloat(document.getElementById('knifeThick1').value)||0.4;
   const t2 = parseFloat(document.getElementById('knifeThick2').value)||0.4;
@@ -5788,7 +5809,7 @@ function calculate() {
   if (fitVol > 0 && _fitCut) {
     // 合适毛坯报价：用 0.27 出刀；加工费按 fit 出刀重算（倒角部分沿用主路线 chamferFee 不变）
     const _mainProc = (_lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + (_lastPf.core||0) + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch);
-    const _fitPf = getProcessFees(L, H, 0, _fitCut.c1, _fitCut.c3, _fitCut.knifeTotal);
+    const _fitPf = getProcessFees(L, H, Math.min(L,W,H), _fitCut.c1, _fitCut.c3, _fitCut.knifeTotal);
     const _fitProc = (_fitPf.grind + _fitPf.granule + _fitPf.carve + _fitPf.drill + (_fitPf.core||0) + _fitPf.laser + _fitPf.jet + _fitPf.shoulder + _fitPf.multiPunch);
     const fitChf = chamferFee - _mainProc + _fitProc;
     fr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, fitVol, _fitCut.knifeTotal, oOQ, oFF, fSPPv, null, fitBlankH, 0, _minPa, fitChf);
@@ -5830,8 +5851,8 @@ function calculateTile() {
   sanitizeQualifyRate('stockQualifyRate');
   sanitizeProfitRate('stockProfitRate');
   sanitizeUnitPrice();
-  const unitPrice = v(parseFloat(document.getElementById('unitPrice').value), 300);
-  const platingCoef = v(parseFloat(document.getElementById('platingCoef').value), 0.00016);
+  const unitPrice = v(parseFloat(document.getElementById('unitPrice').value), (PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300));
+  const platingCoef = v(parseFloat(document.getElementById('platingCoef').value), (PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016));
   const slicingCoef = v(parseFloat(document.getElementById('slicingCoef').value), 0.0004);
   const sPR = v(parseFloat(document.getElementById('stockProfitRate').value), 1.05);
   const sOQ = v(parseFloat(document.getElementById('stockOrderQty').value), 20000);
@@ -5860,6 +5881,7 @@ function calculateTile() {
   
   // 倒角
   const maxDim = Math.max(L, W, H);
+  if (document.getElementById('chamferFee').value === '' && _lastOverrides) delete _lastOverrides.cfAuto;
   let chamferFee = v(parseFloat(document.getElementById('chamferFee').value), 0);
   const _chamferEl = document.getElementById('chamferFee');
   const chamferHint = document.getElementById('chamferHint');
@@ -5870,7 +5892,7 @@ function calculateTile() {
   
   // 电镀（含面积>阈值翻倍 ＋ 轴>30 加系数，2026-09-04 新增）
   const _platingType = document.getElementById('plating').value;
-  const _baseCoef = PLATING_DEFAULTS[_platingType]||0.00016;
+  const _baseCoef = PLATING_DEFAULTS[_platingType] ?? 0.00016;
   const _dt = PLATING_DOUBLE_THRESHOLD[_platingType];
   const _shouldDouble = _dt && prodArea > _dt;
   const _pcElT = document.getElementById('platingCoef');
@@ -5887,7 +5909,7 @@ function calculateTile() {
   const _platingCoefAdj = _coefManualT ? (isNaN(_pcValT) ? _baseCoef : _pcValT) : (_shouldDouble ? _baseCoef*2 : (_axisOver30T && _ax30T !== undefined ? _ax30T : _baseCoef));
   // 自动更新输入框显示（用户手动编辑的不干预）
   if (!_pcManualT) { _pcElT.value = _platingCoefAdj.toFixed(5); }
-  const _minPa = PLATING_MIN_AREA[_platingType]||40;
+  const _minPa = PLATING_MIN_AREA[_platingType] ?? 40;
   
   const c1=parseInt(document.getElementById('knife1').value)||0;
   const c2=parseInt(document.getElementById('knife2').value)||0;
@@ -5917,7 +5939,7 @@ function calculateTile() {
   
   // 毛坯
   const sbd = document.getElementById('stockBlock').value.trim().split('*').map(Number);
-  if (sbd.length!==3) { clearResults(); return; }
+  if (sbd.length!==3 || sbd.some(isNaN)) { clearResults(); return; }
   const stockVol = sbd[0]*sbd[1]*sbd[2];
   
   // 余料回收（瓦片按方块毛坯切，有余料）
@@ -5927,7 +5949,7 @@ function calculateTile() {
   
   // 加工费（合格率已由 computeQualifyRate 在入口统一算好，此处直接读取，杜绝重复扣减）
   const sQR = v(parseFloat(document.getElementById('stockQualifyRate').value), 0.9);
-  _lastPf = getProcessFees(L, H, 0, c1, c3, kt);
+  _lastPf = getProcessFees(L, H, Math.min(L,W,H), c1, c3, kt);
   const totalPf = _lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + (_lastPf.core||0) + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch;
   
   // 瓦片（方块毛坯切余料回收）
@@ -5937,11 +5959,12 @@ function calculateTile() {
   // 合适毛坯路线（合适坯定制尺寸，无余料回收）—— 出刀一律 0.27（与 fitBlock 尺寸同源）
   const fbd = document.getElementById('fitBlock').value.trim().split('*').map(Number);
   let fr = null;
+  let fitVol = 0;
   const _fitCutT = (fbd.length===3 && fbd.every(v=>!isNaN(v)) && fbd[0]*fbd[1]*fbd[2] > 0)
     ? computeFitCutting('block', { L, W, H }, fbd) : null;
   window.__fitCut = _fitCutT;
   if (_fitCutT) {
-    const fitVol = fbd[0] * fbd[1] * fbd[2];
+    fitVol = fbd[0] * fbd[1] * fbd[2];
     fr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, fitVol, _fitCutT.knifeTotal, sOQ, sFF, 0, null, fbd[2], 0, _minPa, chamferFee+totalPf);
     if (fr) { fr.c1 = _fitCutT.c1; fr.c2 = _fitCutT.c2; fr.c3 = _fitCutT.c3; fr.t1 = _fitCutT.t1; fr.t2 = _fitCutT.t2; fr.t3 = _fitCutT.t3; fr.knifeTotal = _fitCutT.knifeTotal; }
   }
@@ -6019,7 +6042,7 @@ function calcOne(up, pc, sc, qr, pr, L, W, H, pv, pa, bv, kt, oq, ff, spp, saFla
 
   // 切片面积
   let sa = L*W + L*H + W*H;
-  let sf = sa * sc;
+  let sf = pfManualOrCalc('pfSliceManual', sa * sc);
 
   // 电镀面积不足最小值时按最小值计算
   const effPa = Math.max(pa, minPa);
@@ -6093,7 +6116,7 @@ function renderCalcDetail(stock, fit) {
   const oq = parseFloat(document.getElementById('stockOrderQty').value)||0;
   const qr = parseFloat(document.getElementById('stockQualifyRate').value)||0.9;
   const pr = parseFloat(document.getElementById('stockProfitRate').value)||1.05;
-  const up = parseFloat(document.getElementById('unitPrice').value)||300;
+  const up = parseFloat(document.getElementById('unitPrice').value)||(PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300);
   const chf = stock.chamferFee || 0;
   const spp = stock.scrapPerPiece || 0;
 
@@ -6382,7 +6405,7 @@ function displayResults(stock, fit, prodVol) {
   if (!stock._isFitOnly) stock.knifeTotal = c1v*c2v*c3v;
   if (fit) fit.knifeTotal = (window.__fitCut && window.__fitCut.knifeTotal) ? window.__fitCut.knifeTotal : (c1v*c2v*c3v);
   const _scv = parseFloat(document.getElementById('slicingCoef').value); const scv = isNaN(_scv) ? 0.0004 : _scv;
-  const _pcv = parseFloat(document.getElementById('platingCoef').value); const pcv = isNaN(_pcv) ? 0.00016 : _pcv;
+  const _pcv = parseFloat(document.getElementById('platingCoef').value); const pcv = isNaN(_pcv) ? (PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016) : _pcv;
   buildBlankParams(stock, fit, null, pcv, scv, prodVol);
 
   // Scrap bar
@@ -6688,7 +6711,7 @@ function switchShape(mode) {
      'ringOuterD','ringInnerD','ringH','stepD1','stepH1','stepD2','stepH2',
      'editPrice','unitPrice','knifeTotal'].forEach(function(id){
       var e=document.getElementById(id); if(!e) return;
-      if (e.tagName==='SPAN') e.textContent=''; else e.value='';
+      if (e.tagName==='SPAN') e.textContent=''; else { e.value=''; e.removeAttribute('data-manual'); }
     });
     var _kt=document.getElementById('knifeTotal'); if(_kt)_kt.textContent='--';
     var _taf=document.getElementById('tileArchFormula'); if(_taf){_taf.textContent=''; _taf.style.color='var(--sub)';}  // 防旧提示/橙色跨形状残留
@@ -6841,7 +6864,7 @@ function onTileSpecChange() {
   document.getElementById('dimW').value = chord;
   document.getElementById('dimH').value = archH;
   calculateTile();
-  var _rs = 'R'+ROuter+'*R'+RInner+'*'+(len||chord)+'*'+chord+'*'+wall;
+  var _rs = 'R'+ROuter+'*R'+RInner+'*'+chord+'*'+(len||chord)+'*'+wall;
   document.getElementById('spec').value = _rs;
   document.getElementById('spec').value = _rs;
 }
@@ -6916,10 +6939,9 @@ function getProcessFees(L, H, D, c1, c3, knifeTotal) {
         autoDrill = perBar / c3;
       }
     } else {
-      // 无孔径时（如方块手动设价），直接用 pfDrillManual 的值
-      const manualD = parseFloat(document.getElementById('pfDrillManual')?.value || '');
-      if (!isNaN(manualD) && manualD > 0) {
-        // 如果按条报价（/条/每条/一条），自动 ÷ c3
+      // 无孔径时：用手工费，没填则0（无法自动算）
+      const manualD = pfManualOrCalc('pfDrillManual', 0);
+      if (manualD > 0) {
         autoDrill = (_drillPerBar && c3 > 0) ? manualD / c3 : manualD;
       }
     }
@@ -6930,9 +6952,7 @@ function getProcessFees(L, H, D, c1, c3, knifeTotal) {
   // 车肩费（大小头自动启用，也可手动勾选）
   const useShoulder = document.getElementById('pfShoulder')?.checked || _discIsStepped;
   if (useShoulder) {
-    let autoShoulder = 0;
-    if (D <= 2) autoShoulder = 0;
-    else autoShoulder = 0.2;  // 车肩默认费统一0.2元/颗（用户2026-07-20指令）
+    let autoShoulder = 0.2;  // 车肩默认费统一0.2元/颗（用户2026-07-20指令）；原 D<=2 门槛系 D 恒为0 时期的死代码遗留，已移除
     fees.shoulder = pfManualOrCalc('pfShoulderManual', autoShoulder);
   }
   
@@ -6968,7 +6988,7 @@ function setDiscCutDir(dir) {
 function onDiscSpecChange() {
   const D = parseFloat(document.getElementById('discD').value) || 0;
   const H = parseFloat(document.getElementById('discH').value) || 0;
-  if (D <= 0 || H <= 0) { clearResults(); return; }
+  if (D <= 0 || H <= 0) { _discD = 0; _discH = 0; ['dimL','dimW','dimH'].forEach(function(id){ var e = document.getElementById(id); if (e) e.value = ''; }); clearResults(); return; }
   _discD = D; _discH = H;
   // 无心磨费手动框：仅 D≤3.5 显示
   const _clRow = document.getElementById('centerlessRow');
@@ -7000,7 +7020,7 @@ function autoDiscSliceSettings() {
   // 如果批量模式非自动，直接使用批量配置，不做自动判断
   if (batchMode !== 'auto') { return; }
   
-  const orderQty = parseFloat(document.getElementById('stockOrderQty').value) || 500;
+  const orderQty = parseFloat(document.getElementById('stockOrderQty').value) || 20000;
   const knivesTotal = parseInt(document.getElementById('knifeTotal').textContent) || 0;
   // 库存毛坯块数
   const sbd = document.getElementById('stockBlock').value.trim().split('*').map(Number);
@@ -7373,7 +7393,7 @@ function calcDiscKnives() {
   const side = _discSquareSide || getSquareSide(D);
 
   const sbd = document.getElementById('stockBlock').value.trim().split('*').map(Number);
-  if (sbd.length !== 3) return;
+  if (sbd.length !== 3 || sbd.some(isNaN)) return;
 
   // 自定义毛坯直接用；预设则对比 64×54×36 和 64×54×34 选优
   const baseThick = BATCH_CONFIG[getAutoBatchMode()].knife;
@@ -7389,6 +7409,7 @@ function calcDiscKnives() {
     const c2 = computeDiscAxisKnives(testBlank[1], c2Size, baseThick);
     const c3 = computeDiscAxisKnives(testBlank[2], c3Size, baseThick);
     const totalKnives = c1 * c2 * c3;
+    if (!isFinite(totalKnives)) continue;
     if (totalKnives > bestTotal) { bestTotal = totalKnives; bestBlank = testBlank; }
   }
   document.getElementById('stockBlock').value = bestBlank.join('*');
@@ -7682,16 +7703,17 @@ function calculateDisc() {
   sanitizeProfitRate('stockProfitRate');
   sanitizeUnitPrice();
 
-  const unitPrice = parseFloat(document.getElementById('unitPrice').value) || 300;
-  const _rpc = parseFloat(document.getElementById('platingCoef').value); const platingCoef = isNaN(_rpc) ? 0.00016 : _rpc;
-  const slicingCoef = parseFloat(document.getElementById('slicingCoef').value); const sc = isNaN(slicingCoef) ? 0.0004 : slicingCoef;
+  const unitPrice = parseFloat(document.getElementById('unitPrice').value) || (PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300);
+  const _rpc = parseFloat(document.getElementById('platingCoef').value); const platingCoef = isNaN(_rpc) ? (PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016) : _rpc;
+  const slicingCoef = (function(){var _v=parseFloat(document.getElementById('slicingCoef').value);return isNaN(_v)?0.0004:_v;})(); const sc = slicingCoef;
   const _rsp = parseFloat(document.getElementById('scrapPrice').value); const scrapPrice = isNaN(_rsp) ? 100 : _rsp;
   const sQR = parseFloat(document.getElementById('stockQualifyRate').value) || 0.9;
   const sPR = parseFloat(document.getElementById('stockProfitRate').value) || 1.05;
-  const sOQ = parseFloat(document.getElementById('stockOrderQty').value) || 500;
+  const sOQ = parseFloat(document.getElementById('stockOrderQty').value) || 20000;
   const sFF = parseFloat(document.getElementById('stockFixtureFee').value) || 0;
 
   // 电镀/倒角配置（圆片倒角规则与方块不同）
+  if (document.getElementById('chamferFee').value === '' && _lastOverrides) delete _lastOverrides.cfAuto;
   let chamferFee = parseFloat(document.getElementById('chamferFee').value) || 0;
   const chamferHint = document.getElementById('chamferHint');
   let chamferNeeded = false, autoChamfer = 0;
@@ -7757,7 +7779,7 @@ function calculateDisc() {
   // 公共费用（不随毛坯变化）
   const side = _discSquareSide || getSquareSide(D);
   const discSliceArea = 3.14 * (D/2) * (D/2);
-  const discSliceFee = discSliceArea * slicingCoef;
+  const discSliceFee = discSliceArea * sc;
   const effPa = Math.max(prodArea, _minPa);
   // 电镀系数（面积>阈值翻倍 ＋ 轴>30 加系数，仿方块/瓦片 2026-09-04 新增）
   const _dt = PLATING_DOUBLE_THRESHOLD[_platingType];
@@ -7863,7 +7885,7 @@ function calculateDisc() {
     } else {
       _barSliceArea = (_sliceSide * _gbW + _sliceSide * _gbW) / _c2;
     }
-    const _barSliceFee = pfManualOrCalc('pfSliceManual', _barSliceArea * slicingCoef);
+    const _barSliceFee = pfManualOrCalc('pfSliceManual', _barSliceArea * sc);
     const _totalSlice = _barSliceFee + discSliceFee;
     const _matNet = _sm - _spp;
     // 圆环打孔/套孔：D≤2走分段新公式，2<D<6走旧表，≥6套孔
@@ -7981,7 +8003,7 @@ function calculateDisc() {
   } else {
     fitBarSliceArea = (side * (fbd[1] || 0) + side * (fbd[1] || 0)) / (fitC2 || c2);
   }
-  const fitBarSliceFee = pfManualOrCalc('pfSliceManual', fitBarSliceArea * slicingCoef);
+  const fitBarSliceFee = pfManualOrCalc('pfSliceManual', fitBarSliceArea * sc);
   const fitTotalSlice = fitBarSliceFee + discSliceFee;
   const fitSingleMat = fitPrice / (fitKT || knifeTotal);
   const fitRawCost = fitSingleMat + fitTotalSlice + platingFee + chamferFee + (stockResult.grindFee || 0) + discShoulderFee + (stockResult.drillFee || 0) + (stockResult.coreRecovery || 0) + (stockResult.segCutFee || 0) + discProcFee;
@@ -8017,7 +8039,7 @@ function calculateDisc() {
     const cylBlankPrice = cylWeight * cylPriceVal;
     const cylSingleMat = cylBlankPrice / cylKnives;
     // 圆柱切片：只有圆面切片，无方磨圆
-    const cylSliceFee = discSliceArea * slicingCoef;
+    const cylSliceFee = discSliceArea * sc;
     const cylRawCost = cylSingleMat + cylSliceFee + platingFee + chamferFee + discShoulderFee + (stockResult.drillFee || 0) + (stockResult.coreRecovery || 0) + (stockResult.segCutFee || 0) + discProcFee;
     const cylYieldCost = sQR > 0 ? cylRawCost * (2 - sQR) : 0;
     const cylQuote = cylYieldCost * sPR;
@@ -8143,7 +8165,7 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal) {
   stock.knifeTotal = c1dv*c2dv*c3dv;
   if (fit) fit.knifeTotal = (window.__fitCut && window.__fitCut.knifeTotal) ? window.__fitCut.knifeTotal : (c1dv*c2dv*c3dv);
   const _sdv = parseFloat(document.getElementById('slicingCoef').value); const scdv = isNaN(_sdv) ? 0.0004 : _sdv;
-  const _pdv = parseFloat(document.getElementById('platingCoef').value); const pcdv = isNaN(_pdv) ? 0.00016 : _pdv;
+  const _pdv = parseFloat(document.getElementById('platingCoef').value); const pcdv = isNaN(_pdv) ? (PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016) : _pdv;
   buildBlankParams(stock, fit, cyl, pcdv, scdv, prodVol);
 
   // 圆柱300kg起订量行统一在 buildBlankParams 的 multiLineStrip 构建，避免被后续 innerHTML 覆盖
@@ -8190,11 +8212,11 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal) {
     meta: {
       qr: parseFloat(document.getElementById('stockQualifyRate').value) || 0.9,
       pr: parseFloat(document.getElementById('stockProfitRate').value) || 1.05,
-      oq: parseInt(document.getElementById('stockOrderQty').value) || 500,
+      oq: parseInt(document.getElementById('stockOrderQty').value) || 20000,
       ff: parseFloat(document.getElementById('stockFixtureFee').value) || 0,
       grade: document.getElementById('grade').value,
       plating: document.getElementById('plating').value,
-      unitPrice: parseFloat(document.getElementById('unitPrice').value) || 0,
+      unitPrice: parseFloat(document.getElementById('unitPrice').value) || (PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300),
       D: _discD, H: _discH,
       specText: (document.getElementById('ss-spec') ? document.getElementById('ss-spec').getAttribute('data-raw') : '') || '',
       stockSpec: document.getElementById('stockBlock').value.trim(),
@@ -8209,14 +8231,14 @@ function renderDiscCalcDetail(stock, fit, cyl, knifeTotal) {
   const oq = parseFloat(document.getElementById('stockOrderQty').value)||0;
   const qr = parseFloat(document.getElementById('stockQualifyRate').value)||0.9;
   const pr = parseFloat(document.getElementById('stockProfitRate').value)||1.05;
-  const up = parseFloat(document.getElementById('unitPrice').value)||300;
+  const up = parseFloat(document.getElementById('unitPrice').value)||(PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300);
   const t1 = parseFloat(document.getElementById('knifeThick1').value)||0;
   const t2 = parseFloat(document.getElementById('knifeThick2').value)||0;
   const t3 = parseFloat(document.getElementById('knifeThick3').value)||0;
   const grade = document.getElementById('grade').value;
   const plating = document.getElementById('plating').value;
   const sc = parseFloat(document.getElementById('slicingCoef').value); const sC = isNaN(sc)?0.0004:sc;
-  const pc = parseFloat(document.getElementById('platingCoef').value); const pC = isNaN(pc)?0.00016:pc;
+  const pc = parseFloat(document.getElementById('platingCoef').value); const pC = isNaN(pc)?(PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016):pc;
   const cylP = parseFloat(document.getElementById('cylPrice').value) || getCylPrice(_discD, grade);
 
   // 收集三条路线数据
@@ -9166,6 +9188,7 @@ const CONTRACT_NAMES = [
   "restoreHistory",
   "sanitizeFitKnifeThick",
   "sanitizeKnifeThick",
+  "sanitizePlatingCoef",
   "sanitizeProfitRate",
   "sanitizeQualifyRate",
   "sanitizeScrapPrice",
@@ -9597,11 +9620,13 @@ function setHistFilter(shape) {
     if (el) { el.classList.toggle('chip-blue', s===shape); el.classList.toggle('chip-gray', s!==shape); }
   });
   _histSelected = {};
+  document.getElementById('histSelectAll').checked = false;  // v5.5.94：切筛选时同步重置全选框
   renderHistoryList();
 }
 function setHistDateFilter(d) {
   _histDateFilter = d;
   _histSelected = {};
+  document.getElementById('histSelectAll').checked = false;
   renderHistoryList();
 }
 
@@ -9610,8 +9635,10 @@ function filterHistByDate() {
   const fromVal = document.getElementById('histDateFrom')?.value || '';
   const toVal = document.getElementById('histDateTo')?.value || '';
   if (fromVal || toVal) {
-    const fromTs = fromVal ? new Date(fromVal).getTime() : 0;
-    const toTs = toVal ? new Date(toVal).getTime() + 86400000 : Date.now() + 86400000;
+    // v5.5.94：用本地时区解析日期，避免 new Date('YYYY-MM-DD') 按UTC解析导致东八区0-8点记录漏筛
+    const _parseLocalDate = function(s) { var p=s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]).getTime(); };
+    const fromTs = fromVal ? _parseLocalDate(fromVal) : 0;
+    const toTs = toVal ? _parseLocalDate(toVal) + 86400000 : Date.now() + 86400000;
     _histDateFrom = fromTs;
     _histDateTo = toTs;
     _histDateFilter = 'range';
@@ -9619,6 +9646,7 @@ function filterHistByDate() {
     _histDateFilter = 'all';
   }
   _histSelected = {};
+  document.getElementById('histSelectAll').checked = false;
   renderHistoryList();
 }
 let _histDateFrom = 0, _histDateTo = 0;
@@ -9877,7 +9905,7 @@ function restoreHistory(id) {
     // C方案：还原旧记录前先彻底清掉上一态所有残留（形状专属字段+覆盖字段+孔径+全局态），避免上一条圆环/带孔残留误判下一条（如圆片被误判圆环、打孔费误算套孔）
     try { _fullClearParseState(); } catch(e) {}
     if (h.shapeMode && h.shapeMode !== shapeMode) switchShape(h.shapeMode);
-    document.getElementById('grade').value = h.grade || '';
+    document.getElementById('grade').value = h.grade || 'N52';
     document.getElementById('plating').value = h.plating || '';
     document.getElementById('stockOrderQty').value = h.qty || '20000';
     if (h.settings) {
@@ -10322,7 +10350,7 @@ function exportToCSV() {
     const pr = parseFloat(s.pr) || 1.05;
     // P0修复: 改用已正确存档的 h.quote/h.qty/h.totalValue，不再从残缺settings重算
     const quote = parseFloat(String(h.quote).replace(/[¥,]/g,'')) || yieldCost * pr;
-    const oq = parseInt(h.qty) || 500;
+    const oq = parseInt(h.qty) || 20000;
     const totalVal = parseFloat(String(h.totalValue).replace(/[¥,]/g,'')) || quote * oq;
     const fixture = parseFloat(s.fixture) || 0;
     csv += [
@@ -10967,26 +10995,34 @@ function quoteFromHistory(id) {
 
 function confirmClearHistory() {
   var pwd = document.getElementById('clearPwd');
-  // 先显示密码框
+  var btn = document.getElementById('btnClearHistory');
+  // 第一次点击：显示密码框
   if (pwd.style.display === 'none') {
     pwd.style.display = ''; pwd.value = ''; pwd.focus(); return;
   }
-  // 校验密码
-  if (pwd.value !== '123456') { pwd.value = ''; pwd.style.display = 'none'; return; }
-  // 双击确认
-  var btn = document.querySelector('#historyPanel .btn-cancel');
-  if (!btn._confirming) {
-    btn._confirming = true;
-    btn.textContent = '确定清空？再点一次';
-    btn.style.color = '#b71c1c'; btn.style.fontWeight = '600'; btn.style.opacity = '1';
-    setTimeout(function() { btn._confirming = false; btn.textContent = '清空全部'; btn.style.color = 'var(--sub2)'; btn.style.fontWeight = ''; btn.style.opacity = '.4'; pwd.style.display = 'none'; pwd.value = ''; }, 500);
+  // 校验密码（v5.5.94：输错给toast提示，不再静默隐藏）
+  if (pwd.value !== '123456') {
+    showToast('密码错误，无法清空历史', 'error');
+    pwd.value = ''; pwd.focus();
     return;
   }
-  try { localStorage.removeItem('quoteHistory'); } catch(e) {}
-  renderHistoryList();
-  btn._confirming = false;
-  btn.textContent = '清空全部'; btn.style.color = 'var(--sub2)'; btn.style.opacity = '.4'; btn.style.fontWeight = '';
+  // 密码正确：用showConfirm二次确认（替代脆弱的500ms双击）
   pwd.style.display = 'none'; pwd.value = '';
+  showConfirm('确定清空全部历史记录？清空前会自动备份到本地。', function() {
+    try {
+      // 清空前自动备份（v5.5.94）
+      var raw = localStorage.getItem('quoteHistory');
+      if (raw) {
+        localStorage.setItem('quoteHistory_backup', raw);
+        localStorage.setItem('quoteHistory_backup_time', new Date().toISOString());
+      }
+      localStorage.removeItem('quoteHistory');
+      renderHistoryList();
+      showToast('历史已清空，备份已保存（可在控制台恢复）', 'success');
+    } catch(e) {
+      showToast('清空失败: ' + e.message, 'error');
+    }
+  });
 }
 
 // ===== 分模块重构 2B 批次4B：History 模块尾部 5 个（快照/重算/清空）=====
@@ -11480,7 +11516,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.89</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.97</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -11713,7 +11749,7 @@ const _TUTORIAL_HTML = `
   </div>
 
   <div class="scenario">
-    <h3><svg class="ic" aria-hidden="true"><use href="#ic-ring"/></svg><span>瓦片磁铁 — R外*R内*长*弦宽*壁厚</span></h3>
+    <h3><svg class="ic" aria-hidden="true"><use href="#ic-ring"/></svg><span>瓦片磁铁 — R外*R内*弦宽*长度*壁厚</span></h3>
     <p class="desc">外半径 20、内半径 18、长 10、弦宽 6、壁厚 2</p>
     <div class="copy-box" onclick="copyTutorialText(this)">R20*R18*10*6*2 N38 NI ×2000</div>
   </div>
@@ -12172,6 +12208,13 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.5.97</span></td><td>瓦片输入口径与审计可见性修复：1) 智能输入瓦片规格「R外*R内*A*B*壁厚」中 A、B 的归属由「A=长度、B=弦宽」改为「A=弦宽、B=长度」，与界面字段顺序（R外、R内、弦宽、长度、壁厚）完全一致，消除按界面顺序输入却被对调弦宽与长度所导致的报价偏差；同步修正两处 spec 字符串逆映射，保证瓦片参数回填的规格串可被重新正确解析（往返自洽）；2) 修复 calculateTile 内 fitVol 被声明为块级作用域导致的 ReferenceError，该异常被瓦片审计钩子的空 catch 静默吞掉，使瓦片路径 window.__audit 恒为 null，现与方块路径口径一致改为函数作用域声明，修复后瓦片路径字段级对账可用；3) 标注 autoSliceByKnifeCount 为死代码（auto 批量档下由 _applyCfg 无条件覆盖，仅作历史保留）。算价公式零改动</td></tr>
+        <tr><td><span>v5.5.95</span></td><td>安全与体验修复：1) 清空历史密码输错时给toast提示（原静默隐藏），改用showConfirm二次确认替代500ms双击，清空前自动备份到localStorage；2) 瓦片全拱高data-manual标记在清场和切形状时同步清除，修复切形状后瓦片永久算不出价；3) 历史日期筛选改用本地时区解析，修复东八区0-8点记录被漏筛；4) 历史全选框在切换筛选/日期时同步取消勾选，修复全选状态与实际不同步导致反复点选不上。算价公式零改动</td></tr>
+        <tr><td><span>v5.5.94</span></td><td>修复车肩费门槛与下单量默认值，并补齐两处漏网：1) 车肩自动费 0.2 元每颗在方块、瓦片、合适坯路径长期不生效，原尺寸门槛系参数恒为零时期的死代码遗留，业务口径为勾车肩或大小头即按统一单价计费，已移除该门槛，圆片路径按外径判定保持原样；2) 下单量界面默认值回到 500，清空后的兜底仍按 20000 计算；3) 圆片直径与厚度清空时同步清零隐藏尺寸框，修复按已清空的旧直径继续出价；4) 智能输入中删除倒角关键词后补复位倒角自动标记，修复大件倒角费被锁死为零。算价公式零改动</td></tr>
+        <tr><td><span>v5.5.93</span></td><td>修复四项静默少收与兜底不一致：1) 倒角费清空后被 cfAuto=0 锁死为0不再回落自动阶梯，三个形状路径在倒角计算前统一加「输入框为空则清除 cfAuto 标记」，修复用户清空倒角框后大件倒角费永久0；2) 车肩自动费0.2元每颗在方块/瓦片/合适坯路径为死代码（getProcessFees 三处调用均传 D=0 导致恒走 D≤2 分支），改为传 Math.min(L,W,H)，小尺寸≤2不收、大尺寸收0.2，与注释用户2026-07-20指令一致；3) 打孔费无孔径分支改用 pfManualOrCalc 统一兜底逻辑，与有孔径分支一致；4) 切条费手工价 pfSliceManual 在方块/瓦片路径完全不生效（仅圆片读取），calcOne 切片费由 sa*sc 改为 pfManualOrCalc('pfSliceManual', sa*sc)，留空仍按面积×系数自动算，手填则按手填元每片。算价公式零改动</td></tr>
+        <tr><td><span>v5.5.92</span></td><td>修复五项兜底与校验缺失：1) 圆片路径切片系数兜底为死代码，改用已兜底的 sc，修复清空切片系数导致报价变 NaN；2) 历史记录恢复时牌号缺失补默认 N52，修复界面显示 N52 却按 300 元每千克计价的静默错价；3) 瓦片与圆片路径毛坯尺寸增加 NaN 校验并补 isFinite 守卫，修复非法输入导致报价 NaN 及毛坯框被回写成 NaN 星号 NaN 星号 NaN；4) 合格率参数框清空时回填业务默认值并增加上下限钳制，修复清空保底下限导致除零；5) 圆片直径清空时同步清零直径与厚度缓存，修复按已清空旧直径继续出价。算价公式零改动。</td></tr>
+        <tr><td><span>v5.5.91</span></td><td>修复瓦片路径黑片/无镀层电镀费误收：calculateTile 的电镀系数与最小电镀面积兜底由 || 改为 ??，与方块、圆片一致。黑片与无镀层的电镀系数基准本就是 0（无电镀工序），|| 会把合法的 0 吞成 0.00016，导致瓦片按 0.00016 计费（实测每件多收约 0.2720 元）；同步修正 updatePlatingNote 提示文案里同种兜底。改后瓦片+黑片、瓦片+无镀层电镀费为 0，与方块、圆片行为一致。算价公式零改动</td></tr>
+        <tr><td><span>v5.5.90</span></td><td>修复三处兜底字面不一致与电镀系数清空回退错误：1) calculate/calculateTile/calculateDisc 的材料单价兜底由平铺 300 改为牌号价，与 sanitizeUnitPrice 有效默认一致（原为读值后死兜底，不触发错价，仅字面语义矛盾）；2) 新增 sanitizePlatingCoef 校验并接入电镀系数输入框，清空或负数时回退到当前镀种基准价并清除 data-manual 标记，修复圆片路径原硬兜底 0.00016 导致黑环氧等镀种电镀费只算应得一半的活 bug（方块/瓦片路径本已正确回退镀种基准）；3) 三处 platingCoef 读取兜底统一为镀种专属基准值；4) sanitizeProfitRate 上限由 100 收紧至 10；5) 追加展示与导出层收口：材料单价兜底 4 处（含导出 meta 原为 0）与电镀系数兜底 4 处，统一为牌号价与镀种专属基准值；6) sanitizePlatingCoef 补入命名空间挂载与冒烟自检清单。算价公式与电镀翻倍/轴&gt;30/加工费等算价规则；7) 迭代复查追加：下单量 stockOrderQty 兜底全站统一为 20000（原方块 L5703、瓦片 L5845、历史恢复 L9891 为 20000，而 HTML 默认值、圆片、导出 oq、批量、历史导出 CSV 为 500，清空下单量时三形状口径分叉、历史数据恢复与导出合计不一致），共改 6 处；自检用例显式输入保持 500 不动。算价公式零改动</td></tr>
         <tr><td><span>v5.5.89</span></td><td>修复利润率回退不一致：sanitizeProfitRate 兜底常量由 1.0 改为 1.05，与 HTML 默认值及 calculate/calculateTile/calculateDisc/renderCalcDetail/概要面板 五处 1.05 兜底意图对齐（此前五处为死代码，唯一生效的兜底是 sanitize 的 1.0，清空利润率会静默按零毛利报价）。升版本号。算价公式零改动</td></tr>
         <tr><td><span>v5.5.88</span></td><td>建立分模块命名空间骨架（方案A：单文件内 12 个模块容器 + State 状态中枢）；本批仅新增空壳 const {} 声明，算价公式、67 个顶层全局、函数体、渲染、DOM、导出、云同步均零改动，无任何逻辑搬迁；后续按 238/0/0 回归闸门分批迁入</td></tr>
 
@@ -12451,6 +12494,7 @@ UI.autoCalcKnives           = autoCalcKnives;
 UI.autoFitBlock             = autoFitBlock;
 UI.sanitizeKnifeThick       = sanitizeKnifeThick;
 UI.sanitizeFitKnifeThick    = sanitizeFitKnifeThick;
+UI.sanitizePlatingCoef      = sanitizePlatingCoef;
 UI.sanitizeScrapPrice       = sanitizeScrapPrice;
 UI.sanitizeProfitRate       = sanitizeProfitRate;
 UI.sanitizeUnitPrice        = sanitizeUnitPrice;
@@ -12576,6 +12620,7 @@ window.autoCalcKnives           = autoCalcKnives;
 window.autoFitBlock             = autoFitBlock;
 window.sanitizeKnifeThick       = sanitizeKnifeThick;
 window.sanitizeFitKnifeThick    = sanitizeFitKnifeThick;
+window.sanitizePlatingCoef      = sanitizePlatingCoef;
 window.sanitizeScrapPrice       = sanitizeScrapPrice;
 window.sanitizeProfitRate       = sanitizeProfitRate;
 window.sanitizeUnitPrice        = sanitizeUnitPrice;
