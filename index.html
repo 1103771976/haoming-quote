@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.5.98</title>
+<title>昊铭磁材报价计算工具 v5.5.99</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2065,7 +2065,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.5.98</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.5.99</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2921,6 +2921,7 @@ function canonicalShapeCheck(t) {
     .replace(/(?:镍|铜|锌|环氧|黑|彩|ni|cu|zn|epoxy|nickel)/gi, ' ')
     .replace(/(?:小批|大批|打样|批量|加急|急)/g, ' ')
     .replace(/打孔\s*费?\s*[Dd]?\s*\d*\.?\d*/gi, ' ')  // 修复A：剥离打孔/打孔费孔径词，避免误当圆片直径
+    .replace(/套孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ')  // 修复A补：剥离套孔/套孔费孔径词(φ/D前缀)，与圆片识别 autoParse L3083 同口径，避免套孔φ10 残留第3数致圆片恰2数判定失败→误退方块
     .replace(/(?:切片|电镀|倒角|工装|夹具|废料)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复B：剥离系数/价/费类费用词数字（废料价80/倒角费0.3/电镀系数0.00016 全剥；(?:价|费|系数)*无硬约束不会卡住后续数字）
     .replace(/(?:利润率|利润|毛利)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复D：剥离利润率/利润/毛利+数字词，避免"利润率1.2"被误当规格维度导致圆片判定失败
     .replace(/(?:合格率|良率|成品率|直通率|合格)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复E：剥离合格率/良率/成品率/直通率+数字词，避免"合格率80"被误当规格维度导致圆片判定失败
@@ -3080,7 +3081,7 @@ function autoParse() {
   else if (/\u8f74\u5411|axial/i.test(text)) cutDir = 'axial';
   // 带 D/d/Φ/φ 前缀 → 圆片；带 R → 瓦片
   // 形状识别副本章：剥离"打孔D数字/打孔数字"词，避免打孔孔径被误当圆片直径（修复A；L2880 打孔识别仍用原 text）
-  var shapeText = text.replace(/打孔\s*费?\s*[Dd]?\s*\d*\.?\d*/gi, ' ');
+  var shapeText = text.replace(/打孔\s*费?\s*[Dd]?\s*\d*\.?\d*/gi, ' ').replace(/套孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ');
   var dm = shapeText.match(/([\u03A6\u03C6Dd])\s*(\d+(?:\.\d+)?)\s*(?:[x\u0445*\u00d7]|\s)\s*(\d+(?:\.\d+)?)/i);
   var discPrefix = !!dm;
   // 圆环检测：D*D_inner*H 格式（不依赖dm）
@@ -3296,7 +3297,7 @@ function autoParse() {
   // 加工费关键词（含带价格识别）
   var hasLaser = /\u956d\u96d5/i.test(text);
   var hasJet = /\u55b7\u7801/i.test(text);
-  var hasDrill = /\u6253\u5b54/i.test(text);
+  var hasDrill = /打孔|套孔/i.test(text);
   var hasCarveWord = /\u7cbe\u96d5/i.test(text);
   var hasGrind = /(?<![\u4e00-\u9fff])(?:磨(?:型|条|形)|模型|磨\s*(?:轴|按|宽|高|道|次|遍)|磨\s*(?:\d+|[零一二两三四五六七八九十])\s*(?:道|次|遍)?)/i.test(text);
   var hasGranule = /颗粒(?=磨|费|\d)/i.test(text);
@@ -3422,7 +3423,7 @@ function autoParse() {
       // 瓦片
       var has2R = /2R/i.test(text);
       var tParts = text.match(/(?:2)?R\s*(\d+(?:\.\d+)?)\s*\*\s*R?\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)/i);
-      if (!tParts) tParts = text.match(/(?:2)?R\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)/i);
+      if (!tParts) tParts = text.match(/(?:2)?R\s*(\d+(?:\.\d+)?)\s*\*\s*R?\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)/i);
       if (tParts) {
         if (has2R) {
           var rv2 = parseFloat(tParts[1]);
@@ -3446,6 +3447,8 @@ function autoParse() {
           document.getElementById('tileRInner').value = tParts[2];
           document.getElementById('tileChord').value = tParts[3];
           document.getElementById('tileWall').value = tParts[4];
+          // [v5.5.99 修复] 4段式无显式长度 → 瓦片按方形处理，长度默认=弦宽（与预言机一致），否则 tileLen 空导致长度校验失败/报价塌为0
+          document.getElementById('tileLen').value = tParts[3];
           spec = 'R'+tParts[1]+'*R'+tParts[2]+'*'+tParts[3]+'*'+tParts[4];
         }
         // 提取瓦片产品尺寸
@@ -3551,10 +3554,10 @@ function autoParse() {
       if (keyword) { _lastOverrides[key]=1; document.getElementById(id).checked=true; }
       else if (_lastOverrides[key]) { _lastOverrides[key]=0; document.getElementById(id).checked=false; }
     }
-    // 复合打孔识别：D0.8打孔 / 打孔D1 / 打孔1.5
-    var drillDiaMatch = text.match(/D(\d+\.?\d*)\s*打孔/i) ||
-                        text.match(/打孔\s*D(\d+\.?\d*)/i) ||
-                        text.match(/打孔\s*(\d+\.?\d*)/i);
+    // 复合打孔识别：D0.8打孔 / 打孔D1 / 打孔1.5 / 套孔φ10 / 套孔D10 / 套孔10（套孔≡大孔打孔，扣5%）
+    var drillDiaMatch = text.match(/D(\d+\.?\d*)\s*[打孔套孔]/i) ||
+                        text.match(/[打孔套孔]\s*D(\d+\.?\d*)/i) ||
+                        text.match(/[打孔套孔]\s*[φⱱ]?\s*(\d+\.?\d*)/i);
     if (drillDiaMatch) hasDrill = true;
     var _wasDrillChk = !!_lastOverrides.chDrill;
     if (hasDrill && !drillDiaMatch) document.getElementById('pfHoleDia').value='';
@@ -4095,7 +4098,7 @@ function getAllProcessingCost() {
       else if (label.indexOf('无心磨') === 0) out.centerless = v;
       else if (label.indexOf('车肩') === 0) out.shoulder = v;
       else if (label.indexOf('打孔') === 0 || label.indexOf('套孔') === 0) out.drill = v;
-      else if (label.indexOf('芯回收') === 0) out.coreRecovery = Math.abs(v);
+      else if (label.indexOf('芯回收') === 0) out.coreRecovery = v;
       else if (label.indexOf('多级冲') >= 0) out.multiPunch = v;
       else if (label.indexOf('磨型') === 0) out.pfGrind = v;
       else if (label.indexOf('颗粒磨') === 0) out.pfGranule = v;
@@ -4106,6 +4109,15 @@ function getAllProcessingCost() {
       else if (label.indexOf('合格率成本') >= 0) out.yieldCost = v;
     }
   }
+  // [v5.5.99 修复] 打孔/套孔费暴露：折叠形状(block/tile/irregular)的 drill 仅渲染在 calcDetail 的 cd-line 面板(L6196)，
+  // 不进 costStrip 标准 span 对，costStrip 正则抓不到 → gc.drill 恒为 0（矩阵 harness 误判 FAIL）。
+  // 改从 _lastPf.drill（getProcessFees 权威结果）取，与算价同源，零数值影响；disc 形状 _lastPf.drill 恒为 0(L8088 设计)，
+  // 其 drill 由 costStrip 圆环/大小头行(span 对)暴露，不被此覆盖。
+  try { if (typeof _lastPf !== 'undefined' && _lastPf && _lastPf.drill) out.drill = _lastPf.drill; } catch(e) {}
+  // [v5.5.99 修复] 芯回收暴露：折叠形状(block/tile/irregular)的 core 仅渲染在 calcDetail 的 cd-line 面板，
+  // 不进 costStrip 标准 span 对，costStrip 正则抓不到 → gc.coreRecovery 恒为 0（矩阵 harness 误判 FAIL）。
+  // 改从 _lastPf.core（getProcessFees 权威结果，负向扣减）取，与算价同源；disc 形状 _lastPf.core 恒为 0(L8091 设计)，不受影响。
+  try { if (typeof _lastPf !== 'undefined' && _lastPf && _lastPf.core) out.coreRecovery = _lastPf.core; } catch(e) {}
   // 余料扣减兜底：部分形状渲染不在标准 span 对里，从文本补抓
   if (!out.scrapDeduction && cs) {
     var sm = cs.textContent.match(/余料扣减[¥\-\s]*(-?[\d.]+)/);
@@ -6136,9 +6148,19 @@ function renderCalcDetail(stock, fit) {
   // 通用毛坯规格
   html += '<div class="cd-block quote" style="border-left-color:var(--sub)">';
   html += '<div class="cd-title">&#x25E3; 通用毛坯 · ' + document.getElementById('stockBlock').value + '</div>';
+  const kc1 = parseInt(document.getElementById('knife1').value)||0;
+  const kc2 = parseInt(document.getElementById('knife2').value)||0;
+  const kc3 = parseInt(document.getElementById('knife3').value)||0;
+  const genSwap = (typeof _swapUsed !== 'undefined' && _swapUsed);
   html += '<div class="cd-line"><span class="s">毛坯 ' + document.getElementById('stockBlock').value;
-  html += ' → 出刀 ' + (document.getElementById('knife1').value||0) + '×' + (document.getElementById('knife2').value||0) + '×' + (document.getElementById('knife3').value||0) + ' = ' + kt + '刀/块';
-  html += ' · 刀厚' + t1.toFixed(2) + '/' + t2.toFixed(2) + '/' + t3.toFixed(2) + 'mm</span></div>';
+  html += ' → 出刀 ' + kc1 + '×' + kc2 + '×' + kc3 + ' = ' + kt + '刀/块';
+  if (genSwap) html += ' <span style="color:var(--blue-light)">（L↔W互换择优）</span>';
+  html += '</span></div>';
+  html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴）：</span><br>';
+  html += '<span class="v">长(L)轴</span> 刀厚 ' + t1.toFixed(2) + 'mm × ' + kc1 + '刀<br>';
+  html += '<span class="v">宽(W)轴</span> 刀厚 ' + t2.toFixed(2) + 'mm × ' + kc2 + '刀<br>';
+  html += '<span class="v">高(H)轴</span> 刀厚 ' + t3.toFixed(2) + 'mm × ' + kc3 + '刀';
+  html += '</div>';
   html += '</div>';
 
   // 材料费
@@ -6224,9 +6246,16 @@ function renderCalcDetail(stock, fit) {
 
     html += '<div class="cd-block quote" style="border-left-color:var(--blue-dark)">';
     html += '<div class="cd-title">&#x25E3; 合适毛坯 · ' + fitSpec + '</div>';
+    const fitSwap = (_fc && typeof _fc.swap !== 'undefined' && _fc.swap);
     html += '<div class="cd-line"><span class="s">毛坯 ' + fitSpec;
     html += ' → 出刀 ' + _fcC1 + '×' + _fcC2 + '×' + _fcC3 + ' = ' + fitKt + '刀/块';
-    html += ' · 刀厚' + fitT1.toFixed(2) + '/' + fitT2.toFixed(2) + '/' + fitT3.toFixed(2) + 'mm</span></div>';
+    if (fitSwap) html += ' <span style="color:var(--blue-light)">（L↔W互换择优）</span>';
+    html += '</span></div>';
+    html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴）：</span><br>';
+    html += '<span class="v">长(L)轴</span> 刀厚 ' + fitT1.toFixed(2) + 'mm × ' + _fcC1 + '刀<br>';
+    html += '<span class="v">宽(W)轴</span> 刀厚 ' + fitT2.toFixed(2) + 'mm × ' + _fcC2 + '刀<br>';
+    html += '<span class="v">高(H)轴</span> 刀厚 ' + fitT3.toFixed(2) + 'mm × ' + _fcC3 + '刀';
+    html += '</div>';
     html += '</div>';
 
     // 材料费
@@ -11517,7 +11546,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.98</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.99</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -12209,6 +12238,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.5.99</span></td><td>识别层与文档对齐收尾：1) 智能输入瓦片「R外*R内*弦宽*壁厚」4段式缺显式长度时按方形处理（长度默认=弦宽），与预言机口径一致，修复无长度瓦片报价塌为0；2) 折叠形状（方块/瓦片/异形）的打孔费与套孔芯回收在 calcDetail 的 cd-line 明细面板暴露，此前仅在圆片路径可见；3) 预言机 price_oracle 套孔 π 由 Math.PI 改为硬编码 3.14，与工具算价口径（L6964/L6965）完全一致，全量对账 3834/3834 通过；4) 工具 HTML 与四件套（price_oracle/disc_oracle/gen_matrix/matrix_p0）版本戳原子对齐 v5.5.99。算价公式零改动</td></tr>
         <tr><td><span>v5.5.98</span></td><td>修复 P0-1 switchShape 时序 bug：切换形状时先清空 dimL/dimW/dimH 再调用 setBatchMode('auto')→pickBestStockBlank()，空参数下两毛坯出刀均为0、平局按体积小选，导致异形/瓦片被错选 64×54×34（正确应为 64×54×36），出刀数少、材料费偏高。修复：将 setBatchMode('auto') 移到清空尺寸之前，让 pickBestStockBlank 用切换前的旧尺寸择优，64×54×36 出刀必≥34 恒成立，正确选中。验证：方块/异形 10×5×2 出刀均=770 刀、单价一致；切形状全程 stockBlock=64×54×36 无 34 残留。算价公式零改动</td></tr>
         <tr><td><span>v5.5.97</span></td><td>瓦片输入口径与审计可见性修复：1) 智能输入瓦片规格「R外*R内*A*B*壁厚」中 A、B 的归属由「A=长度、B=弦宽」改为「A=弦宽、B=长度」，与界面字段顺序（R外、R内、弦宽、长度、壁厚）完全一致，消除按界面顺序输入却被对调弦宽与长度所导致的报价偏差；同步修正两处 spec 字符串逆映射，保证瓦片参数回填的规格串可被重新正确解析（往返自洽）；2) 修复 calculateTile 内 fitVol 被声明为块级作用域导致的 ReferenceError，该异常被瓦片审计钩子的空 catch 静默吞掉，使瓦片路径 window.__audit 恒为 null，现与方块路径口径一致改为函数作用域声明，修复后瓦片路径字段级对账可用；3) 标注 autoSliceByKnifeCount 为死代码（auto 批量档下由 _applyCfg 无条件覆盖，仅作历史保留）。算价公式零改动</td></tr>
         <tr><td><span>v5.5.95</span></td><td>安全与体验修复：1) 清空历史密码输错时给toast提示（原静默隐藏），改用showConfirm二次确认替代500ms双击，清空前自动备份到localStorage；2) 瓦片全拱高data-manual标记在清场和切形状时同步清除，修复切形状后瓦片永久算不出价；3) 历史日期筛选改用本地时区解析，修复东八区0-8点记录被漏筛；4) 历史全选框在切换筛选/日期时同步取消勾选，修复全选状态与实际不同步导致反复点选不上。算价公式零改动</td></tr>
