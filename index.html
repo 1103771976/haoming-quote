@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.5.99</title>
+<title>昊铭磁材报价计算工具 v5.6.00</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2065,7 +2065,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.5.99</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.00</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" onclick="event.preventDefault();showTutorial()" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -7868,7 +7868,7 @@ function calculateDisc() {
     const holeDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
     const hasHole = document.getElementById('pfDrill')?.checked && holeDia > 0;
     const barH = (discCutDir === 'axial') ? _gbH : _gbW;
-    let _prodC3 = _c3, _segCutFee = 0, _segDrill = null, _segInfo = null;
+    _prodC3 = _c3, _segCutFee = 0, _segDrill = null, _segInfo = null;
 
     // 无心磨分段 D≤2（优先；打孔分段降级，因段已够短）
     if (D <= 2) {
@@ -11546,7 +11546,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.5.99</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.6.00</span>
       </span>
       <button onclick="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -12238,6 +12238,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.6.00</span></td><td>预言机 disc 系全量对齐：1) disc_oracle 径向 D≤2 出刀数 c2 改用无心磨分段 K_total 覆盖（对齐工具 L7878-7879），轴向 prodC3 同步覆盖，总出刀数 kt=c1·c2·prodC3（对齐工具 L7893），修复 38 条 disc 系余料/无心磨/切片费偏差；2) segmentForCenterless 分段切费用 discArea 改用 Math.PI（对齐工具 L7710），消除 ~1e-6 精度偏差；3) matrix_p0 总产值断言改用相对容差，修复大数量(50万片)浮点累积误差误报；4) 全量对账 3834/3834 通过、0 FAIL，黄金自测 59/59、变异测试 6/6、日常回归 3915/3915 全绿。工具算价公式零改动</td></tr>
         <tr><td><span>v5.5.99</span></td><td>识别层与文档对齐收尾：1) 智能输入瓦片「R外*R内*弦宽*壁厚」4段式缺显式长度时按方形处理（长度默认=弦宽），与预言机口径一致，修复无长度瓦片报价塌为0；2) 折叠形状（方块/瓦片/异形）的打孔费与套孔芯回收在 calcDetail 的 cd-line 明细面板暴露，此前仅在圆片路径可见；3) 预言机 price_oracle 套孔 π 由 Math.PI 改为硬编码 3.14，与工具算价口径（L6964/L6965）完全一致，全量对账 3834/3834 通过；4) 工具 HTML 与四件套（price_oracle/disc_oracle/gen_matrix/matrix_p0）版本戳原子对齐 v5.5.99。算价公式零改动</td></tr>
         <tr><td><span>v5.5.98</span></td><td>修复 P0-1 switchShape 时序 bug：切换形状时先清空 dimL/dimW/dimH 再调用 setBatchMode('auto')→pickBestStockBlank()，空参数下两毛坯出刀均为0、平局按体积小选，导致异形/瓦片被错选 64×54×34（正确应为 64×54×36），出刀数少、材料费偏高。修复：将 setBatchMode('auto') 移到清空尺寸之前，让 pickBestStockBlank 用切换前的旧尺寸择优，64×54×36 出刀必≥34 恒成立，正确选中。验证：方块/异形 10×5×2 出刀均=770 刀、单价一致；切形状全程 stockBlock=64×54×36 无 34 残留。算价公式零改动</td></tr>
         <tr><td><span>v5.5.97</span></td><td>瓦片输入口径与审计可见性修复：1) 智能输入瓦片规格「R外*R内*A*B*壁厚」中 A、B 的归属由「A=长度、B=弦宽」改为「A=弦宽、B=长度」，与界面字段顺序（R外、R内、弦宽、长度、壁厚）完全一致，消除按界面顺序输入却被对调弦宽与长度所导致的报价偏差；同步修正两处 spec 字符串逆映射，保证瓦片参数回填的规格串可被重新正确解析（往返自洽）；2) 修复 calculateTile 内 fitVol 被声明为块级作用域导致的 ReferenceError，该异常被瓦片审计钩子的空 catch 静默吞掉，使瓦片路径 window.__audit 恒为 null，现与方块路径口径一致改为函数作用域声明，修复后瓦片路径字段级对账可用；3) 标注 autoSliceByKnifeCount 为死代码（auto 批量档下由 _applyCfg 无条件覆盖，仅作历史保留）。算价公式零改动</td></tr>
