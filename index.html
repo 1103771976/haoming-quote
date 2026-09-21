@@ -6156,13 +6156,13 @@ function renderCalcDetail(stock, fit) {
   html += ' → 出刀 ' + kc1 + '×' + kc2 + '×' + kc3 + ' = ' + kt + '刀/块';
   if (genSwap) html += ' <span style="color:var(--blue-light)">（L↔W互换择优）</span>';
   html += '</span></div>';
-  html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴 · 逐刀）：</span><br>';
-  html += '<span class="v">长(L)轴</span> ';
-  if (kc1<1) html += '—'; else for (let i=1;i<=kc1;i++) html += '刀'+i+' '+t1.toFixed(2)+'mm'+(i<kc1?' / ':'');
-  html += '<br><span class="v">宽(W)轴</span> ';
-  if (kc2<1) html += '—'; else for (let i=1;i<=kc2;i++) html += '刀'+i+' '+t2.toFixed(2)+'mm'+(i<kc2?' / ':'');
-  html += '<br><span class="v">高(H)轴</span> ';
-  if (kc3<1) html += '—'; else for (let i=1;i<=kc3;i++) html += '刀'+i+' '+t3.toFixed(2)+'mm'+(i<kc3?' / ':'');
+  html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴）：</span><br>';
+  html += '<span class="v">长(L)轴：</span> ';
+  html += (kc1<1) ? '—' : (t1.toFixed(2)+'mm × '+kc1+'刀');
+  html += '<br><span class="v">宽(W)轴：</span> ';
+  html += (kc2<1) ? '—' : (t2.toFixed(2)+'mm × '+kc2+'刀');
+  html += '<br><span class="v">高(H)轴：</span> ';
+  html += (kc3<1) ? '—' : (t3.toFixed(2)+'mm × '+kc3+'刀');
   html += '</div>';
   html += '</div>';
 
@@ -6254,13 +6254,13 @@ function renderCalcDetail(stock, fit) {
     html += ' → 出刀 ' + _fcC1 + '×' + _fcC2 + '×' + _fcC3 + ' = ' + fitKt + '刀/块';
     if (fitSwap) html += ' <span style="color:var(--blue-light)">（L↔W互换择优）</span>';
     html += '</span></div>';
-    html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴 · 逐刀）：</span><br>';
-    html += '<span class="v">长(L)轴</span> ';
-    if (_fcC1<1) html += '—'; else for (let i=1;i<=_fcC1;i++) html += '刀'+i+' '+fitT1.toFixed(2)+'mm'+(i<_fcC1?' / ':'');
-    html += '<br><span class="v">宽(W)轴</span> ';
-    if (_fcC2<1) html += '—'; else for (let i=1;i<=_fcC2;i++) html += '刀'+i+' '+fitT2.toFixed(2)+'mm'+(i<_fcC2?' / ':'');
-    html += '<br><span class="v">高(H)轴</span> ';
-    if (_fcC3<1) html += '—'; else for (let i=1;i<=_fcC3;i++) html += '刀'+i+' '+fitT3.toFixed(2)+'mm'+(i<_fcC3?' / ':'');
+    html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴）：</span><br>';
+    html += '<span class="v">长(L)轴：</span> ';
+    html += (_fcC1<1) ? '—' : (fitT1.toFixed(2)+'mm × '+_fcC1+'刀');
+    html += '<br><span class="v">宽(W)轴：</span> ';
+    html += (_fcC2<1) ? '—' : (fitT2.toFixed(2)+'mm × '+_fcC2+'刀');
+    html += '<br><span class="v">高(H)轴：</span> ';
+    html += (_fcC3<1) ? '—' : (fitT3.toFixed(2)+'mm × '+_fcC3+'刀');
     html += '</div>';
     html += '</div>';
 
@@ -8321,22 +8321,22 @@ function renderDiscCalcDetail(stock, fit, cyl, knifeTotal) {
   const kc1d = parseInt(document.getElementById('knife1').value)||0;
   const kc2d = parseInt(document.getElementById('knife2').value)||0;
   const kc3d = parseInt(document.getElementById('knife3').value)||0;
-  cd += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（通用方块 · 按切割轴 · 逐刀）：</span><br>';
-  cd += '<span class="v">长(L)轴</span> ';
-  if (kc1d<1) cd += '—'; else for (let i=1;i<=kc1d;i++) cd += '刀'+i+' '+t1.toFixed(2)+'mm'+(i<kc1d?' / ':'');
-  cd += '<br><span class="v">宽(W)轴</span> ';
-  if (kc2d<1) cd += '—'; else for (let i=1;i<=kc2d;i++) cd += '刀'+i+' '+t2.toFixed(2)+'mm'+(i<kc2d?' / ':'');
-  cd += '<br><span class="v">高(H)轴</span> ';
-  if (kc3d<1) cd += '—'; else for (let i=1;i<=kc3d;i++) cd += '刀'+i+' '+t3.toFixed(2)+'mm'+(i<kc3d?' / ':'');
+  cd += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（通用方块 · 按切割轴）：</span><br>';
+  cd += '<span class="v">长(L)轴：</span> ';
+  cd += (kc1d<1) ? '—' : (t1.toFixed(2)+'mm × '+kc1d+'刀');
+  cd += '<br><span class="v">宽(W)轴：</span> ';
+  cd += (kc2d<1) ? '—' : (t2.toFixed(2)+'mm × '+kc2d+'刀');
+  cd += '<br><span class="v">高(H)轴：</span> ';
+  cd += (kc3d<1) ? '—' : (t3.toFixed(2)+'mm × '+kc3d+'刀');
   cd += '</div>';
   if (fit) {
-    cd += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（合适方块 · 按切割轴 · 逐刀）：</span><br>';
-    cd += '<span class="v">长(L)轴</span> ';
-    if (fitC1d<1) cd += '—'; else for (let i=1;i<=fitC1d;i++) cd += '刀'+i+' '+fitT1d.toFixed(2)+'mm'+(i<fitC1d?' / ':'');
-    cd += '<br><span class="v">宽(W)轴</span> ';
-    if (fitC2d<1) cd += '—'; else for (let i=1;i<=fitC2d;i++) cd += '刀'+i+' '+fitT2d.toFixed(2)+'mm'+(i<fitC2d?' / ':'');
-    cd += '<br><span class="v">高(H)轴</span> ';
-    if (fitC3d<1) cd += '—'; else for (let i=1;i<=fitC3d;i++) cd += '刀'+i+' '+fitT3d.toFixed(2)+'mm'+(i<fitC3d?' / ':'');
+    cd += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（合适方块 · 按切割轴）：</span><br>';
+    cd += '<span class="v">长(L)轴：</span> ';
+    cd += (fitC1d<1) ? '—' : (fitT1d.toFixed(2)+'mm × '+fitC1d+'刀');
+    cd += '<br><span class="v">宽(W)轴：</span> ';
+    cd += (fitC2d<1) ? '—' : (fitT2d.toFixed(2)+'mm × '+fitC2d+'刀');
+    cd += '<br><span class="v">高(H)轴：</span> ';
+    cd += (fitC3d<1) ? '—' : (fitT3d.toFixed(2)+'mm × '+fitC3d+'刀');
     cd += '</div>';
   }
 
