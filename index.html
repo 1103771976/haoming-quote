@@ -8437,11 +8437,11 @@ function renderDiscColumn(r, anyScrap, anyBarSlice, anyOther, otherItems, up, qr
     h += '<div class="cd-block" style="border-left-color:var(--sub)">';
     h += '<div class="cd-title">其他费用</div>';
     // 倒角
-    var _c3r = (r.label==='fit' && _fcc) ? (_fcc.c3||0) : (parseInt(document.getElementById('knife3').value)||0);
-    if (hasOtherRoute && chf > 0.0001) h += '<div class="cd-line">倒角费 <span class="r">¥' + chf.toFixed(4) + '</span>（面' + Math.max(D,_discH).toFixed(1) + 'mm 取档）</div>';
+    var _c3r = (r.label==='fit' && window.__fitCut) ? (window.__fitCut.c3||0) : (parseInt(document.getElementById('knife3').value)||0);
+    if (hasOtherRoute && chf > 0.0001) h += '<div class="cd-line">倒角费 <span class="r">¥' + chf.toFixed(4) + '</span>（面' + Math.max(_paD,_discH).toFixed(1) + 'mm 取档）</div>';
     else if (otherItems.cha) h += '<div class="cd-line" style="visibility:hidden">倒角费 ¥0.0000</div>';
     // 无心磨
-    if (hasOtherRoute && grf > 0.0001) h += '<div class="cd-line">无心磨 <span class="r">¥' + grf.toFixed(4) + '</span>（D' + (D||0) + '≤3.5 自动费率）</div>';
+    if (hasOtherRoute && grf > 0.0001) h += '<div class="cd-line">无心磨 <span class="r">¥' + grf.toFixed(4) + '</span>（D' + (_paD||0) + '≤3.5 自动费率）</div>';
     else if (otherItems.grd) h += '<div class="cd-line" style="visibility:hidden">无心磨 ¥0.0000</div>';
     // 车肩
     if (hasOtherRoute && shf > 0.0001) h += '<div class="cd-line">车肩 <span class="r">¥' + shf.toFixed(4) + '</span>（0.2元/片）</div>';
@@ -12272,7 +12272,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
-        <tr><td><span>v5.6.05</span></td><td>显示层全面完善（算式透明化）+ 内联属性清理：1) 刀厚明细改为「毛坯÷（成品+刀厚）≈出刀（刀厚）」估算式（方块用成品尺寸、圆片用方条边长作除数）；2) 合格率成本显示损耗系数（合格率qr→损耗系数(2−qr)）；3) 加工费逐项正确展示计算过程（磨型/颗粒磨/精雕 N道×单价，倒角/打孔/车肩/镭雕/喷码/平面多级冲显示计算依据）；4) 毛坯体积显示 = 长×宽×高 = mm³ = cm³；5) 毛坯选择标注出刀数与候选择优（通用坯2候选中最多）；6) 产量推算显示 kg÷kg/坯≈坯×片/坯；7) 电镀面积显示 2×(L×W+L×H+W×H) 算式（圆片用圆盘表面积）。算价公式零改动</td></tr>
+        <tr><td><span>v5.6.05</span></td><td>显示层全面完善（算式透明化）：1) 刀厚明细改为「毛坯÷（成品+刀厚）≈出刀（刀厚）」估算式（方块用成品尺寸、圆片用方条边长作除数）；2) 合格率成本显示损耗系数（合格率qr→损耗系数(2−qr)）；3) 加工费逐项正确展示计算过程（磨型/颗粒磨/精雕 N道×单价，倒角/打孔/车肩/镭雕/喷码/平面多级冲显示计算依据）；4) 毛坯体积显示 = 长×宽×高 = mm³ = cm³；5) 毛坯选择标注出刀数与候选择优（通用坯2候选中最多）；6) 产量推算显示 kg÷kg/坯≈坯×片/坯；7) 电镀面积显示 2×(L×W+L×H+W×H) 算式（圆片用圆盘表面积）。算价公式零改动</td></tr>
         <tr><td><span>v5.6.04</span></td><td>报价结果新增「刀厚明细（按切割轴）」展示：通用毛坯/合适毛坯结果卡与圆片通用方块/合适方块明细，均按长(L)/宽(W)/高(H)轴分组，每轴显示「刀厚mm × 刀数」（如 0.40mm × 14刀），圆片复用同一套 knife1/2/3+knifeThick1/2/3 DOM 字段。纯展示逻辑，算价公式零改动</td></tr>
         <tr><td><span>v5.6.03</span></td><td>预言机/回归台对齐 QR 三因子模型 + 圆几何 3.14 统一：1) matrix_p0 预言机 _predictQr 复算逻辑逐字节对齐工具 computeQualifyRate——基础合格率 base 0.90→0.95，降档 0.85→0.90（降档扣 0.05），补异形豁免(irregularExempt)与 baseDrop 取最重一档不叠加，修复 21 条 QR 断言(0.05)误触发；2) disc_oracle 圆片分段切费 discArea 统一 3.14（L347 分段切/L570 打孔分段），消除打孔D0.8小孔 disc 系 ~1e-5 比价偏差；3) 黄金自测 227/227、变异测试 9/9、日常回归 3834/3834 全绿零 FAIL。算价公式零改动</td></tr>
         <tr><td><span>v5.6.02</span></td><td>P0并发降低防卡死 + 瓦片废料修复 + GC-017套孔识别：1) P0主回归并发度下调，消除浏览器多实例并发导致的卡死（用户验证 20/20 PASS 不卡）；2) 瓦片废料列按预言机独立复算对齐，修复瓦片材料费偏差；3) GC-017 套孔（多孔径同轴孔）识别新增，套孔芯回收与打孔费在折叠形状明细面板暴露。算价公式零改动</td></tr>
