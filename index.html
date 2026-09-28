@@ -2421,8 +2421,8 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
 
   <!-- Card: 报价结果 -->
   <div class="card" data-page-node-id="2sfgumGM1pNfKsXlrr81PG">
-    <div class="card-head" data-page-node-id="Fna4H6QZEFDDNJEvfpp7kO">报价结果 <span class="result-tools" data-page-node-id="geD8bYPMeSiiAPCJ9R2lgT"><button id="historyBtn" class="tool-btn" title="报价记录" data-page-node-id="MmWnnFOeWCmgAmhiy5lBbG"><svg class="ic" aria-hidden="true" data-page-node-id="ZgC1wU7MNpJJotS86kB9JM"><use href="#ic-clipboard" data-page-node-id="Pj2RqmowSXCmTb2ZncGtwq"/></svg> 报价记录</button></span></div>
-    <div class="card-body" data-page-node-id="CoJ1oJDTcxoDQb3EenOnAy">
+    <div class="card-head" data-page-node-id="Fna4H6QZEFDDNJEvfpp7kO">报价结果 <span class="result-tools" data-page-node-id="geD8bYPMeSiiAPCJ9R2lgT"><button id="historyBtn" class="tool-btn" title="报价记录" data-page-node-id="MmWnnFOeWCmgAmhiy5lBbG"><svg class="ic" aria-hidden="true" data-page-node-id="ZgC1wU7MNpJJotS86kB9JM"><use href="#ic-clipboard" data-page-node-id="Pj2RqmowSXCmTb2ZncGtwq"/></svg> 报价记录</button><button id="shotBtn" class="tool-btn" title="截图发群（自动复制图片到剪贴板，可直接 Ctrl+V 粘贴到微信）">📸 截图发群</button></span></div>
+    <div class="card-body" id="resultCardBody" data-page-node-id="CoJ1oJDTcxoDQb3EenOnAy">
 
       <div id="priceOverview" data-page-node-id="TdpntBJxD6bbrfJ0QM24xC"></div>
 
@@ -2917,6 +2917,7 @@ function _fullClearParseState() {
 // 分隔符已归一化：×/X/x→*，by→*；统一用 * 匹配（× 亦兼容）
 function canonicalShapeCheck(t) {
   var raw = (t || '').trim();
+  var _masked = [];
   if (!raw) return { ok: true, shape: '' };
   // 瓦片：2R / R*R 标记
   if (/(?:2R|R\s*\d+(?:\.\d+)?\s*\*\s*R)/i.test(raw)) return { ok: true, shape: '瓦片' };
@@ -2940,7 +2941,9 @@ function canonicalShapeCheck(t) {
     .replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切粒|切颗|切割|线切|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|无心磨|平磨|内外圆|双端面|研光|喷码|镭雕|多机冲|车削|压制成型|模压|烧结|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）
     .replace(/(?:车肩|无心磨|多级冲|喷码|镭雕|精雕|颗粒磨)(?:价|费)?\s*\d*\.?\d*/gi, ' ')  // 修复C：剥离旋转体加工/表面处理类工艺词（含价/费数字）；车肩费0.2 / 无心磨0.1 等不再污染形状校验
     .replace(/\d+\.?\d*\s*[万千]/g, ' ')  // 修复B：剥离中文数量单位数字
-    .replace(/(?<![Dd])\d{3,}/g, ' ')  // 修复B补：剥离裸数量/大数（规格直径≤20，≥100必是数量）；仅保护 D前缀大尺寸(如 D100)，不再排除 *×xX 前置→解决 x/×串联数量(如*50000*)未被剥离致圆片判定失败退回方块
+    .replace(/^(\s*\d+(?:\.\d+)?(?:\*\s*\d+(?:\.\d+)?){0,2})/, function(__t){ return __t.replace(/(?<![Dd])\d{3,}/g, function(__n){ _masked.push(__n); return '\uE000'; }); })  // [2026-09-28 修复] 遮蔽开头方块维度三段内≥100的数(如300*100*10)，交还下方 L2943 时它不会误剥这些真实维度；圆片(D/Φ前缀)不在此遮蔽范围→原有剥离逻辑不变
+    .replace(/(?<![Dd])\d{3,}/g, ' ')  // 原 L2943 不变：剥离裸数量/大数
+    .replace(/\uE000/g, function(){ return _masked.shift(); })  // 解除遮蔽，还原真实维度三段
     .replace(/(?:数量|下单量|订单量|下单|订单|订购)\s*[:：]?\s*\d+(?:\.\d+)?\s*[万千]?/gi, ' ')  // [v5.5.79 修复] 剥离数量/下单量/订单量/下单/订单/订购+数字token(含可选小数与万千)，避免紧凑写法 数量1 无空格时漏剥→圆片校验残留3数被判未识别而静默退回方块+清空数量(下游按500片错价)；关键词与 autoParse qtyKw 保持一致；算价公式零改动
     .replace(/磨型\s*轴?\s*\d*\.?\d*\s*道?/gi, ' ')  // 修复B补：剥离磨型轴/磨型道数等加工参数数字（轴/道为中文，用\s*包容）
     .replace(/道/g, ' ')  // 修复B补：清理磨型道数残留的"道"字
@@ -13173,6 +13176,81 @@ window._renderSsCosts   = _renderSsCosts;   // 阶段3 去重新增（3E）
   _jbDeliver('change', 'data-jb-change');
   _jbDeliver('click', 'data-jb-click');
   _jbDeliver('input', 'data-jb-input');
+})();
+</script>
+
+<!-- 一键截图发群：html2canvas 本地 vendored，离线可用 -->
+<script src="html2canvas.min.js"></script>
+<script>
+(function(){
+  // 降级预览：剪贴板不可用时（非安全上下文 / 权限被拒），弹窗展示图片，支持右键复制或下载
+  function _showShotPreview(canvas){
+    var ov = document.getElementById('shotPreviewOverlay');
+    if(!ov){
+      ov = document.createElement('div');
+      ov.id = 'shotPreviewOverlay';
+      ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;';
+      ov.innerHTML = '<div style="background:#fff;border-radius:12px;max-width:92vw;max-height:88vh;overflow:auto;padding:14px;box-shadow:0 10px 50px rgba(0,0,0,.35)">'
+        + '<div style="font-size:13px;color:#596577;margin-bottom:8px">截图已生成。当前环境剪贴板不可用，请<b>右键图片→复制</b>，或下载后粘贴到微信。</div>'
+        + '<img id="shotPreviewImg" style="max-width:100%;display:block;border:1px solid #eee;border-radius:6px">'
+        + '<div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">'
+        + '<button id="shotDownload" style="border:none;background:#06b6d4;color:#fff;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:13px">下载图片</button>'
+        + '<button id="shotClose" style="border:1px solid #ccc;background:#fff;color:#444;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:13px">关闭</button>'
+        + '</div></div>';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', function(e){ if(e.target===ov) ov.style.display='none'; });
+    }
+    document.getElementById('shotPreviewImg').src = canvas.toDataURL('image/png');
+    document.getElementById('shotDownload').onclick = function(){
+      var a=document.createElement('a'); a.href=document.getElementById('shotPreviewImg').src;
+      a.download='报价截图_'+Date.now()+'.png'; a.click();
+    };
+    document.getElementById('shotClose').onclick = function(){ ov.style.display='none'; };
+    ov.style.display='flex';
+  }
+
+  async function copyQuoteScreenshot(){
+    var btn = document.getElementById('shotBtn');
+    if(typeof html2canvas !== 'function'){
+      if(window.showToast) showToast('截图组件未加载（html2canvas 缺失）', 'error'); else alert('截图组件未加载');
+      return;
+    }
+    var card = document.getElementById('resultCardBody'); // 报价结果卡片正文（价格框→成本→利用率→对比）
+    if(!card){ if(window.showToast) showToast('未找到报价区域', 'error'); return; }
+    if(!card.innerText.trim()){ if(window.showToast) showToast('请先算一次报价再截图', 'warn'); return; }
+    var oldText = btn ? btn.innerHTML : '';
+    if(btn){ btn.disabled = true; btn.textContent = '📸 截图中…'; }
+    try{
+      // 按元素实际渲染尺寸截取（不固定坐标），scale 用设备像素比保证清晰
+      var canvas = await html2canvas(card, {
+        backgroundColor: '#ffffff',
+        scale: Math.max(2, window.devicePixelRatio || 1),
+        logging: false,
+        useCORS: true
+      });
+      var blob = await new Promise(function(res){ canvas.toBlob(res, 'image/png'); });
+      if(!blob) throw new Error('画布转图片失败');
+      if(navigator.clipboard && window.ClipboardItem){
+        try{
+          await navigator.clipboard.write([ new window.ClipboardItem({ 'image/png': blob }) ]);
+          if(window.showToast) showToast('✅ 已复制到剪贴板，去微信 Ctrl+V 粘贴', 'success');
+          return;
+        }catch(err){ /* 剪贴板被拦截，降级预览 */ }
+      }
+      _showShotPreview(canvas);
+      if(window.showToast) showToast('已生成截图（剪贴板不可用，请右键复制或下载）', 'info');
+    }catch(e){
+      if(window.showToast) showToast('截图失败：' + (e && e.message ? e.message : e), 'error');
+    }finally{
+      if(btn){ btn.disabled = false; btn.innerHTML = oldText; }
+    }
+  }
+
+  function _bindShot(){
+    var b = document.getElementById('shotBtn');
+    if(b) b.addEventListener('click', copyQuoteScreenshot);
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _bindShot); else _bindShot();
 })();
 </script>
 </body>
