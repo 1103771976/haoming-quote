@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.05</title>
+<title>昊铭磁材报价计算工具 v5.6.06</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -443,6 +443,29 @@ input[type="number"] { -moz-appearance: textfield; }
 .calc-detail .cd-mode-tag.block { background: var(--blue-bg); color: var(--blue); }
 .calc-detail .cd-mode-tag.cyl { background: var(--blue-bg); color: var(--blue-dark); }
 .calc-detail .cd-divider { border: none; border-top: 1px dashed var(--border); margin: 10px 0; }
+.calc-detail .cd-derive { display: none; }
+.calc-detail.fold-open .cd-derive { display: block; }
+.calc-detail .cd-fold-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin: 0 0 10px; padding: 5px 12px;
+  font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit;
+  color: var(--blue-dark); background: var(--blue-bg);
+  border: 1px solid var(--blue-ring); border-radius: var(--ui-radius-xs);
+}
+.calc-detail .cd-fold-btn:hover { background: var(--blue-light); }
+.calc-detail .cd-fold-btn.open { background: var(--blue-light); }
+
+/* 参数设置折叠：高级参数（默认收起） */
+.adv-fold-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin: 0 0 10px; padding: 5px 12px;
+  font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit;
+  color: var(--blue-dark); background: var(--blue-bg);
+  border: 1px solid var(--blue-ring); border-radius: var(--ui-radius-xs);
+}
+.adv-fold-btn:hover { background: var(--blue-light); }
+.adv-fold-btn.open { background: var(--blue-light); }
+body.adv-collapsed .adv-item { display: none; }
 
 /* ===== Modal ===== */
 .modal-overlay {
@@ -2022,7 +2045,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
 
 </style>
 </head>
-<body data-page-node-id="pWDh1oe52k1oCI2uatWJBQ">
+<body class="adv-collapsed" data-page-node-id="pWDh1oe52k1oCI2uatWJBQ">
 
 <!-- v5.5.23 统一描边图标系统：替换原 emoji 功能图标。单一 sprite + <use> 引用，currentColor 继承文字色 -->
 <style>
@@ -2065,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.05</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.06</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2275,7 +2298,8 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
             <label style="margin-left:10px;display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--sub);cursor:pointer" data-page-node-id="zKHuTPK3smYYj8bQyO7xld"><input id="lowestCostToggle" type="checkbox" data-page-node-id="4pnCw5FaQYC3D88WBxE6c5"> 最低成本(H轴0.20mm)</label>
           </div>
         </div>
-        <div class="param-row" data-page-node-id="gejL3cVDCz6RDLQ2yhKR0f">
+        <button type="button" class="adv-fold-btn" onclick="toggleAdvParams(this)">▸ 高级参数</button>
+        <div class="param-row adv-item" data-page-node-id="gejL3cVDCz6RDLQ2yhKR0f">
           <div class="f-row" style="margin-bottom:0" data-page-node-id="FAohBDut5AsGhBt4JQwSuJ">
             <label class="blank-label" data-page-node-id="2tYDJEpsqTEZSldgCj2KdI">刀厚</label>
             <input id="knifeThick1" type="number" step="0.01" value="0.4" min="0.2" max="2.0" style="width:58px" data-page-node-id="aRyTN603fCnw8qEYGovVdA"><span class="sep" data-page-node-id="s5Y4c1OGjJeNmKlbsZiRi2">/</span>
@@ -2308,16 +2332,16 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
           </div>
         </div>
         <div class="param-row" data-page-node-id="ID9Ehshcw7cPAJL8EpDiAT">
-          <div class="f-row" style="margin-bottom:0" data-page-node-id="L7qGvE3ECEI8JFGtjFV9mG">
+          <div class="f-row adv-item" style="margin-bottom:0" data-page-node-id="L7qGvE3ECEI8JFGtjFV9mG">
             <label style="min-width:52px" data-page-node-id="CCVdFbMBAeA7x1Aptvwok4">废料</label>
             <input id="scrapPrice" type="number" step="1" value="100" style="width:68px" data-page-node-id="JZQNnQPc3XwA5C4LmQA9k0">
             <span class="unit" data-page-node-id="WFeAjh0oduD6OTBg3nmHoY">元/kg</span>
           </div>
-          <div class="f-row" style="margin-bottom:0" data-page-node-id="jymsA4pdKVM8uA8qwYIr4Q">
+          <div class="f-row adv-item" style="margin-bottom:0" data-page-node-id="jymsA4pdKVM8uA8qwYIr4Q">
             <label style="min-width:52px" data-page-node-id="e1VHHgIyP445YJZ2KABhqN">镀系数</label>
             <input id="platingCoef" type="number" step="0.00001" value="0.00016" style="width:92px" data-page-node-id="deEDM4ZkcS5DmqaupGNHmv">
           </div>
-          <div class="f-row" id="platingDimRow" style="margin-bottom:0;width:100%;gap:10px;padding:8px 12px;background:rgba(122,79,176,0.05);border:1px solid var(--border-light);border-radius:8px" data-page-node-id="sL7AHtJmCnBOE4tDvDpaVo">
+          <div class="f-row adv-item" id="platingDimRow" style="margin-bottom:0;width:100%;gap:10px;padding:8px 12px;background:rgba(122,79,176,0.05);border:1px solid var(--border-light);border-radius:8px" data-page-node-id="sL7AHtJmCnBOE4tDvDpaVo">
             <label style="min-width:52px" data-page-node-id="U8sLlEo5R17P3OkP98YKoY">电镀尺寸</label>
             <span style="font-size:var(--ui-font-small);color:var(--sub2);margin-left:4px" data-page-node-id="qZzOvkiDF1bECn2c6ft2Xl">手填则优先于产品规格</span>
             <input id="platingDimL" type="number" step="0.01" min="0" placeholder="长 L" style="width:64px" title="电镀面积用长(L)轴，留空=按产品规格" data-page-node-id="qrCG8yLfkokE3VKs7j5tsG">
@@ -2339,17 +2363,17 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
             <input id="stockProfitRate" type="number" step="0.01" value="1.05" style="width:68px" data-page-node-id="0HhrQboTrvczRTY2dCRaWQ">
             <span class="unit" data-page-node-id="O50YeZdjhE8M0rNfa4PjjU">倍</span>
           </div>
-          <div class="f-row" style="margin-bottom:0" data-page-node-id="h8gYuVriH4KMZ9nxjq04qn">
+          <div class="f-row adv-item" style="margin-bottom:0" data-page-node-id="h8gYuVriH4KMZ9nxjq04qn">
             <label style="min-width:52px" title="毛坯损耗倍率，自动时坯数<100→1.1，≥100→1.05" data-page-node-id="hnSM41WWD8qEssv863LlpG">毛坯损耗率</label>
             <input id="stockLossRate" type="number" step="0.01" min="1" max="1.5" placeholder="自动" value="" style="width:68px" data-page-node-id="4mFrsGiPtrj1hDwUZlHGHt">
             <span class="unit" style="color:var(--sub)" data-page-node-id="gJZ85FBquHgDQYWYIADGes">倍</span>
           </div>
-          <div class="f-row" style="margin-bottom:0" data-page-node-id="8GIHIUFq4Yscv27gZf3nKz">
+          <div class="f-row adv-item" style="margin-bottom:0" data-page-node-id="8GIHIUFq4Yscv27gZf3nKz">
             <label style="min-width:52px" data-page-node-id="n4kLVbFZr4DdOEJ3MQaQ4q">工装</label>
             <input id="stockFixtureFee" type="number" step="1" value="0" style="width:68px" data-page-node-id="OfDTW2hIF7xU3b5Aka5MQv">
             <span class="unit" data-page-node-id="t4aLkjCA844oD3N9gKLwYf">元</span>
           </div>
-          <div class="f-row" id="chamferRow" style="margin-bottom:0" data-page-node-id="mA7iygK9uRwoir3awBNxS9">
+          <div class="f-row adv-item" id="chamferRow" style="margin-bottom:0" data-page-node-id="mA7iygK9uRwoir3awBNxS9">
             <label style="min-width:52px" data-page-node-id="GiRWxd9O7NnoBPnRWTxkwV">倒角</label>
             <input id="chamferFee" type="number" step="0.01" value="0" style="width:68px" data-page-node-id="fHf4bUMBaJSQl8xDJkit2I">
             <span id="chamferHint" style="font-size:var(--ui-font-small);color:var(--blue-dark);min-width:60px" data-page-node-id="tiMWYyAyC2y3bTBoyRqnPg"></span>
@@ -2366,7 +2390,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
         </script>
 
         <!-- 加工费 -->
-        <div id="processFeeSection" style="border-top:1px solid var(--border);padding-top:10px" data-page-node-id="AoE4rYmxV3EHZhzTyDmvjn">
+        <div id="processFeeSection" class="adv-item" style="border-top:1px solid var(--border);padding-top:10px" data-page-node-id="AoE4rYmxV3EHZhzTyDmvjn">
           <div class="param-section-title" data-page-node-id="ZAmSZgKJ0NxgT9wXBVgQlG">加工费</div>
           <div class="pf-row" data-page-node-id="2mpa3wAfFuSEEq61IYyCFB">
             <label class="pf-check" data-page-node-id="GHVdYj8URJUF2A7kmEHLAB"><input type="checkbox" id="pfGrind" data-page-node-id="QEDIE84vrcRD1icUfFVUy1">磨型</label>
@@ -3945,6 +3969,11 @@ function autoParse() {
   recognizeQty(ctx);
   recognizeOverrides(ctx);
   recognizeProcess(ctx);
+  // [Task F] 磨型即异形：识别到「磨型」则形状自动设为「异形」，无需再输入「异形」二字。
+  // 仅当当前识别为方块时强制升级为异形；不覆盖已识别的圆片/瓦片/异形，避免误判。
+  if (ctx.hasGrind && typeof shapeMode !== 'undefined' && shapeMode === 'block') {
+    try { if (typeof switchShape === 'function') switchShape('irregular'); } catch (e) {}
+  }
   applyParse(ctx);
   renderResult(ctx);
   _suppressAutoCalc = false;
@@ -6077,9 +6106,38 @@ function clearCalcDetail() {
   document.getElementById('calcDetail').innerHTML = '<div class="cd-empty">输入规格并计算后显示详细运算过程</div>';
 }
 
-// ===== 参数持久化（当前为空，后续可扩展 localStorage） =====
-function saveSettings() {}
-function loadSettings() {}
+// ===== 参数持久化：常用参数记忆（材料单价/合格率/利润率/电镀系数） =====
+var PARAM_MEM_KEY = 'hmcj_lastParams';
+function saveSettings(){
+  try{
+    var o = {
+      unitPrice: (document.getElementById('unitPrice')||{}).value,
+      stockQualifyRate: (document.getElementById('stockQualifyRate')||{}).value,
+      stockProfitRate: (document.getElementById('stockProfitRate')||{}).value,
+      platingCoef: (document.getElementById('platingCoef')||{}).value
+    };
+    localStorage.setItem(PARAM_MEM_KEY, JSON.stringify(o));
+  }catch(e){}
+}
+function loadSettings(){
+  try{
+    var s = localStorage.getItem(PARAM_MEM_KEY);
+    if(!s) return;
+    var o = JSON.parse(s);
+    var ids = ['unitPrice','stockQualifyRate','stockProfitRate','platingCoef'];
+    ids.forEach(function(id){
+      var v = o[id];
+      if(v===undefined || v===null || v==='') return;
+      var el = document.getElementById(id);
+      if(el) el.value = v;
+    });
+    // 记忆值回填后，绑定即时持久化（改即存）
+    ids.forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){ el.addEventListener('change', saveSettings); el.addEventListener('input', saveSettings); }
+    });
+  }catch(e){}
+}
 
 // ===== E模块：多线模式产量推算（纯展示，不碰核心计算） =====
 function renderYieldEstimate(kt, blankWeightKg) {
@@ -6094,6 +6152,23 @@ function renderYieldEstimate(kt, blankWeightKg) {
     '<div class="cd-line">100 坯 ≈ <span class="r">' + hundred.toLocaleString('zh-CN') + ' 片</span> <span class="s">（100 × ' + perBlock + '）</span></div>' +
     '<div class="cd-line">300kg ÷ <span class="v">' + blankWeightKg.toFixed(3) + 'kg/坯</span> ≈ <span class="v">' + Math.floor(blocks300) + '坯</span> × ' + perBlock + '片/坯 ≈ <span class="r">' + yield300.toLocaleString('zh-CN') + ' 片</span></div>' +
   '</div>';
+}
+
+// 计算明细折叠：展开/收起「计算详情（面积/体积推导）」
+function toggleCdDerive(btn){
+  var root = (btn && btn.closest) ? btn.closest('.calc-detail') : null;
+  if (!root) return;
+  var open = root.classList.toggle('fold-open');
+  btn.classList.toggle('open', open);
+  btn.innerHTML = open ? '▾ 收起计算详情' : '▸ 展开计算详情';
+}
+
+function toggleAdvParams(btn){
+  var collapsed = document.body.classList.toggle('adv-collapsed');
+  if (btn){
+    btn.classList.toggle('open', !collapsed);
+    btn.innerHTML = collapsed ? '▸ 高级参数' : '▾ 收起高级参数';
+  }
 }
 
 function renderCalcDetail(stock, fit) {
@@ -6117,6 +6192,7 @@ function renderCalcDetail(stock, fit) {
   const spp = stock.scrapPerPiece || 0;
 
   let html = '<div class="calc-detail" style="line-height:1.65">';
+  html += '<button type="button" class="cd-fold-btn" onclick="toggleCdDerive(this)">▸ 展开计算详情</button>';
 
   // 顶部：产品规格（全宽，与毛坯方案分离）
   html += '<div class="cd-block quote" style="border-left-color:var(--text);margin-bottom:12px">';
@@ -6155,9 +6231,11 @@ function renderCalcDetail(stock, fit) {
   html += '<div class="cd-block mtrl">';
   html += '<div class="cd-title">材料费</div>';
   var _bd = (document.getElementById('stockBlock').value||'').trim().split('*').map(Number);
+  html += '<div class="cd-derive">';
   html += '<div class="cd-line">毛坯体积 = ' + _bd[0] + '×' + _bd[1] + '×' + _bd[2] + ' = <span class="v">' + stock.blankVol.toFixed(0) + ' mm³</span> = <span class="v">' + (stock.blankVol/1000).toFixed(1) + ' cm³</span>';
   html += ' × 密度 ' + DENSITY + 'g/cm³ ÷ 1000 = 毛坯重 <span class="v">' + fmtPerWt(stock.blankWeight) + '</span></div>';
   html += '<div class="cd-line">毛坯重 × 单价 ' + up + '元/kg = 毛坯价 <span class="v">¥' + stock.blankPrice.toFixed(2) + '</span></div>';
+  html += '</div>';
   html += '<div class="cd-line">毛坯价 ÷ 出刀 ' + kt + ' = 单颗材料 <span class="r">¥' + stock.singleMaterial.toFixed(4) + '</span></div>';
   if (spp > 0.0001) {
     html += '<div class="cd-line" style="color:var(--text2)">减余料回收 <span class="g">-¥' + spp.toFixed(4) + '</span> → 净材料 <span class="r">¥' + matNet.toFixed(4) + '</span></div>';
@@ -6169,14 +6247,14 @@ function renderCalcDetail(stock, fit) {
   // 切片费
   html += '<div class="cd-block slice">';
   html += '<div class="cd-title">切片费</div>';
-  html += '<div class="cd-line">切片面积 = ' + L + '×' + W + ' + ' + L + '×' + H + ' + ' + W + '×' + H + ' = <span class="v">' + stock.slicingArea.toFixed(1) + ' mm²</span></div>';
+  html += '<div class="cd-derive"><div class="cd-line">切片面积 = ' + L + '×' + W + ' + ' + L + '×' + H + ' + ' + W + '×' + H + ' = <span class="v">' + stock.slicingArea.toFixed(1) + ' mm²</span></div></div>';
   html += '<div class="cd-line">面积 × 系数 ' + parseFloat(document.getElementById('slicingCoef').value||0.0004).toFixed(4) + ' = <span class="r">¥' + stock.slicingFee.toFixed(4) + '</span></div>';
   html += '</div>';
 
   // 电镀费
   html += '<div class="cd-block plate">';
   html += '<div class="cd-title">电镀费</div>';
-  html += '<div class="cd-line">电镀面积 = 2×(' + L + '×' + W + '+' + L + '×' + H + '+' + W + '×' + H + ') = <span class="v">' + stock.platingArea.toFixed(1) + 'mm²</span> → 有效面积 ' + stock.platingAreaEffective.toFixed(1) + 'mm²（最小' + stock.minPlatingArea + 'mm²）</div>';
+  html += '<div class="cd-derive"><div class="cd-line">电镀面积 = 2×(' + L + '×' + W + '+' + L + '×' + H + '+' + W + '×' + H + ') = <span class="v">' + stock.platingArea.toFixed(1) + 'mm²</span> → 有效面积 ' + stock.platingAreaEffective.toFixed(1) + 'mm²（最小' + stock.minPlatingArea + 'mm²）</div></div>';
   html += '<div class="cd-line">有效面积 × 系数 ' + parseFloat(document.getElementById('platingCoef').value).toFixed(5) + ' = <span class="r">¥' + stock.platingFee.toFixed(4) + '</span></div>';
   html += '</div>';
 
@@ -6205,18 +6283,19 @@ function renderCalcDetail(stock, fit) {
     html += '</div>';
   }
 
-  // 成本汇总
+  // 成本汇总 · 计算链（①→②→③ 与核心算法 assembleFinalCost 完全对齐）
   html += '<div class="cd-block cost">';
-  html += '<div class="cd-title">成本汇总</div>';
-  html += '<div class="cd-line">raw成本 = 净材料 ' + matNet.toFixed(4) + ' + 切片 ' + stock.slicingFee.toFixed(4) + ' + 电镀 ' + stock.platingFee.toFixed(4) + (chf>0.0001?' + 其他 ' + chf.toFixed(4):'') + ' = <span class="v">¥' + stock.rawCost.toFixed(4) + '</span></div>';
+  html += '<div class="cd-title">成本汇总 · 计算链</div>';
+  html += '<div class="cd-line">① raw成本 = 净材料 ' + matNet.toFixed(4) + ' + 切片 ' + stock.slicingFee.toFixed(4) + ' + 电镀 ' + stock.platingFee.toFixed(4) + (chf>0.0001?' + 其他 ' + chf.toFixed(4):'') + ' = <span class="v">¥' + stock.rawCost.toFixed(4) + '</span></div>';
   var _lc = (2 - qr);
-  html += '<div class="cd-line">合格率成本 = <span class="v">' + stock.rawCost.toFixed(4) + '</span> × ' + _lc.toFixed(2) + '（合格率' + qr + '→损耗系数' + _lc.toFixed(2) + '）= <span class="r">¥' + stock.yieldCost.toFixed(4) + '</span>  <span class="s">（含不良品摊销）</span></div>';
+  html += '<div class="cd-line">② 合格率成本 = <span class="v">' + stock.rawCost.toFixed(4) + '</span> × ' + _lc.toFixed(2) + '（合格率' + qr + '→损耗系数(2−qr)' + _lc.toFixed(2) + '）= <span class="r">¥' + stock.yieldCost.toFixed(4) + '</span>  <span class="s">（含不良品摊销）</span></div>';
+  html += '<div class="cd-line">③ 利润率加成 = 合格率成本 <span class="v">' + stock.yieldCost.toFixed(4) + '</span> × 利润率 ' + pr + ' = <span class="r" style="font-size:15px">¥' + stock.quote.toFixed(4) + ' /片</span>  <span class="s">（最终单价）</span></div>';
   html += '</div>';
 
-  // 报价
+  // 报价（单价见成本汇总③，此处仅算总货值）
   html += '<div class="cd-block quote">';
   html += '<div class="cd-title">最终报价</div>';
-  html += '<div class="cd-line">报价 = 合格率成本 <span class="v">' + stock.yieldCost.toFixed(4) + '</span> × 利润率 ' + pr + ' = <span class="r" style="font-size:15px">¥' + stock.quote.toFixed(4) + ' /片</span></div>';
+  html += '<div class="cd-line">最终单价（成本汇总③）= <span class="r" style="font-size:15px">¥' + stock.quote.toFixed(4) + ' /片</span></div>';
   html += '<div class="cd-line"><span class="s">总货值 = ¥' + stock.quote.toFixed(6) + ' × ' + (oq||0) + '片 + 工装' + (parseFloat(document.getElementById('stockFixtureFee').value)||0) + ' = <span class="v">¥' + stock.totalValue.toFixed(2) + '</span></span></div>';
   html += '</div>';
   html += '</div>'; // close stock flex col
@@ -6259,9 +6338,11 @@ function renderCalcDetail(stock, fit) {
     html += '<div class="cd-block mtrl">';
     html += '<div class="cd-title">材料费</div>';
     var _fbdv = fitSpec.split('*').map(Number);
+    html += '<div class="cd-derive">';
     html += '<div class="cd-line">毛坯体积 = ' + _fbdv[0] + '×' + _fbdv[1] + '×' + _fbdv[2] + ' = <span class="v">' + (fit.blankVol||0).toFixed(0) + ' mm³</span> = <span class="v">' + ((fit.blankVol||0)/1000).toFixed(1) + ' cm³</span>';
     html += ' × 密度 ' + DENSITY + 'g/cm³ ÷ 1000 = 毛坯重 <span class="v">' + fmtPerWt(fit.blankWeight||0) + '</span></div>';
     html += '<div class="cd-line">毛坯重 × 单价 ' + up + '元/kg = 毛坯价 <span class="v">¥' + (fit.blankPrice||0).toFixed(2) + '</span></div>';
+    html += '</div>';
     html += '<div class="cd-line">毛坯价 ÷ 出刀 ' + fitKt + ' = 单颗材料 <span class="r">¥' + (fit.singleMaterial||0).toFixed(4) + '</span></div>';
     if ((fit.scrapPerPiece||0) > 0.0001) {
       html += '<div class="cd-line">减余料回收 <span class="g">-¥' + (fit.scrapPerPiece||0).toFixed(4) + '</span> → 净材料 <span class="r">¥' + fitMatNet.toFixed(4) + '</span></div>';
@@ -6273,14 +6354,14 @@ function renderCalcDetail(stock, fit) {
     // 切片费
     html += '<div class="cd-block slice">';
     html += '<div class="cd-title">切片费</div>';
-    html += '<div class="cd-line">切片面积 = ' + L + '×' + W + ' + ' + L + '×' + H + ' + ' + W + '×' + H + ' = <span class="v">' + (fit.slicingArea||0).toFixed(1) + ' mm²</span></div>';
+    html += '<div class="cd-derive"><div class="cd-line">切片面积 = ' + L + '×' + W + ' + ' + L + '×' + H + ' + ' + W + '×' + H + ' = <span class="v">' + (fit.slicingArea||0).toFixed(1) + ' mm²</span></div></div>';
     html += '<div class="cd-line">面积 × 系数 ' + parseFloat(document.getElementById('slicingCoef').value||0.0004).toFixed(4) + ' = <span class="r">¥' + (fit.slicingFee||0).toFixed(4) + '</span></div>';
     html += '</div>';
 
     // 电镀费
     html += '<div class="cd-block plate">';
     html += '<div class="cd-title">电镀费</div>';
-    html += '<div class="cd-line">电镀面积 = 2×(' + L + '×' + W + '+' + L + '×' + H + '+' + W + '×' + H + ') = <span class="v">' + (fit.platingArea||0).toFixed(1) + 'mm²</span> → 有效面积 ' + (fit.platingAreaEffective||0).toFixed(1) + 'mm²（最小' + ((fit.minPlatingArea) ?? PLATING_MIN_AREA[document.getElementById('plating').value] ?? 40) + 'mm²）</div>';
+    html += '<div class="cd-derive"><div class="cd-line">电镀面积 = 2×(' + L + '×' + W + '+' + L + '×' + H + '+' + W + '×' + H + ') = <span class="v">' + (fit.platingArea||0).toFixed(1) + 'mm²</span> → 有效面积 ' + (fit.platingAreaEffective||0).toFixed(1) + 'mm²（最小' + ((fit.minPlatingArea) ?? PLATING_MIN_AREA[document.getElementById('plating').value] ?? 40) + 'mm²）</div></div>';
     html += '<div class="cd-line">有效面积 × 系数 ' + parseFloat(document.getElementById('platingCoef').value).toFixed(5) + ' = <span class="r">¥' + (fit.platingFee||0).toFixed(4) + '</span></div>';
     html += '</div>';
 
@@ -6306,19 +6387,20 @@ function renderCalcDetail(stock, fit) {
       html += '</div>';
     }
 
-    // 成本汇总
+    // 成本汇总 · 计算链（①→②→③ 与核心算法 assembleFinalCost 完全对齐）
     html += '<div class="cd-block cost">';
-    html += '<div class="cd-title">成本汇总</div>';
+    html += '<div class="cd-title">成本汇总 · 计算链</div>';
     const fitRaw = fit.rawCost || 0;
-    html += '<div class="cd-line">raw成本 = 净材料 ' + fitMatNet.toFixed(4) + ' + 切片 ' + (fit.slicingFee||0).toFixed(4) + ' + 电镀 ' + (fit.platingFee||0).toFixed(4) + (fitChfTotal>0.0001?' + 其他 ' + fitChfTotal.toFixed(4):'') + ' = <span class="v">¥' + fitRaw.toFixed(4) + '</span></div>';
+    html += '<div class="cd-line">① raw成本 = 净材料 ' + fitMatNet.toFixed(4) + ' + 切片 ' + (fit.slicingFee||0).toFixed(4) + ' + 电镀 ' + (fit.platingFee||0).toFixed(4) + (fitChfTotal>0.0001?' + 其他 ' + fitChfTotal.toFixed(4):'') + ' = <span class="v">¥' + fitRaw.toFixed(4) + '</span></div>';
     const fitYc = fit.yieldCost || 0;
-    html += '<div class="cd-line">合格率成本 = <span class="v">' + fitRaw.toFixed(4) + '</span> × ' + _lc.toFixed(2) + '（合格率' + qr + '→损耗系数' + _lc.toFixed(2) + '）= <span class="r">¥' + fitYc.toFixed(4) + '</span>  <span class="s">（含不良品摊销）</span></div>';
+    html += '<div class="cd-line">② 合格率成本 = <span class="v">' + fitRaw.toFixed(4) + '</span> × ' + _lc.toFixed(2) + '（合格率' + qr + '→损耗系数(2−qr)' + _lc.toFixed(2) + '）= <span class="r">¥' + fitYc.toFixed(4) + '</span>  <span class="s">（含不良品摊销）</span></div>';
+    html += '<div class="cd-line">③ 利润率加成 = 合格率成本 <span class="v">' + fitYc.toFixed(4) + '</span> × 利润率 ' + pr + ' = <span class="r" style="font-size:15px">¥' + (fit.quote||0).toFixed(4) + ' /片</span>  <span class="s">（最终单价）</span></div>';
     html += '</div>';
 
-    // 报价
+    // 报价（单价见成本汇总③，此处仅算总货值）
     html += '<div class="cd-block quote" style="border-left-color:var(--blue-dark)">';
     html += '<div class="cd-title">最终报价</div>';
-    html += '<div class="cd-line">报价 = 合格率成本 <span class="v">' + fitYc.toFixed(4) + '</span> × 利润率 ' + pr + ' = <span class="r" style="font-size:15px">¥' + (fit.quote||0).toFixed(4) + ' /片</span></div>';
+    html += '<div class="cd-line">最终单价（成本汇总③）= <span class="r" style="font-size:15px">¥' + (fit.quote||0).toFixed(4) + ' /片</span></div>';
     html += '<div class="cd-line"><span class="s">总货值 = ¥' + (fit.quote||0).toFixed(6) + ' × ' + (oq||0) + '片 + 工装' + (parseFloat(document.getElementById('stockFixtureFee').value)||0) + ' = <span class="v">¥' + (fit.totalValue||0).toFixed(2) + '</span></span></div>';
     html += '</div>';
     if (hasFitCompare2) html += '</div>'; // close fit flex col
@@ -8290,6 +8372,7 @@ function renderDiscCalcDetail(stock, fit, cyl, knifeTotal) {
   anyOther = otherItems.cha || otherItems.grd || otherItems.shd || otherItems.drl || otherItems.seg || otherItems.cre;
 
   let cd = '<div class="calc-detail" style="line-height:1.8">';
+  cd += '<button type="button" class="cd-fold-btn" onclick="toggleCdDerive(this)">▸ 展开计算详情</button>';
 
   // 公共标题
   cd += '<div class="cd-block quote">';
@@ -8388,8 +8471,10 @@ function renderDiscColumn(r, anyScrap, anyBarSlice, anyOther, otherItems, up, qr
   h += '<div class="cd-block mtrl">';
   h += '<div class="cd-title">材料费</div>';
   var _bvStr = (blankDims.length===3) ? (' = ' + blankDims[0] + '×' + blankDims[1] + '×' + blankDims[2] + ' = ') : ' = ';
+  h += '<div class="cd-derive">';
   h += '<div class="cd-line">毛坯体积' + _bvStr + '<span class="v">' + (res.blankVol||0).toFixed(0) + ' mm³</span> = <span class="v">' + ((res.blankVol||0)/1000).toFixed(1) + ' cm³</span> × 密度 ' + DENSITY + 'g/cm³ ÷ 1000 = 毛坯重 <span class="v">' + fmtPerWt(res.blankWeight||0) + '</span></div>';
   h += '<div class="cd-line">毛坯重 × 单价 ' + (r.isCyl ? cylP : up) + '元/kg = 毛坯价 <span class="v">¥' + (res.blankPrice||0).toFixed(2) + '</span></div>';
+  h += '</div>';
   h += '<div class="cd-line">毛坯价 ÷ 出刀 ' + r.kt + ' = 单颗材料 <span class="r">¥' + res.singleMaterial.toFixed(4) + '</span></div>';
   if (sc > 0.0001) {
     h += '<div class="cd-line" style="color:var(--text2)">减余料回收 <span class="g">-¥' + sc.toFixed(4) + '</span> → 净材料 <span class="r">¥' + matNet.toFixed(4) + '</span></div>';
@@ -8427,11 +8512,13 @@ function renderDiscColumn(r, anyScrap, anyBarSlice, anyOther, otherItems, up, qr
   var _ringOuter = parseFloat(document.getElementById('ringOuterD')?.value)||0;
   var _ringInner = parseFloat(document.getElementById('ringInnerD')?.value)||0;
   var _paFormula = (_ringOuter>0 && _ringInner>0) ? '（圆环几何表面积）' : ('= 2×3.14×(' + _paD + '/2)² + 3.14×' + _paD + '×' + _paH);
+  h += '<div class="cd-derive">';
   if (Math.abs(effPa - rawPa) > 0.01) {
     h += '<div class="cd-line">电镀面积 ' + _paFormula + ' = <span class="v">' + rawPa.toFixed(1) + 'mm²</span> → 有效面积 ' + effPa.toFixed(1) + 'mm²（最小' + minPa + 'mm²）</div>';
   } else {
     h += '<div class="cd-line">电镀面积 ' + _paFormula + ' = <span class="v">' + rawPa.toFixed(1) + 'mm²</span></div>';
   }
+  h += '</div>';
   h += '<div class="cd-line">有效面积 × 系数 = <span class="r">¥' + (res.platingFee||0).toFixed(4) + '</span></div>';
   h += '</div>';
 
@@ -8461,18 +8548,19 @@ function renderDiscColumn(r, anyScrap, anyBarSlice, anyOther, otherItems, up, qr
     h += '</div>';
   }
 
-  // 成本汇总
+  // 成本汇总 · 计算链（①→②→③ 与核心算法 assembleFinalCost、方块面板一致）
   h += '<div class="cd-block cost">';
-  h += '<div class="cd-title">成本汇总</div>';
-  h += '<div class="cd-line">raw成本 = 净材料 ' + matNet.toFixed(4) + ' + 切片 ' + (res.slicingFee||0).toFixed(4) + ' + 电镀 ' + (res.platingFee||0).toFixed(4) + (hasOtherRoute?' + 其他 ' + otherSum.toFixed(4):'') + ' = <span class="v">¥' + (res.rawCost||0).toFixed(4) + '</span></div>';
+  h += '<div class="cd-title">成本汇总 · 计算链</div>';
+  h += '<div class="cd-line">① raw成本 = 净材料 ' + matNet.toFixed(4) + ' + 切片 ' + (res.slicingFee||0).toFixed(4) + ' + 电镀 ' + (res.platingFee||0).toFixed(4) + (hasOtherRoute?' + 其他 ' + otherSum.toFixed(4):'') + ' = <span class="v">¥' + (res.rawCost||0).toFixed(4) + '</span></div>';
   var _lcd = (2 - qr);
-  h += '<div class="cd-line">合格率成本 = <span class="v">' + (res.rawCost||0).toFixed(4) + '</span> × ' + _lcd.toFixed(2) + '（合格率' + qr + '→损耗系数' + _lcd.toFixed(2) + '）= <span class="r">¥' + (res.yieldCost||0).toFixed(4) + '</span>  <span class="s">（含不良品摊销）</span></div>';
+  h += '<div class="cd-line">② 合格率成本 = <span class="v">' + (res.rawCost||0).toFixed(4) + '</span> × ' + _lcd.toFixed(2) + '（合格率' + qr + '→损耗系数(2−qr)' + _lcd.toFixed(2) + '）= <span class="r">¥' + (res.yieldCost||0).toFixed(4) + '</span>  <span class="s">（含不良品摊销）</span></div>';
+  h += '<div class="cd-line">③ 利润率加成 = 合格率成本 <span class="v">' + (res.yieldCost||0).toFixed(4) + '</span> × 利润率 ' + pr + ' = <span class="r" style="font-size:15px">¥' + (res.quote||0).toFixed(4) + ' /片</span>  <span class="s">（最终单价）</span></div>';
   h += '</div>';
 
-  // 报价
+  // 报价（单价见成本汇总③，此处仅算总货值）
   h += '<div class="cd-block quote" style="border-left-color:var(--blue-dark)">';
   h += '<div class="cd-title">最终报价</div>';
-  h += '<div class="cd-line">报价 = 合格率成本 <span class="v">' + (res.yieldCost||0).toFixed(4) + '</span> × 利润率 ' + pr + ' = <span class="r" style="font-size:15px">¥' + (res.quote||0).toFixed(4) + ' /片</span></div>';
+  h += '<div class="cd-line">最终单价（成本汇总③）= <span class="r" style="font-size:15px">¥' + (res.quote||0).toFixed(4) + ' /片</span></div>';
   h += '<div class="cd-line"><span class="s">总货值 = ¥' + (res.quote||0).toFixed(6) + ' × ' + (oq||0) + '片 + 工装' + (parseFloat(document.getElementById('stockFixtureFee').value)||0) + ' = <span class="v">¥' + (res.totalValue||0).toFixed(2) + '</span></span></div>';
   h += '</div>';
 
@@ -9298,9 +9386,9 @@ const CONTRACT_NAMES = [
 // ===== Boot =====
 buildResultCards();
 populateGradeSelect();
-loadSettings();
 onGradeChange();
 onPlatingChange();
+loadSettings();
 
 // resize handler temporarily disabled for debugging
 var _renderingNow = false;
@@ -11516,11 +11604,23 @@ if(location.hash==='#smoke'){window.addEventListener('load',function(){runSmokeT
 window.addEventListener('load', cleanQuoteHistory);
 window.addEventListener('load', refreshSavePriceBtn);
 
-// Ctrl+S 保存到报价记录
+// 快捷键：Ctrl+S 截图发群 / Esc 清空输入框（复制预览弹窗开着时先关弹窗）
 document.addEventListener('keydown',function(e){
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveCurrentToHistory();}
-  if(e.key==='Escape'){ hideCopyPreviewModal(); }
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); if(window.copyQuoteScreenshot) copyQuoteScreenshot(); else if(typeof saveCurrentToHistory==='function') saveCurrentToHistory(); return; }
+  if(e.key==='Escape'){
+    var cpm = document.getElementById('copyPreviewModal');
+    if(cpm && cpm.style.display!=='none'){ hideCopyPreviewModal(); return; }
+    if(typeof clearSmartParse==='function') clearSmartParse();
+    return;
+  }
 });
+// Enter 算价：智能输入框回车强制立即重新解析报价
+(function(){
+  var si = document.getElementById('smartInput');
+  if(si) si.addEventListener('keydown', function(e){
+    if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); try{ autoParse(); }catch(_){} }
+  });
+})();
 
 </script>
 <script>
@@ -11583,7 +11683,7 @@ const _TUTORIAL_HTML = `
       <span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:var(--text)">
         <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="tutLogoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#25517d"/><stop offset="100%" stop-color="#1a3c5e"/></linearGradient></defs><rect width="32" height="32" rx="7" fill="url(#tutLogoGrad)"/><circle cx="16" cy="16" r="9" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M16,7 L16,25" stroke="rgba(255,255,255,.7)" stroke-width="1.5"/><path d="M7,16 Q12,11 16,16 T25,16" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.2" stroke-linecap="round"/><circle cx="16" cy="16" r="2.5" fill="rgba(255,255,255,.9)"/></svg>
         使用指南
-        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.6.05</span>
+        <span style="font-size:11px;font-weight:500;color:var(--sub);padding:1px 7px;border:1px solid rgba(0,0,0,.12);border-radius:999px;vertical-align:1px">v5.6.06</span>
       </span>
       <button data-jb-click="hideTutorial()" aria-label="关闭" style="border:none;background:none;cursor:pointer;color:var(--sub);padding:4px 8px;border-radius:var(--radius)"><svg class="ic" aria-hidden="true"><use href="#ic-close"/></svg></button>
     </div>
@@ -12275,6 +12375,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.6.06</span></td><td>四项体验与识别升级：1) 计算明细折叠（点「展开计算详情」展开面积/体积/刀厚推导）；2) 参数设置折叠 + 常用参数记忆（材料单价/合格率/利润率/电镀系数，刷新自动带出）；3) 快捷键（Enter算价、Ctrl+S截图发群、Esc清空输入框）；4) 智能输入识别升级——识别到「磨型」自动判定异形（无需再输入「异形」二字），圆片/瓦片不受影响。纯体验/识别优化，算价公式零改动</td></tr>
         <tr><td><span>v5.6.05</span></td><td>显示层全面完善（算式透明化）：1) 刀厚明细改为「毛坯÷（成品+刀厚）≈出刀（刀厚）」估算式（方块用成品尺寸、圆片用方条边长作除数）；2) 合格率成本显示损耗系数（合格率qr→损耗系数(2−qr)）；3) 加工费逐项正确展示计算过程（磨型/颗粒磨/精雕 N道×单价，倒角/打孔/车肩/镭雕/喷码/平面多级冲显示计算依据）；4) 毛坯体积显示 = 长×宽×高 = mm³ = cm³；5) 毛坯选择标注出刀数与候选择优（通用坯2候选中最多）；6) 产量推算显示 kg÷kg/坯≈坯×片/坯；7) 电镀面积显示 2×(L×W+L×H+W×H) 算式（圆片用圆盘表面积）。算价公式零改动</td></tr>
         <tr><td><span>v5.6.04</span></td><td>报价结果新增「刀厚明细（按切割轴）」展示：通用毛坯/合适毛坯结果卡与圆片通用方块/合适方块明细，均按长(L)/宽(W)/高(H)轴分组，每轴显示「刀厚mm × 刀数」（如 0.40mm × 14刀），圆片复用同一套 knife1/2/3+knifeThick1/2/3 DOM 字段。纯展示逻辑，算价公式零改动</td></tr>
         <tr><td><span>v5.6.03</span></td><td>预言机/回归台对齐 QR 三因子模型 + 圆几何 3.14 统一：1) matrix_p0 预言机 _predictQr 复算逻辑逐字节对齐工具 computeQualifyRate——基础合格率 base 0.90→0.95，降档 0.85→0.90（降档扣 0.05），补异形豁免(irregularExempt)与 baseDrop 取最重一档不叠加，修复 21 条 QR 断言(0.05)误触发；2) disc_oracle 圆片分段切费 discArea 统一 3.14（L347 分段切/L570 打孔分段），消除打孔D0.8小孔 disc 系 ~1e-5 比价偏差；3) 黄金自测 227/227、变异测试 9/9、日常回归 3834/3834 全绿零 FAIL。算价公式零改动</td></tr>
@@ -13245,6 +13346,7 @@ window._renderSsCosts   = _renderSsCosts;   // 阶段3 去重新增（3E）
       if(btn){ btn.disabled = false; btn.innerHTML = oldText; }
     }
   }
+  window.copyQuoteScreenshot = copyQuoteScreenshot;
 
   function _bindShot(){
     var b = document.getElementById('shotBtn');
