@@ -3755,7 +3755,7 @@ function applyParse(ctx) {
 function renderResult(ctx) {
   // [阶段4 拆分] 原 L3773-3971：结果渲染 + 自动算价闸门
   var items = [];
-  var curShape = ctx.ringHasHole ? '圆环' : (ctx.stepMatch ? '大小头' : (ctx.discPrefix ? '圆片' : (ctx.tm ? '瓦片' : (ctx.irrWord||ctx.rIrrParts ? '异形' : '方块'))));
+  var curShape = ctx.ringHasHole ? '圆环' : (ctx.stepMatch ? '大小头' : (ctx.discPrefix ? '圆片' : (ctx.tm ? '瓦片' : (ctx.irrWord||ctx.rIrrParts||ctx.forcedIrregular ? '异形' : '方块'))));
   window._parseStatus = ctx._unrecognized ? (window._parseStatus || {ok:false}) : { ok: !!ctx.spec, shape: curShape, spec: ctx.spec };
   items.push({ k: '形状', v: '◉ ' + curShape });
 
@@ -3973,6 +3973,7 @@ function autoParse() {
   // 仅当当前识别为方块时强制升级为异形；不覆盖已识别的圆片/瓦片/异形，避免误判。
   if (ctx.hasGrind && typeof shapeMode !== 'undefined' && shapeMode === 'block') {
     try { if (typeof switchShape === 'function') switchShape('irregular'); } catch (e) {}
+    ctx.forcedIrregular = true; // [三态一致] 记忆本次由磨型强制升级异形，供 renderResult 同步展示标签（_parseStatus.shape）
   }
   applyParse(ctx);
   renderResult(ctx);
