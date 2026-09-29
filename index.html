@@ -11604,9 +11604,9 @@ if(location.hash==='#smoke'){window.addEventListener('load',function(){runSmokeT
 window.addEventListener('load', cleanQuoteHistory);
 window.addEventListener('load', refreshSavePriceBtn);
 
-// 快捷键：Ctrl+S 截图发群 / Esc 清空输入框（复制预览弹窗开着时先关弹窗）
+// 快捷键：Ctrl+S 一键算价+截图（有规格且未算价则先算价，已算价则只截图；已 preventDefault 不弹浏览器保存框）/ Esc 清空输入框（复制预览弹窗开着时先关弹窗）
 document.addEventListener('keydown',function(e){
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); if(window.copyQuoteScreenshot) copyQuoteScreenshot(); else if(typeof saveCurrentToHistory==='function') saveCurrentToHistory(); return; }
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); try{ var _si=document.getElementById('smartInput'); var _hasSpec=_si&&_si.value.trim(); var _parsed=window._parseStatus&&window._parseStatus.ok; if(_hasSpec&&!_parsed){ if(typeof autoParse==='function') autoParse(); } }catch(_){} if(window.copyQuoteScreenshot) copyQuoteScreenshot(); else if(typeof saveCurrentToHistory==='function') saveCurrentToHistory(); return; }
   if(e.key==='Escape'){
     var cpm = document.getElementById('copyPreviewModal');
     if(cpm && cpm.style.display!=='none'){ hideCopyPreviewModal(); return; }
