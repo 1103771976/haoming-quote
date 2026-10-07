@@ -5629,7 +5629,8 @@ function sanitizeQualifyRate(id) {
   const el = document.getElementById(id);
   const raw = el.value;
   let v = parseFloat(raw);
-  if (isNaN(v) || v <= 0) v = 0.95;
+  // [v5.6.13 收敛] 硬编码 0.95 → QR_DEFAULT.base（唯一真源，见 L5025）
+  if (isNaN(v) || v <= 0) v = QR_DEFAULT.base;
   if (v > 1) v = v / 100;
   if (v < 0.01) v = 0.01;
   if (v > 1.0) v = 1.0;
@@ -5744,7 +5745,8 @@ function sanitizePlatingCoef(id) {
 //   qr    ← L5631-5635 ；pr ← L5717-5719 ；scrap ← L5711-5712 ；up ← L5725-5729
 function clampQrVar(v) {                     // 合格率，照 sanitizeQualifyRate L5631-5635
   v = parseFloat(v);
-  if (isNaN(v) || v <= 0) return 0.95;
+  // [v5.6.13 收敛] 硬编码 0.95 → QR_DEFAULT.base（唯一真源，见 L5025）
+  if (isNaN(v) || v <= 0) return QR_DEFAULT.base;
   if (v > 1) v = v / 100;
   if (v < 0.01) v = 0.01;
   if (v > 1.0) v = 1.0;
@@ -11633,6 +11635,25 @@ function runSmokeTest() {
     if(Math.abs(_sh2-0.2)<1e-9) ok('车肩费仅勾选才收（方块·已勾选）：10*5*5+车肩 → 车肩费=0.2');
     else err('方块勾选后车肩费应为 0.2，实测 '+_sh2);
   }catch(e){err('方块车肩费(已勾选)断言异常: '+e.message);}
+
+  // —— [v5.6.13 已知缺口告警] 顶层出刀缺 cyl 覆写 ——
+  //  实测：空毛坯 + 薄片时，工具顶层 c3 会被 cylKnives 覆写（D4×0.5 → c3=37==cylKnives=37），
+  //  而 disc_oracle 预言机给 36（通用坯 34 档公式值）。该差异**不影响金额**（quote 逐位一致），
+  //  但会让「预言机 vs 工具」在出刀列上不一致，且现有门禁只比金额 → 永远发现不了。
+  //  本断言把该缺口变成**可见告警**：工具侧符合覆写规律则PASS（记录现状）；
+  //  一旦工具行为变了（例如某天不再覆写），本断言会 FAIL提醒同步预言机。
+  //  ⚠ 补齐预言机侧覆写需动算价路径，须用户拍板（2026-10-07 暂缓）。
+  try {
+    var _sic=document.getElementById('smartInput');
+    _sic.value='D4*0.5 轴向 N52 NI 500片圆片';
+    _sic.dispatchEvent(new Event('input',{bubbles:true}));
+    calculate();
+    var _ac=window.__audit||{};
+    var _cylK=(_ac.cylSr&&_ac.cylSr.cylKnives)||0;
+    var _gc3=_ac.c3||0;
+    if(_cylK>0 && _gc3===_cylK) ok('顶层出刀 cyl 覆写（D4×0.5）：c3='+_gc3+' == cylKnives（已知缺口·预言机侧未对齐·不影响金额）');
+    else err('D4×0.5 顶层c3='+_gc3+' 与 cylKnives='+_cylK+' 不符：若工具已不再覆写圆片刀数，请同步检查 disc_oracle 的覆写缺口是否需补齐');
+  }catch(e){err('cyl覆写断言异常: '+e.message);}
 
   try {
     var _si2=document.getElementById('smartInput');
