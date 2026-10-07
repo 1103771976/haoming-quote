@@ -7150,11 +7150,18 @@ function getProcessFees(L, H, D, c1, c3, knifeTotal) {
     fees.core = autoCore; // 芯子回收不覆写，始终自动
   }
   
-  // 车肩费（选项C 对称阈值法：最小边/厚度 > SHOULDER_THICK_T(mm) 自动收；大小头必带；手动勾选强制覆盖）
-  const SHOULDER_THICK_T = 2; // 车肩费自动收取的厚度门槛(mm)，选项C（2026-09-30 拍板：全部形状统一按厚度>2mm 自动收）
+  // 车肩费（v5.6.13 起：**仅勾选才收**，大小头固定自带；旧「厚度>2mm 自动收」规则已废止）
+  const SHOULDER_THICK_T = 2; // 历史阈值（2026-09-30 选项C 曾按此自动收取），**现已不参与判定**，仅保留常量供追溯
   const _shoulderThick = D; // 方块/瓦片：D=Math.min(L,W,H) 即最小边/厚度（调用处 L5780/5845/5985）
-  const _shoulderAutoOn = _shoulderThick > SHOULDER_THICK_T;
-  const useShoulder = document.getElementById('pfShoulder')?.checked || _discIsStepped || _shoulderAutoOn;
+  // 车肩费（v5.6.13 规则统一：**仅勾选才收**，大小头固定自带）
+  //   · 手动勾选 pfShoulder → 收（所有形状）
+  //   · 大小头 _discIsStepped → 固定自带（圆片系特性，不需勾选）
+  //   · 其余形状（方块/瓦片/异形/圆片/圆环）→ **一律不自动收取**，
+  //     必须用户主动勾选或手填金额才计入。
+  //   🔴 2026-10-07 起删除「厚度>2mm 自动收」规则：车肩费是选择性加工，
+  //     薄板/薄方块实际多数不车肩，按厚度自动收会凭空多收 0.2 元/颗。
+  const _shoulderAutoOn = _shoulderThick > SHOULDER_THICK_T; // 保留仅供显示/诊断，不再参与判定
+  const useShoulder = document.getElementById('pfShoulder')?.checked || _discIsStepped;
   if (useShoulder) {
     let autoShoulder = 0.2;  // 车肩默认费统一0.2元/颗（红线①：定值0改动，仅触发门槛变更）
     fees.shoulder = pfManualOrCalc('pfShoulderManual', autoShoulder);
@@ -7961,8 +7968,10 @@ function calculateDisc() {
   // ===== Phase 2: 倒角 & 车肩费设定 =====
 
   // 车肩费（[2026-10-06 拍板] 圆片/环/大小头路径：普通圆片、圆环不再按厚度自动收车肩费，
-  //   仅「手动勾选 pfShoulder」或「大小头 _discIsStepped」才收；方块/瓦片路径(本文件 L7153-7157)仍按厚度>2 自动收，不受本改动影响）
-  const SHOULDER_THICK_T = 2; // 车肩费自动收取的厚度门槛(mm)，选项C（2026-09-30 拍板：圆片用厚度H判据，非直径D，避免薄盘被直径误判）
+  //   仅「手动勾选 pfShoulder」或「大小头 _discIsStepped」才收；
+  //   [2026-10-07 v5.6.13] 方块/瓦片/异形路径（本文件 L7153-7164）**同步废止厚度自动收**，
+  //   现全形状规则统一为「**仅勾选才收，大小头固定自带**」。
+  const SHOULDER_THICK_T = 2; // 历史阈值，**现已不参与判定**（各路径均改为仅勾选），仅保留常量供追溯
   let discShoulderFee = 0;
   const _shoulderThick = _discH; // 圆片/环/大小头：厚度=圆盘H(_discH)，选项C 用厚度判据（原 D<=2 系直径误判，已改）。注意：不可读 dimH（方块高度），onDiscSpecChange 不会同步 dimH，会残留上一形状的高度导致误判
   const _shoulderAutoOn = _shoulderThick > SHOULDER_THICK_T; // [2026-10-06] 圆片路径已不再据此自动收车肩费，仅保留供显示/诊断使用
