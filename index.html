@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.11</title>
+<title>昊铭磁材报价计算工具 v5.6.12</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.11</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.12</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -6301,12 +6301,16 @@ function renderCalcDetail(stock, fit) {
   html += '</span></div>';
   html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴，毛坯÷（成品+刀厚）估算出刀）：</span><br>';
   var _gb = (document.getElementById('stockBlock').value||'').trim().split('*').map(Number);
+  // [显示层] L↔W互换时毛坯L轴实际切成品W、毛坯W轴实际切成品L，除数必须跟着换，否则「商→刀数」自相矛盾
+  var _gDL = genSwap ? W : L;   // 毛坯L轴所切的成品尺寸
+  var _gDW = genSwap ? L : W;   // 毛坯W轴所切的成品尺寸
   html += '<span class="v">长(L)轴：</span> ';
-  html += (kc1<1) ? '—' : ('毛坯'+_gb[0]+'mm ÷ ('+L+'+'+t1.toFixed(2)+') ≈ '+kc1+'刀（刀厚'+t1.toFixed(2)+'mm）');
+  html += (kc1<1) ? '—' : ('毛坯'+_gb[0]+'mm ÷ ('+_gDL+'+'+t1.toFixed(2)+') = '+(_gb[0]/(_gDL+t1)).toFixed(2)+' → '+kc1+'刀（刀厚'+t1.toFixed(2)+'mm）');
   html += '<br><span class="v">宽(W)轴：</span> ';
-  html += (kc2<1) ? '—' : ('毛坯'+_gb[1]+'mm ÷ ('+W+'+'+t2.toFixed(2)+') ≈ '+kc2+'刀（刀厚'+t2.toFixed(2)+'mm）');
+  html += (kc2<1) ? '—' : ('毛坯'+_gb[1]+'mm ÷ ('+_gDW+'+'+t2.toFixed(2)+') = '+(_gb[1]/(_gDW+t2)).toFixed(2)+' → '+kc2+'刀（刀厚'+t2.toFixed(2)+'mm）');
   html += '<br><span class="v">高(H)轴：</span> ';
-  html += (kc3<1) ? '—' : ('毛坯'+_gb[2]+'mm ÷ ('+H+'+'+t3.toFixed(2)+') ≈ '+kc3+'刀（刀厚'+t3.toFixed(2)+'mm）');
+  html += (kc3<1) ? '—' : ('毛坯'+_gb[2]+'mm ÷ ('+H+'+'+t3.toFixed(2)+') = '+(_gb[2]/(H+t3)).toFixed(2)+' → '+kc3+'刀（刀厚'+t3.toFixed(2)+'mm）');
+  if (genSwap) html += '<br><span style="color:var(--blue-light)">（L↔W互换：L轴切成品宽'+W+'mm，W轴切成品长'+L+'mm）</span>';
   html += '</div>';
   html += '</div>';
 
@@ -6408,12 +6412,16 @@ function renderCalcDetail(stock, fit) {
     html += '</span></div>';
     html += '<div class="cd-line" style="margin-top:2px"><span class="s">刀厚明细（按切割轴）：</span><br>';
     var _fb = fitSpec.split('*').map(Number);
+    // [显示层] 合适路线的 L↔W 互换是独立择优结果（computeFitCutting 返回 swap），除数须按自身互换映射
+    var _fDL = fitSwap ? W : L;   // 合适坯L轴所切的成品尺寸
+    var _fDW = fitSwap ? L : W;   // 合适坯W轴所切的成品尺寸
     html += '<span class="v">长(L)轴：</span> ';
-    html += (_fcC1<1) ? '—' : ('毛坯'+_fb[0]+'mm ÷ ('+L+'+'+fitT1.toFixed(2)+') ≈ '+_fcC1+'刀（刀厚'+fitT1.toFixed(2)+'mm）');
+    html += (_fcC1<1) ? '—' : ('毛坯'+_fb[0]+'mm ÷ ('+_fDL+'+'+fitT1.toFixed(2)+') = '+(_fb[0]/(_fDL+fitT1)).toFixed(2)+' → '+_fcC1+'刀（刀厚'+fitT1.toFixed(2)+'mm）');
     html += '<br><span class="v">宽(W)轴：</span> ';
-    html += (_fcC2<1) ? '—' : ('毛坯'+_fb[1]+'mm ÷ ('+W+'+'+fitT2.toFixed(2)+') ≈ '+_fcC2+'刀（刀厚'+fitT2.toFixed(2)+'mm）');
+    html += (_fcC2<1) ? '—' : ('毛坯'+_fb[1]+'mm ÷ ('+_fDW+'+'+fitT2.toFixed(2)+') = '+(_fb[1]/(_fDW+fitT2)).toFixed(2)+' → '+_fcC2+'刀（刀厚'+fitT2.toFixed(2)+'mm）');
     html += '<br><span class="v">高(H)轴：</span> ';
-    html += (_fcC3<1) ? '—' : ('毛坯'+_fb[2]+'mm ÷ ('+H+'+'+fitT3.toFixed(2)+') ≈ '+_fcC3+'刀（刀厚'+fitT3.toFixed(2)+'mm）');
+    html += (_fcC3<1) ? '—' : ('毛坯'+_fb[2]+'mm ÷ ('+H+'+'+fitT3.toFixed(2)+') = '+(_fb[2]/(H+fitT3)).toFixed(2)+' → '+_fcC3+'刀（刀厚'+fitT3.toFixed(2)+'mm）');
+    if (fitSwap) html += '<br><span style="color:var(--blue-light)">（L↔W互换：L轴切成品宽'+W+'mm，W轴切成品长'+L+'mm）</span>';
     html += '</div>';
     html += '</div>';
 
@@ -7952,12 +7960,13 @@ function calculateDisc() {
 
   // ===== Phase 2: 倒角 & 车肩费设定 =====
 
-  // 车肩费（选项C 对称阈值法：厚度H > SHOULDER_THICK_T(mm) 自动收；大小头必带；手动勾选强制覆盖）
+  // 车肩费（[2026-10-06 拍板] 圆片/环/大小头路径：普通圆片、圆环不再按厚度自动收车肩费，
+  //   仅「手动勾选 pfShoulder」或「大小头 _discIsStepped」才收；方块/瓦片路径(本文件 L7153-7157)仍按厚度>2 自动收，不受本改动影响）
   const SHOULDER_THICK_T = 2; // 车肩费自动收取的厚度门槛(mm)，选项C（2026-09-30 拍板：圆片用厚度H判据，非直径D，避免薄盘被直径误判）
   let discShoulderFee = 0;
   const _shoulderThick = _discH; // 圆片/环/大小头：厚度=圆盘H(_discH)，选项C 用厚度判据（原 D<=2 系直径误判，已改）。注意：不可读 dimH（方块高度），onDiscSpecChange 不会同步 dimH，会残留上一形状的高度导致误判
-  const _shoulderAutoOn = _shoulderThick > SHOULDER_THICK_T;
-  const useShoulder = document.getElementById('pfShoulder')?.checked || _discIsStepped || _shoulderAutoOn;
+  const _shoulderAutoOn = _shoulderThick > SHOULDER_THICK_T; // [2026-10-06] 圆片路径已不再据此自动收车肩费，仅保留供显示/诊断使用
+  const useShoulder = document.getElementById('pfShoulder')?.checked || _discIsStepped;
   if (useShoulder) {
     let autoShoulder = 0.2;  // 车肩默认费统一0.2元/颗（红线①：定值0改动，仅触发门槛变更）
     discShoulderFee = pfManualOrCalc('pfShoulderManual', autoShoulder);
@@ -8029,6 +8038,25 @@ function calculateDisc() {
   let bestSegResult = null; // 分段信息
   // 存储最优出刀信息
   let bestKnifeC1 = 0, bestKnifeC2 = 0, bestKnifeC3 = 0;
+  // ===== [v5.6.12] 坯档择优改按「成交路线」报价（原：只按通用路线自身 quote 选档）=====
+  //  依据 [算法文档 5.11]：圆片加工费三路线共用一份、按通用方坯口径一次算出，
+  //  故坯档不只影响通用路线报价，还会经共用加工费（grind/drill/coreRecovery/segCutFee）
+  //  影响合适方块与合适圆柱的成交报价。旧实现只比通用 quote，会出现「通用档最优但成交更贵」
+  //  （GC-EXT54：34 档通用 85.13 < 36 档 90.00 → 选 34；而成交走圆柱时 36 档 rc 低 0.2577/片）。
+  //  改为：逐档完整算三路线 → 取该档成交最优 quote → 跨档取最低 → 再以该档重算成交明细。
+  //  下面把 Phase4/5/6 依赖的常量前移，供循环内逐档试算（纯计算，不写 DOM）。
+  const FT = 0.27;                 // 合适毛坯固定刀厚（原在 Phase4 声明）
+  const endWaste = 1.5, safetyMargin = 0.5;
+  const cylDVal = parseFloat(document.getElementById('cylD').value) || 0;
+  const cylHVal = parseFloat(document.getElementById('cylH').value) || 0;
+  const cylPriceVal = parseFloat(document.getElementById('cylPrice').value) || getCylPrice(D, document.getElementById('grade').value);
+  const cylKnives = _cylKnives;
+  const cylSliceFeeStd = discSliceArea * sc;   // 圆柱路线切片费（只有圆面切片），与坯档无关
+  const _c2sStd = (discCutDir === 'axial') ? side : H;
+  const _c3sStd = (discCutDir === 'axial') ? H : side;
+  let bestDealQuote = Infinity;    // 已选档的成交最优报价（跨档比较基准）
+  let bestStockBlockVol = Infinity;// 已选档的坯体积（平局时按 [算法文档 8.5]「相同选体积小的」取舍）
+  const DEAL_TIE_EPS = 1e-9;       // 成交报价「相等」判定容差（吸收浮点噪声，量级远小于真实报价差）
   
   for (const gb of GENERIC_BLANKS) {
     const _gbL = gb[0], _gbW = gb[1], _gbH = gb[2];
@@ -8133,7 +8161,45 @@ function calculateDisc() {
     const _rawCost = _matNet + _totalSlice + platingFee + chamferFee + _grindFee + _drillFee + _coreRecovery + discShoulderFee + _segCutFee + discProcFee;
     const _af = assembleFinalCost(_rawCost, sQR, sPR, sOQ, sFF);
     const _yieldCost = _af.yieldCost, _quote = _af.quote;
-    if (!stockResult || _quote < stockResult.quote) {
+    // —— [v5.6.12] 本档「成交路线」试算：合适方块 + 合适圆柱（均复用本档算出的共用加工费）——
+    //   与 Phase4/5/6 同式，纯计算不写 DOM；只用于跨档比较，选中档后仍由 Phase4/5/6 正式重算。
+    const _pC1 = computeDiscAxisKnives(_gbL, side, FT);
+    const _pC2 = computeDiscAxisKnives(_gbW, _c2sStd, FT);
+    const _pC3 = computeDiscAxisKnives(_gbH, _c3sStd, FT);
+    const _pKT = _pC1 * _pC2 * _pC3;
+    let _fitQuoteTry = Infinity;
+    if (_pKT > 0) {
+      const _rpL = Math.ceil((_pC1 * (side + FT) + endWaste) * 10) / 10 + safetyMargin;
+      const _rpW = Math.ceil((_pC2 * (_c2sStd + FT) + endWaste) * 10) / 10 + safetyMargin;
+      const _rpH = Math.ceil((_pC3 * (_c3sStd + FT) + endWaste) * 10) / 10 + safetyMargin;
+      const _rVol = _rpL * _rpW * _rpH;
+      const _rMat = (_rVol * DENSITY / 1000 * unitPrice) / _pKT;
+      const _rBarSlice = (discCutDir === 'axial')
+        ? (side * _rpH + side * _rpH) / (_pC3 || _c3)
+        : (side * _rpW + side * _rpW) / (_pC2 || _c2);
+      const _rSlice = pfManualOrCalc('pfSliceManual', _rBarSlice * sc) + discSliceFee;
+      const _rRaw = _rMat + _rSlice + platingFee + chamferFee + _grindFee + discShoulderFee
+        + _drillFee + _coreRecovery + _segCutFee + discProcFee;
+      _fitQuoteTry = assembleFinalCost(_rRaw, sQR, sPR, sOQ, sFF).quote;
+    }
+    let _cylQuoteTry = Infinity;
+    if (D > 3.5 && cylDVal > 0 && cylHVal > 0 && cylKnives > 0 && cylPriceVal > 0) {
+      const _cVol = 3.14 * (cylDVal / 2) * (cylDVal / 2) * cylHVal;
+      const _cMat = (_cVol * DENSITY / 1000 * cylPriceVal) / cylKnives;
+      const _cRaw = _cMat + cylSliceFeeStd + platingFee + chamferFee + discShoulderFee
+        + _drillFee + _coreRecovery + _segCutFee + discProcFee;
+      _cylQuoteTry = assembleFinalCost(_cRaw, sQR, sPR, sOQ, sFF).quote;
+    }
+    const _dealQuote = Math.min(_quote, _fitQuoteTry, _cylQuoteTry);   // 本档成交最优报价
+    // [v5.6.12 · 平局规则] 成交报价更低 → 选本档；成交报价相等（差 ≤ DEAL_TIE_EPS）→ 按
+    //   [算法文档 8.5]「出片数多的赢，相同选体积小的」取坯体积较小者（材料成本同样更低）。
+    //   旧实现平局时保留先遍历到的 64*54*36（presetBlanks 顺序），与 §8.5 不一致，且会让带孔
+    //   样本的 barLen（套孔费 / 套孔芯回收的料高）取 36 而非 34，产生 36/34＝5.88% 的口径偏差。
+    //   ⚠ 平局规则只作用于「真平局」；EXT51 一类真择优（36 档成交便宜 0.2577）不受影响。
+    const _dealTie = Math.abs(_dealQuote - bestDealQuote) <= DEAL_TIE_EPS;
+    if (!stockResult || _dealQuote < bestDealQuote - DEAL_TIE_EPS || (_dealTie && _bv < bestStockBlockVol)) {
+      bestDealQuote = _dealQuote;
+      bestStockBlockVol = _bv;
       bestStockBlock = gb;
       bestKnifeC1 = _c1; bestKnifeC2 = _c2; bestKnifeC3 = _c3;
       bestSegResult = _segInfo; // 存分段信息
@@ -8184,8 +8250,7 @@ function calculateDisc() {
 
   // ===== Phase 4: 出刀结果回写 & 合适方块坯推算 =====
   // 合适毛坯（方案乙：一律 0.27 多线刀厚，用户2026-07-25）
-  const FT = 0.27;
-  const endWaste = 1.5, safetyMargin = 0.5;
+  // [v5.6.12] FT / endWaste / safetyMargin 已前移至 Phase3（坯档逐档试算需要）
   const _gb = (bestStockBlock && bestStockBlock.length === 3) ? bestStockBlock : [64,54,36];
   const _bL = _gb[0], _bW = _gb[1], _bH = _gb[2];
   const _c2s = (discCutDir === 'axial') ? side : H;
@@ -8239,10 +8304,7 @@ function calculateDisc() {
   };
 
   // ===== Phase 6: 方案3 合适圆柱毛坯 =====
-  const cylDVal = parseFloat(document.getElementById('cylD').value) || 0;
-  const cylHVal = parseFloat(document.getElementById('cylH').value) || 0;
-  const cylPriceVal = parseFloat(document.getElementById('cylPrice').value) || getCylPrice(D, document.getElementById('grade').value);
-  const cylKnives = _cylKnives;
+  // [v5.6.12] cylDVal / cylHVal / cylPriceVal / cylKnives 已前移至 Phase3（坯档逐档试算需要）
   let cylResult = null;
   if (D > 3.5 && cylDVal > 0 && cylHVal > 0 && cylKnives > 0 && cylPriceVal > 0) {
     const cylVol = 3.14 * (cylDVal/2) * (cylDVal/2) * cylHVal;
@@ -9093,8 +9155,11 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
   }
   // v5.5.22：通用毛坯卡片恒用自身排刀(k1/k2/k3)+自身刀厚(三轴平均)，不再套用合适排刀(_decC1~3 仅合适卡片用)
   var _dC1 = k1, _dC2 = k2, _dC3 = k3, _dT = ((ktd1 + ktd2 + ktd3) / 3);
-  if (shapeMode === 'disc') { _dT = ktd1; }
-  html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + stockSpec.split('*')[0] + '切' + (+_showPL.toFixed(2)).toString() + '出' + _dC1 + '刀厚' + _dT.toFixed(2) + ' W' + stockSpec.split('*')[1] + '切' + (_wIsThickness ? _showPW.toFixed(1) : (+_showPW.toFixed(2)).toString()) + '出' + _dC2 + '刀厚' + _dT.toFixed(2) + ' H' + stockSpec.split('*')[2] + '切' + (+_showPH.toFixed(2)).toString() + '出' + _dC3 + '刀厚' + _dT.toFixed(2) + ' = ' + (_dC1*_dC2*_dC3) + '刀</div>';
+  var _dTNote = '刀厚取三轴平均';
+  if (shapeMode === 'disc') { _dT = ktd1; _dTNote = '刀厚取首轴'; }
+  // [显示层] _showPL/_showPW 已按 _swapUsed 映射（L轴切成品宽/W轴切成品长），此处补互换标注让口径可追溯
+  if (_swapUsed && shapeMode !== 'disc') _dTNote += '，L↔W互换择优（L轴切成品宽、W轴切成品长）';
+  html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + stockSpec.split('*')[0] + '切' + (+_showPL.toFixed(2)).toString() + '出' + _dC1 + '刀厚' + _dT.toFixed(2) + ' W' + stockSpec.split('*')[1] + '切' + (_wIsThickness ? _showPW.toFixed(1) : (+_showPW.toFixed(2)).toString()) + '出' + _dC2 + '刀厚' + _dT.toFixed(2) + ' H' + stockSpec.split('*')[2] + '切' + (+_showPH.toFixed(2)).toString() + '出' + _dC3 + '刀厚' + _dT.toFixed(2) + ' = ' + (_dC1*_dC2*_dC3) + '刀 <span style="opacity:.75">（'+_dTNote+'）</span></div>';
   html += '<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,.06)">';
   if (stockDecomp) {
     html += '<div style="font-weight:600;color:var(--text)">净利用 <span style="color:var(--success)">' + stockDecomp.pNet.toFixed(1) + '%</span></div>';
@@ -9158,8 +9223,18 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
     let _fk2 = (_fcb && _fcb.c2) ? _fcb.c2 : k2;
     let _fk3 = (_fcb && _fcb.c3) ? _fcb.c3 : k3;
     if (shapeMode !== 'disc') { _fk1 = _decC1; _fk2 = _decC2; _fk3 = _decC3; }
-    const _ft = 0.27;
-    html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + fps[0] + '切' + (+_showPL.toFixed(2)).toString() + '出' + _fk1 + '刀厚' + _ft.toFixed(2) + ' W' + fps[1] + '切' + (_wIsThickness ? _showPW.toFixed(1) : (+_showPW.toFixed(2)).toString()) + '出' + _fk2 + '刀厚' + _ft.toFixed(2) + ' H' + fps[2] + '切' + (+_showPH.toFixed(2)).toString() + '出' + _fk3 + '刀厚' + _ft.toFixed(2) + ' = ' + (_fk1*_fk2*_fk3) + '刀</div>';
+    const _ft = 0.27;   // [显示层] 合适毛坯卡片恒显示 0.27，非实际刀厚（主刀路可能 0.4）；仅展示用，不参与算价
+    // [显示层] 合适路线的互换是独立择优（_fcb.swap），不能沿用通用路线的 _swapUsed，否则轴标签与刀厚明细对不上
+    var _fPL = _showPL, _fPW = _showPW, _fNote = '刀厚一律0.27，非实际刀厚';
+    if (shapeMode !== 'disc') {
+      const _fs2 = (_fcb && typeof _fcb.swap !== 'undefined') ? !!_fcb.swap : !!_swapUsed;  // __fitCut 缺失时回落到通用互换口径（与改前一致）
+      const _fxL = parseFloat(document.getElementById('dimL').value)||0;
+      const _fxW = parseFloat(document.getElementById('dimW').value)||0;
+      _fPL = _fs2 ? _fxW : _fxL;
+      _fPW = _fs2 ? _fxL : _fxW;
+      if (_fs2) _fNote += '，L↔W互换择优（L轴切成品宽、W轴切成品长）';
+    }
+    html += '<div style="font-size:12px;color:var(--sub);line-height:1.4;margin-bottom:2px">L' + fps[0] + '切' + (+_fPL.toFixed(2)).toString() + '出' + _fk1 + '刀厚' + _ft.toFixed(2) + ' W' + fps[1] + '切' + (_wIsThickness ? _fPW.toFixed(1) : (+_fPW.toFixed(2)).toString()) + '出' + _fk2 + '刀厚' + _ft.toFixed(2) + ' H' + fps[2] + '切' + (+_showPH.toFixed(2)).toString() + '出' + _fk3 + '刀厚' + _ft.toFixed(2) + ' = ' + (_fk1*_fk2*_fk3) + '刀 <span style="opacity:.75">（'+_fNote+'）</span></div>';
     html += '<div style="margin-top:4px;padding-top:4px;border-top:1px solid rgba(0,0,0,.06)">';
     if (fitDecomp) {
       html += '<div style="font-weight:600;color:var(--text)">净利用 <span style="color:var(--success)">' + fitDecomp.pNet.toFixed(1) + '%</span></div>';
@@ -11504,6 +11579,37 @@ function runSmokeTest() {
     try { switchShape('block'); } catch(e5){}
   }catch(e){err('跨形状 异常: '+e.message);}
 
+  // ========== 10. [v5.6.12 口径] 车肩费收窄 + 平局 tie-break（2026-10-07 新增）==========
+  //  ① [车肩费收窄] 圆片/圆环「无额外结构」不再自动收车肩费 —— 仅手动勾选或大小头必带
+  //     （v5.6.12 起；方块/瓦片仍按厚度>2 自动收，口径不同，别混）
+  //  ② [平局 tie-break] 两档成交报价相等时，按 [算法文档 §8.5]「相同选体积小的」回落到 64*54*34
+  try {
+    var _si=document.getElementById('smartInput');
+    _si.value='D12*4 N52 NI 500';
+    _si.dispatchEvent(new Event('input',{bubbles:true}));
+    calculate();
+    var _a=window.__audit||{};
+    var _sh=Math.max(
+      (_a.stockSr&&_a.stockSr.shoulderFee)||0,
+      (_a.fitSr&&_a.fitSr.shoulderFee)||0,
+      (_a.cylSr&&_a.cylSr.shoulderFee)||0
+    );
+    if(_sh===0) ok('v5.6.12 车肩费收窄：圆片 D12*4 无额外结构 → 车肩费=0');
+    else err('车肩费应为 0，实测 '+_sh+'（圆片系不应自动收车肩费）');
+  }catch(e){err('车肩费断言异常: '+e.message);}
+
+  try {
+    var _si2=document.getElementById('smartInput');
+    _si2.value='D10*5 N52 NI 500';
+    _si2.dispatchEvent(new Event('input',{bubbles:true}));
+    var _sb=document.getElementById('stockBlock');
+    if(_sb) _sb.value='64*54*36';
+    calculate();
+    var _got=(document.getElementById('stockBlock')||{}).value||'';
+    if(_got==='64*54*34') ok('平局 tie-break：D10*5 两档成交报价相等 → 选体积小的 64*54*34');
+    else err('平局应回落 64*54*34，实测 '+_got);
+  }catch(e){err('平局 tie-break 断言异常: '+e.message);}
+
   // ========== 汇总输出 ==========
   console.log('--- 结果: '+pass+'通过 / '+fail+'失败 ---');
   results.forEach(function(r){console.log(r);});
@@ -12492,7 +12598,10 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.6.12</span></td><td>三项算价口径修正：1) 圆柱坯路线的毛坯档择优改按「成交路线」报价——此前只按通用路线自身的报价选档，但成交走圆柱时圆柱加工费随坯档变化，会出现「通用档最优、成交却更贵」的错配；现逐档完整试算通用、合适、圆柱三条路线，取成交路线报价最低的坯档。2) 圆片加工费（无心磨、打孔、套孔芯回收）的每根料分摊分母，统一回落到「通用标准方坯 64×54×36 与 64×54×34 两档、刀厚恒取通用默认 0.4」的口径，与工具通用坯循环同构，修正预言机在个别样本上误用成交路线坯规格与刀厚导致的偏差。3) 普通圆片、圆环不再按成品厚度自动收取车肩费，仅保留手动勾选与大小头必带；方块、瓦片仍按厚度大于 2mm 自动收，维持不变。另同步黄金标准库：受本次口径变化影响的圆片、圆环样本按工具实测真值回写，并订正 7 条带孔样本过期的毛坯档（原记 64×54×34，工具实际择优 64×54×36），消除打孔费与套孔芯回收约 5.9% 的隐性偏差。算价公式本体零改动。验证：黄金标准 593/593、变异门禁 9/9</td></tr>
+        <tr><td><span>v5.6.12 · 补</span></td><td>坯档择优「平局规则」统一：此前圆片系在两档通用方坯（64×54×36 与 64×54×34）成交报价完全相同时，会保留先遍历到的 36 档，与算法文档 §8.5「出片数多的赢，相同选体积小的」不一致。现统一为：平局时取体积较小的 34 档（材料成本同样更低）。实测三类情形——① 真平局（成交走圆柱路线时常见，圆柱加工费与方坯档无关，两档成交报价差为 0）：回落 34 档后金额分文未变，共 88 条同步毛坯列；② 真择优（某档成交确实更便宜，如 GC-EXT54 的 36 档便宜 0.2577）：成交择优优先，不受平局规则影响，保持原档；③ 带孔样本：套孔费与套孔芯回收的料高随坯档变化（36/34 约 5.88%），两档成交报价不再相等且多为 36 档真便宜，按成交择优保持 36 档（GC-R01/R02/R03/R06/R07/R08/ADD8）。另同步修正 GC-R09 一条出刀列：坯档由 36 变 34 后每根料出刀由 14 变为 13，此前记的是旧档值。算价公式本体零改动。验证：黄金标准 593/593、变异门禁 9/9</td></tr>
         <tr><td><span>v5.6.11</span></td><td>圆片系列倒角阶梯边界统一为「≥」：此前圆片、圆环、大小头用严格大于（D＞50 / ＞40 / ＞30），与方块、异形用的「≥」口径不一致，恰在 D=30 / 40 / 50 三个整数边界上少收一档；现统一为 D≥50→1.0、D≥40→圆环0.4·普通0.3、D≥30→圆环0.3·普通0.2，四档金额分文未动。工具与两份预言机、回归样本期望值共四处已全部统一，黄金标准同步更新 22 条边界样本（按预言机口径）。另：瓦片参数输入顺序修正为「R外→R内→长度→弦宽→壁厚→拱全高」（此前界面顺序与解析顺序相反，仅对调显示位置，未动 id 与解析逻辑）；圆片分段切费系数改读「切片系数」入参，预言机与工具同口径（异常值兜底 0.0004）；修正倒角阶梯注释与代码矛盾。算价公式零改动</td></tr>
+        <tr><td><span>v5.6.11 · 补</span></td><td>显示层修复（L↔W 互换择优场景）：此前刀厚明细的除数写死按成品长/宽取用，一旦触发互换，L 轴仍用成品长、W 轴仍用成品宽，出现「商 2.67 却出 8 刀」这类商与刀数对不上、且与同一屏毛坯利用率区互相矛盾的情况（例：22×6.9×1.71 走合适坯 59.4×46.6×35.7）。现刀厚明细与利用率区的轴标签统一跟随实际切割方向——互换时 L 轴标成品宽、W 轴标成品长，并在明细末尾加注「L↔W互换：L轴切成品宽…W轴切成品长」，用户可直接用 floor(毛坯÷(成品+刀厚)) 手算复现每一轴的刀数。另修正合适毛坯利用率区的一处错配：此前它复用通用路线的互换标志 _swapUsed，而合适路线的互换由合适排刀函数独立择优（自身 swap，并输出 Lout/Wout），两条路线判定不一致时标签必然指错轴，现改为读取合适路线自身的 fitSwap。四处改动均为展示层文字，算价公式零改动。验证：22×6.9×1.71 现显示 59.4÷(6.9+0.27)=8.28→8刀、46.6÷(22+0.27)=2.09→2刀，与利用率区 L59.4切6.9出8刀、W46.6切22出2刀 完全一致；三版本对照（修复前 / 仅回退互换除数的变异版 / 修复后）算价逐位全等，且变异版能重现旧错值；黄金 593/593、变异 9/9、daily 4296/4296 全绿</td></tr>
         <tr><td><span>v5.6.10</span></td><td>P1 缺陷批量修复（12 条清单结清）：1) D-2 手动调价填非法值（空/NaN/≤0）不再静默失败——补 else 分支并 toast 提示；2) B-8 圆片分段切费系数改读「切片系数」输入框（isNaN 兜底 0.0004），与方块路径同口径，并对单片切条费加 5.0 元上限钳制（工具 2 处 + 预言机 disc_oracle 2 处同步）；3) B-6 刀厚输入清空/非法时不再被误标为「手动」——此前兜底成 0.4 后与批量档推荐值比对必然不等，导致永久按 0.4 算价，现改为空值先清除手动标注；4) P4 恢复存档（_restoreInputs）补 sanitize 链（合格率/利润率/废料价/单价/电镀系数共 5 项），此前裸写绕过全部校验；5) P2 存档 settings 的 合格率/利润率/单价/废料价 四值改为变量级钳制后再入库（边界与对应 sanitize 函数完全一致）；6) P3 云同步回写前逐条钳制（同 P2 口径），只修正字段、不吞掉整个合并结果。另：D-3 经核实不成立（改价先更新 priceOverrides 再重绘，重绘源读新值一致）；C-2 为台账标注、非代码缺陷。算价公式零改动</td></tr>
         <tr><td><span>v5.6.09</span></td><td>修复 P0-1「车肩费漏收」（选项C · 自动收取）：1) 全形状按成品厚度 &gt; 2mm 自动收取车肩费；2) 圆片改用厚度 H 作为判据（不再沿用方块口径）；3) 「车肩」手动复选框优先级最高，勾选即强制收取、可覆盖自动判定结果；4) 大小头无条件必带车肩费；5) 顺带修好「大小头台阶几何被误清空」的既有 bug。算价公式零改动</td></tr>
         <tr><td><span>v5.6.08</span></td><td>修复智能输入「圆片数量带单位词」识别不了的问题：「1片 / 20片 / 50片 / 99片」这类「1–2 位数字 + 单位词（片/个/件/只/颗/pcs）」此前未被清理管道剥离，导致圆片被误判为未识别、静默退回方块并清空订单数量（≥100 片不受影响，方块/瓦片/圆环/大小头亦不受影响）。现已在形状校验前剥离该数量 token，圆片按正确规格与数量出价</td></tr>
