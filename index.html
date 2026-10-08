@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.13</title>
+<title>昊铭磁材报价计算工具 v5.6.15</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.13</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.15</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -3055,7 +3055,15 @@ function recognizeBlank(ctx) {
   var text = ctx.text;
   var blankSpecOverride = '';
   var blankSpecList = [];
-  var blankKeywordMatch = text.match(/(?:\u5e93\u5b58\u6750\u6599|\u5e93\u5b58\u6bdb\u576f|\u6bdb\u576f\u89c4\u683c|\u576f\u89c4\u683c|\u901a\u7528\u6bdb\u576f|\u901a\u7528\u576f|\u576f\u6599|\u6bdb\u576f|\u576f|\u6750\u6599)/i);
+  // [v5.6.13·2026-10-08 P0 修复] 原关键词表末尾混入了 `材料`，导致「材料288」这类
+  //   **材料单价指令**被误判为毛坯关键词 —— `blankKeywordMatch` 命中「材料」后走毛坯分支，
+  //   末尾 `ctx.text = text`（L3099）把「材料」二字剥掉而数字 288 留下，
+  //   导致后续 recognizeOverrides 的「材料+数字」正则失配 → **unitPriceOverride 停在 0**，
+  //   单价框回落牌号表价（实测 N42SH：288 → 349）。
+  //✅ 修复：`材料` 只有在**后面紧跟毛坯尺寸格式（数字*数字*数字）**时才视为毛坯关键词；
+  //   单独出现（如「材料288」「材料单价350」）不再触发毛坯分支。
+  //   ⚠ 与「材料设置/材料单价」指令链不冲突（那是价格语境，非尺寸语境）。
+  var blankKeywordMatch = text.match(/(?:\u5e93\u5b58\u6750\u6599|\u5e93\u5b58\u6bdb\u576f|\u6bdb\u576f\u89c4\u683c|\u576f\u89c4\u683c|\u901a\u7528\u6bdb\u576f|\u901a\u7528\u576f|\u576f\u6599|\u6bdb\u576f|\u576f|\u6750\u6599(?=\s*\d+(?:\.\d+)?\s*[*xX\u00d7]\s*\d+(?:\.\d+)?\s*[*xX\u00d7]\s*\d+(?:\.\d+)?))/i);
   if (blankKeywordMatch) {
     var afterKeyword = text.substring(blankKeywordMatch.index);
     var blankRE = /(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)\s*\*\s*(\d+(?:\.\d+)?)/g;
@@ -12712,6 +12720,8 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.6.15</span></td><td>【P0 修复】智能输入「材料单价」指令失效：输入「2R23.5×25×7.5×2.8 N42SH 材料288 NI 数量40000 毛坯规格54×45×34」时，材料单价框不生效、仍显示牌号表价 349。根因是毛坯关键词表末尾混入了「材料」一词：当文本同时出现「材料288」与「毛坯规格54×45×34」时，解析器把「材料」误判为毛坯关键词并先行剥离，导致后续「材料+数字」的单价识别规则失配、单价覆盖值停在 0。修复方式为给「材料」加前瞻断言——仅当其后紧跟三轴尺寸（数字*数字*数字）时才视作毛坯关键词，单独出现（如「材料288」「材料单价350」）不再触发毛坯分支。修复后单价框正确显示 288，且毛坯规格识别不受影响。算价公式零改动。验证：黄金标准 596/596、变异 10/10、对拍 164/164、冒烟 205/205 全绿</td></tr>
+        <tr><td><span>v5.6.14</span></td><td>两项易误解性改进（纯文案与输入保护，算价公式零改动）：① 报价结果区新增「两条路线材料费口径」说明行——合适毛坯按工具自动选取的合适坯尺寸计算，不受用户手动填写的库存毛坯规格影响；库存毛坯按用户手填规格计算；两者是并列的两条报价路线，并非同一路线的前后变化。此前两条路线的材料费并列展示，易被误读为同一路线的变化（实测有用户据此认为材料单价指令失效）。② 手动材料单价保护加固——用户手改材料单价框时打上内部标记，其后切换牌号等自动事件不再覆盖该值；仅当用户点击「恢复标准价」或清空输入时才解除保护并回填牌号表价。此前手改单价缺乏显式保护，任何未来新增的自动事件都可能冲掉用户设定值。验证：黄金标准 596/596、变异 10/10、对拍 164/164、冒烟 205/205 全绿</td></tr>
         <tr><td><span>v5.6.13</span></td><td>车肩费规则全形状统一为「仅勾选才收」：此前方块/瓦片/异形按最小边大于 2mm 自动收取车肩费（v5.6.09 选项C），圆片/圆环自 v5.6.12 起已收窄为仅手动勾选，两条路径口径不一致；本次统一为——除大小头固定自带 0.2 元/颗外，方块/瓦片/异形/圆片/圆环一律须用户主动勾选或手填金额才计入。理由是车肩属选择性加工，薄板与薄方块实际多数不车肩，按厚度自动收会凭空多收 0.2 元/颗。SHOULDER_THICK_T 阈值常量在两条路径中均降级为不参与判定的历史常量。同步三处：工具 getProcessFees 车肩判据、price_oracle 车肩判据（否则两处口径不一致会出现门禁假绿）、oracle_golden_test 裁判脚本改为一律采用预言机独立复算的加工费（原写法优先读黄金 CSV 自身加工费，会形成自证闭环导致口径变更传导不下去）。黄金标准库同步重录 163 行受影响的加工费/原料成本/单价派生列。冒烟新增 2 条方块路径车肩断言（未勾选为 0、勾选为 0.2），变异门禁新增车肩费变异点。算价公式本体零改动。验证：黄金标准 593/593、对拍 161/161、变异 10/10、冒烟 204/204 全绿</td></tr>
         <tr><td><span>v5.6.12</span></td><td>三项算价口径修正：1) 圆柱坯路线的毛坯档择优改按「成交路线」报价——此前只按通用路线自身的报价选档，但成交走圆柱时圆柱加工费随坯档变化，会出现「通用档最优、成交却更贵」的错配；现逐档完整试算通用、合适、圆柱三条路线，取成交路线报价最低的坯档。2) 圆片加工费（无心磨、打孔、套孔芯回收）的每根料分摊分母，统一回落到「通用标准方坯 64×54×36 与 64×54×34 两档、刀厚恒取通用默认 0.4」的口径，与工具通用坯循环同构，修正预言机在个别样本上误用成交路线坯规格与刀厚导致的偏差。3) 普通圆片、圆环不再按成品厚度自动收取车肩费，仅保留手动勾选与大小头必带；方块、瓦片仍按厚度大于 2mm 自动收，维持不变。另同步黄金标准库：受本次口径变化影响的圆片、圆环样本按工具实测真值回写，并订正 7 条带孔样本过期的毛坯档（原记 64×54×34，工具实际择优 64×54×36），消除打孔费与套孔芯回收约 5.9% 的隐性偏差。算价公式本体零改动。验证：黄金标准 593/593、变异门禁 9/9</td></tr>
         <tr><td><span>v5.6.12 · 补</span></td><td>坯档择优「平局规则」统一：此前圆片系在两档通用方坯（64×54×36 与 64×54×34）成交报价完全相同时，会保留先遍历到的 36 档，与算法文档 §8.5「出片数多的赢，相同选体积小的」不一致。现统一为：平局时取体积较小的 34 档（材料成本同样更低）。实测三类情形——① 真平局（成交走圆柱路线时常见，圆柱加工费与方坯档无关，两档成交报价差为 0）：回落 34 档后金额分文未变，共 88 条同步毛坯列；② 真择优（某档成交确实更便宜，如 GC-EXT54 的 36 档便宜 0.2577）：成交择优优先，不受平局规则影响，保持原档；③ 带孔样本：套孔费与套孔芯回收的料高随坯档变化（36/34 约 5.88%），两档成交报价不再相等且多为 36 档真便宜，按成交择优保持 36 档（GC-R01/R02/R03/R06/R07/R08/ADD8）。另同步修正 GC-R09 一条出刀列：坯档由 36 变 34 后每根料出刀由 14 变为 13，此前记的是旧档值。算价公式本体零改动。验证：黄金标准 593/593、变异门禁 9/9</td></tr>
