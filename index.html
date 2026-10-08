@@ -8333,6 +8333,12 @@ function calculateDisc() {
 
     cylResult = {
       blankVol: cylVol, blankWeight: cylWeight, blankPrice: cylBlankPrice,
+      // [v5.6.13·2026-10-08] 补刀厚字段：圆柱路线的实际算价刀厚恒为 FT=0.27（L8059/L7687），
+      //   **不读页面框**——页面框此时可能是 0.4/0.35（通用方坯默认），与 cyl 算价无关。
+      //   此前 cylResult 不带 t1/t2/t3，导致下游（dump 对拍 L441）只能退回顶层 a.t1/t2/t3 取到
+      //   通用方坯的 0.4，与 CSV 记录的 0.27 形成 44/164 条**假差异**。此处补齐后口径自洽。
+      //   ⚠ 这是**字段透出**，不改变任何算价：cylRawCost / cylQuote 的计算早已用 FT(0.27)。
+      t1: FT, t2: FT, t3: FT,
       singleMaterial: cylSingleMat, scrapPerPiece: 0,
       slicArea: discSliceArea, slicingArea: discSliceArea,
       platingArea: prodArea, platingAreaEffective: effPa, minPlatingArea: _minPa,
