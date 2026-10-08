@@ -4253,8 +4253,23 @@ try { customGrades = JSON.parse(localStorage.getItem(CUSTOM_GRADE_KEY)) || []; }
 function saveCustomGrades() { localStorage.setItem(CUSTOM_GRADE_KEY, JSON.stringify(customGrades)); }
 function savePriceOverrides() { localStorage.setItem(PRICE_OVERRIDE_KEY, JSON.stringify(priceOverrides)); }
 function onUnitPriceChange() {
+  const el = document.getElementById('unitPrice');
   const grade = document.getElementById('grade').value;
-  const price = parseFloat(document.getElementById('unitPrice').value);
+  const price = parseFloat(el.value);
+  // [v5.6.13·2026-10-08] 用户手动改单价 → 打 data-manual 标记，供 onGradeChange 识别并保护。
+  //   ⚠ 与全项目其他 data-manual 用法一致（刀厚/系数等，见 L5674/L3720）：标记 =「用户刻意自定义过」。
+  //
+  //   🔴 关键：change 绑定顺序是 `sanitizeUnitPrice(); onUnitPriceChange(); calculate()`（L13458），
+  //      **sanitizeUnitPrice 会先把空值/非法值回填为牌号默认价**（L5752 `el.value = def`），
+  //      所以本函数读到的 price 已是「回填后的合法正数」—— 若只判`price > 0`，
+  //      会把「用户清空 → 自动回填默认价」误认成手动改价并打标记（实测 T4 复现：清空后 manual=1）。
+  //   ✅ 正确判据：**值与「牌号默认价」不同**才算用户手动改过；等于默认价 → 清标记（视为自动）。
+  const _defPrice = (priceOverrides[grade] != null) ? priceOverrides[grade]
+    : (PDF_PRICES[grade] != null ? PDF_PRICES[grade]
+      : (PDF_PRICES[String(grade).replace(/^N/i, '')] != null ? PDF_PRICES[String(grade).replace(/^N/i, '')] : 300));
+  const _isCustom = isFinite(price) && price > 0 && Math.abs(price - _defPrice) > 1e-9;
+  if (_isCustom) el.setAttribute('data-manual', '1');
+  else el.removeAttribute('data-manual');
   if (grade && !isNaN(price) && price > 0) trackPriceHit(grade, price);
 }
 
@@ -4773,9 +4788,23 @@ function refreshUnitPriceNote(g) {
 }
 function onGradeChange() {
   const g = document.getElementById('grade').value;
+  const _upEl = document.getElementById('unitPrice');
+  // [v5.6.13·2026-10-08] 手动单价保护：若单价框已被用户手改（data-manual），**跳过自动覆盖**。
+  //   背景：用户实测「换牌号/换镀种等自动事件把手动改的单价冲回牌号表价」，
+  //         导致「材料288」指令看起来失效（实测本次未复现到回跳，但缺显式保护 = 潜在脆弱点）。
+  //   ⚠ 换牌号时若跳过覆盖，牌号与单价会**暂时不一致**（用户可再点「恢复标准价」对齐）。
+  //     这是「保护用户手改」与「牌号联动自动填价」的取舍 —— 按用户 2026-08-08 指示取**保护优先**。
+  //   解除保护的三条路径：① 点「恢复标准价」→ resetToStandardPrice() 清标记 ② 手动把值清成空/0（onUnitPriceChange 会清标记）
+  //     ③ 切到别处再换牌号（标记仍在，仍保护）。
+  const _upManual = _upEl.hasAttribute('data-manual');
+  if (_upManual) {
+    // 仅提示，不弹窗打断（保持与既有风格一致：resetCylPrice 同样是静默保护）
+    refreshUnitPriceNote(g);
+  } else {
+    _upEl.value = priceOverrides[g] || PDF_PRICES[g] || 300;
+    refreshUnitPriceNote(g);
+  }
   document.getElementById('gradePickLabel').textContent = g;
-  document.getElementById('unitPrice').value = priceOverrides[g] || PDF_PRICES[g] || 300;
-  refreshUnitPriceNote(g);
   const ee = document.getElementById('editGrade');
   if (ee) ee.value = g;
   document.getElementById('editPrice').value = priceOverrides[g] || PDF_PRICES[g] || 300;
@@ -4825,6 +4854,9 @@ function resetToPdfPrice() {
   const oldPrice = (priceOverrides[g] != null) ? priceOverrides[g] : (PDF_PRICES[g] != null ? PDF_PRICES[g] : null);
   delete priceOverrides[g];
   savePriceOverrides();
+  // [v5.6.13·2026-10-08] 恢复标准价 = 用户显式放弃手改价→**必须清 data-manual**，
+  //   否则 onGradeChange 的「保护手改价」会把它当手动价继续保护，标准价恢复不生效。
+  document.getElementById('unitPrice').removeAttribute('data-manual');
   document.getElementById('unitPrice').value = PDF_PRICES[g]||300;
   document.getElementById('editPrice').value = PDF_PRICES[g]||300;
   document.getElementById('editNote').textContent = PDF_PRICES[g] != null ? `已恢复 ${g} 标准价` : `${g} 无内置标准价，已按默认 300 填充，请手动核实`;
@@ -8786,6 +8818,21 @@ function buildCostStrip(routes) {
       html += '<div style="margin-bottom:8px;padding:6px 10px;border-radius:var(--radius);background:rgba(221,153,102,.08);color:var(--warn);font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px"><span style="font-size:13px">!</span> 瓦片壁厚 ' + _twall.toFixed(2) + 'mm ≤1.5mm，加工易崩边，请确认工艺可行</div>';
     }
   }
+  // [v5.6.13·2026-10-08] 双路线材料费口径说明（**纯文案，不参与任何计算**）
+  //   背景：用户实测「填/不填库存毛坯，合适毛坯材料费从 1.9909 变成 1.6429」→ 误以为材料单价指令失效。
+  //   实测真相（无头 dump 复现）：那是**两个不同单价下的 fit 值**（单价 349 → 1.9909；手改 288 → 1.6429），
+  //   与 stockBlock 无关；且 fit 路线**恒用自动合适坯尺寸，不读 stockBlock**。
+  //   本说明行告知用户两条路线的材料费各自依据什么算，避免把「两条路线并列值」看成「同一路线前后值」。
+  if (routes.length > 1) {
+    html += '<div style="margin-bottom:8px;padding:6px 10px;border-radius:var(--radius);'
+      + 'background:rgba(42,51,66,.04);color:var(--sub);font-size:12px;line-height:1.7">'
+      + '<b style="color:var(--text2)">◧ 两条路线材料费口径</b>：'
+      + '<b>合适毛坯</b> = 按工具<b>自动选取的合适坯尺寸</b>算（多线薄刀 0.27、不做余料回收），'
+      + '<b style="color:var(--warn)">不受你手动填写的库存毛坯规格影响</b>；'
+      + '<b>库存毛坯</b> = 按<b>你手动填写的毛坯规格</b>算。'
+      + '两者是<b>并列的两条报价路线</b>，不是同一路线的前后变化。'
+      + '</div>';
+  }
   html += '<div style="display:grid;grid-template-columns:repeat(' + useCols + ',1fr);gap:8px;align-items:stretch">';
   // 窄屏单列时用横向标签区分
   const showLabel = useCols === 1 && routes.length > 1;
@@ -11642,13 +11689,17 @@ function runSmokeTest() {
     else err('方块勾选后车肩费应为 0.2，实测 '+_sh2);
   }catch(e){err('方块车肩费(已勾选)断言异常: '+e.message);}
 
-  // —— [v5.6.13 已知缺口告警] 顶层出刀缺 cyl 覆写 ——
-  //  实测：空毛坯 + 薄片时，工具顶层 c3 会被 cylKnives 覆写（D4×0.5 → c3=37==cylKnives=37），
-  //  而 disc_oracle 预言机给 36（通用坯 34 档公式值）。该差异**不影响金额**（quote 逐位一致），
-  //  但会让「预言机 vs 工具」在出刀列上不一致，且现有门禁只比金额 → 永远发现不了。
-  //  本断言把该缺口变成**可见告警**：工具侧符合覆写规律则PASS（记录现状）；
-  //  一旦工具行为变了（例如某天不再覆写），本断言会 FAIL提醒同步预言机。
-  //  ⚠ 补齐预言机侧覆写需动算价路径，须用户拍板（2026-10-07 暂缓）。
+  // —— [v5.6.13 出刀列口径告警] 顶层 c3 的跨坯档择优 ——
+  //  [2026-10-08 深挖修正] 旧注释写「顶层出刀缺 cyl 覆写」是**错误结论**（已被 GC-BL1 反例证伪）。
+  //  真实机理（[算法文档 G15.7]）：顶层 c3 = **跨坯档择优后胜出那一档的 c3**（工具 L8072
+  //  GENERIC_BLANKS 循环 + bestKnifeC3），**既不固定 34档也不固定 cylKnives**；
+  //  与 cylKnives 数值重合者**属巧合**（薄片区两公式收敛同整数），非覆写关系。
+  //  本断言记录「D4×0.5 顶层c3 == cylKnives」这一**当前实测现状**（巧合成立），
+  //  使其成为可见告警：一旦工具侧择优逻辑变更（如改坯档集合/改择优判据），
+  //  本断言会 FAIL，提醒同步复核 disc_oracle 与 G15.7 文档。
+  //  📌 该差异**不影响金额**（quote 逐位一致，596 行实测），仅出刀列展示口径；
+  //     已由 oracle_dump_crosscheck 的 cyl 语义豁免覆盖（105 条 INFO 不判 FAIL）。
+  //  🚫 2026-10-08 用户裁定：**不对齐**（复刻择优循环触碰算价路径，风险 > 收益）。
   try {
     var _sic=document.getElementById('smartInput');
     _sic.value='D4*0.5 轴向 N52 NI 500片圆片';
@@ -11657,8 +11708,8 @@ function runSmokeTest() {
     var _ac=window.__audit||{};
     var _cylK=(_ac.cylSr&&_ac.cylSr.cylKnives)||0;
     var _gc3=_ac.c3||0;
-    if(_cylK>0 && _gc3===_cylK) ok('顶层出刀 cyl 覆写（D4×0.5）：c3='+_gc3+' == cylKnives（已知缺口·预言机侧未对齐·不影响金额）');
-    else err('D4×0.5 顶层c3='+_gc3+' 与 cylKnives='+_cylK+' 不符：若工具已不再覆写圆片刀数，请同步检查 disc_oracle 的覆写缺口是否需补齐');
+    if(_cylK>0 && _gc3===_cylK) ok('顶层c3 跨档择优（D4×0.5）：c3='+_gc3+' == cylKnives（数值巧合·G15.7·不影响金额）');
+    else err('D4×0.5 顶层c3='+_gc3+' 与 cylKnives='+_cylK+' 不符：工具侧择优逻辑可能已变更，请同步复核 [算法文档 G15.7] 与 disc_oracle 的 c3 口径');
   }catch(e){err('cyl覆写断言异常: '+e.message);}
 
   try {
