@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.17</title>
+<title>昊铭磁材报价计算工具 v5.6.18</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.17</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.18</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -12760,6 +12760,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.6.18</span></td><td>P0 回归数据修正（2026-10-09，算价公式零改动、报价金额不变）：① 黄金标准库 GC-S2（大小头 D20*D15*5 N52 NI 5000）的「毛坯」列原填文字「圆柱坯」，导致预言机无法解析通用坯尺寸、退回自选 64*54*34 档，钻孔费与芯回收的分子分母比值变成 5.6667（应为 6），致 rc 差 0.0203、单价差 0.0245。已改为 60*45*30（＝工具实际通用坯），复算 rc 4.415872487、单价 5.332166 与工具逐位一致；工具对拍由 164/165 变为 165/165 全绿。② 全库另有 17 行文字型毛坯（如「圆柱坯D10*28.35」「合适方坯62.7*52.6*36.1」），经逐一验证均正常（尺寸写在文字里可被解析），本次未改动。③ 剩余已知差异 2 项：GC-M1（材料自定义单价 288，黄金库无单价输入列）、GC-S2 加工费断言（裁判按识别文本抽「打孔」token，而大小头是规格即孔）。门禁：黄金 600/602、变异 10/10、对拍 165/165、冒烟 208/208</td></tr>
         <tr><td><span>v5.6.17</span></td><td>合格率口径统一修正（2026-10-09 用户拍板）：① <b>大小头默认合格率 0.90 → 0.85</b>——原代码值与同��注释（85%）不一致，按注释与工具实测（大小头 qr=0.85）订正，提示文字同步改为「基础85%(大小头)」；② <b>圆环默认合格率注释订正为 90%</b>——代码与提示本就正确（0.90 / 基础90%(圆环)），仅注释误写 85%；③ 清除手动覆盖的白名单新增 0.85，避免大小头新默认值被误判为非标准值而拉回 0.95；④ <b>10 处合格率兜底值统一 0.9 → 0.95</b>（用户口径「基础值=95%」）——均为读取同一个输入框 stockQualifyRate （末处为历史记录 s.qr）的空值/NaN 兜底，与形状特定默认值无关，不与圆环 0.90 冲突；⑤ 智能输入提示文字「合格率/良率/直通率/成品率」示例值 0.9 → 0.95。形状特定默认值保持差异：方块/异形/瓦片 0.95、大小头 0.85、圆环 0.90。算价公式零改动</td></tr>
         <tr><td><span>v5.6.16</span></td><td>P0 回归保护（纯测试与基准数据，算价公式零改动）：① 黄金标准库新增 GC-T28（瓦片 + 库存毛坯路线）—— 规格 2R23.5*25*7.5*2.8、N42SH、40000 片、库存毛坯 54*45*34。拱全高按 [算法文档 §4.4] 公式手算为 2.8+(23.5−√(23.5²−7.5²/4))=3.1011；出刀 2*5*9、kt 90、t1/t2/t3 均 0.27、多线免切片故切片费为 0。补上此前全库瓦片样本只走通用坯的盲区。规格列须写成 R 前缀五段式（记2R 等价 R外=R内=23.5，故写 R23.5*23.5*25*7.5*2.8）—— 裁判走 price_oracle.parseTileSpec，该函数只认单个 R、不认 2R 前缀，写错会退回普通长宽高路径导致几何错位。② 冒烟新增 3 条断言，把 v5.6.15 修的「材料单价被毛坯关键词误吃」P0 bug 锁住：喂含「材料288」且同时含「毛坯规格」的输入，断言解析层取到单价覆盖值 288、单价输入框显示 288（非牌号表价）、且毛坯规格未被误伤。这三道断言放在冒烟而非黄金门禁，是因为预言机纯做算价、完全不经过智能输入解析层（实测对 recognizeBlank/recognizeOverrides 调用 0 次），黄金库无论加多少样本都发现不了此类回归 —— 冒烟是唯一覆盖解析层的门禁。验证：黄金标准 597/597、变异 10/10、冒烟 208/208 全绿</td></tr>
         <tr><td><span>v5.6.15</span></td><td>【P0 修复】智能输入「材料单价」指令失效：输入「2R23.5×25×7.5×2.8 N42SH 材料288 NI 数量40000 毛坯规格54×45×34」时，材料单价框不生效、仍显示牌号表价 349。根因是毛坯关键词表末尾混入了「材料」一词：当文本同时出现「材料288」与「毛坯规格54×45×34」时，解析器把「材料」误判为毛坯关键词并先行剥离，导致后续「材料+数字」的单价识别规则失配、单价覆盖值停在 0。修复方式为给「材料」加前瞻断言——仅当其后紧跟三轴尺寸（数字*数字*数字）时才视作毛坯关键词，单独出现（如「材料288」「材料单价350」）不再触发毛坯分支。修复后单价框正确显示 288，且毛坯规格识别不受影响。算价公式零改动。验证：黄金标准 596/596、变异 10/10、对拍 164/164、冒烟 205/205 全绿</td></tr>
