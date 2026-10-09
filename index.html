@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.16</title>
+<title>昊铭磁材报价计算工具 v5.6.17</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.16</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.17</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -3712,7 +3712,9 @@ function applyParse(ctx) {
       _qrManualOverride = false;
       updateQrHint('', false);
       var _qrEl = document.getElementById('stockQualifyRate');
-      if (_qrEl && _qrEl.value !== '0.95' && _qrEl.value !== '0.90') {
+      // [v5.6.17·2026-10-09] 大小头默认值改为 0.85（见 L4942）→ 此处「清除手动覆盖」的白名单须放行 '0.85'，
+      //   否则会把用户/自动设置的大小头 0.85 误判为「非标准值」而强行拉回 0.95。
+      if (_qrEl && _qrEl.value !== '0.95' && _qrEl.value !== '0.90' && _qrEl.value !== '0.85') {
         _qrEl.value = '0.95';
       }
     }
@@ -3818,7 +3820,7 @@ function renderResult(ctx) {
   var lrEl = document.getElementById('stockLossRate'); var lrNow = parseFloat(lrEl.value);
   items.push({ k: '损耗率', v: ctx.lossRateOverride>=0 ? '◉ ×'+ctx.lossRateOverride.toFixed(2) : (isNaN(lrNow)||lrEl.value.trim()==='' ? '◈ 自动' : '◈ ×'+lrNow.toFixed(2)) });
 
-  var qrNow = parseFloat(document.getElementById('stockQualifyRate').value); qrNow = isNaN(qrNow) ? 0.9 : qrNow;
+  var qrNow = parseFloat(document.getElementById('stockQualifyRate').value); qrNow = isNaN(qrNow) ? 0.95 : qrNow;
   items.push({ k: '合格率', v: ctx.qualifyRate>0 ? '◉ '+(ctx.qualifyRate>1?ctx.qualifyRate.toFixed(0):(ctx.qualifyRate*100).toFixed(0))+'%' : '◈ '+(qrNow*100).toFixed(0)+'%' });
 
   var prNow = parseFloat(document.getElementById('stockProfitRate').value); prNow = isNaN(prNow) ? 1.05 : prNow;
@@ -4099,7 +4101,7 @@ function getAllProcessingCost() {
     toastShown:false, routes:[]
   };
   
-  out.qr = parseFloat((document.getElementById('stockQualifyRate')||{}).value) || 0.9;
+  out.qr = parseFloat((document.getElementById('stockQualifyRate')||{}).value) || 0.95;
   out.pr = parseFloat((document.getElementById('stockProfitRate')||{}).value) || 1.05;
   out.oq = parseInt((document.getElementById('stockOrderQty')||{}).value) || 20000;
   out.ff = parseFloat((document.getElementById('stockFixtureFee')||{}).value) || 0;
@@ -4197,7 +4199,7 @@ function toggleSmartHint() {
       '规格 D/L*W*H | 等级 N52/48SH | 镀层 NI/ZN/蓝白锌/彩锌/黑环氧/环氧/化学镍/黑镍/锖色/镍铜+黑环氧/NI+黑环氧 | 数量 500/2万',
       '第一刀/第二刀/第三刀 0.4 | 切片系数 0.0004 | 电镀系数 0.00016',
       '废料/废料价 100 | 工装/夹具费 500 | 倒角/倒角费 0.2',
-      '利润率/利润/毛利 1.05 | 合格率/良率/直通率/成品率 0.9',
+      '利润率/利润/毛利 1.05 | 合格率/良率/直通率/成品率 0.95',
       '毛坯损耗/毛坯消耗 1.1 | 磨型/磨条 | 颗粒磨 | 精雕 | 打孔 | 镭雕 | 喷码 | 车肩 | 多级冲/两级冲/三级冲/四级冲',
       '保存（末尾输入即可存入报价记录）'
     ].join(' &nbsp;|&nbsp; ');
@@ -4939,7 +4941,9 @@ function parseSpec() {
     document.getElementById('ringInnerD').value = '';
     document.getElementById('ringH').value = '';
     // 大小头默认合格率 85%（用户手动设过则不覆盖）
-    if (!_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.90'; updateQrHint('基础90%(大小头)', true); }
+    // [v5.6.17·2026-10-09 修正] 原代码写 '0.90' 与本行注释（85%）**不一致** → 按注释口径改为 0.85。
+    //   工具实测 fitSr（大小头）：qr=0.85（见无头 dump `_真值_大小头_干净状态_20261009.json`）。
+    if (!_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.85'; updateQrHint('基础85%(大小头)', true); }
     onDiscSpecChange();
     return;
   }
@@ -4961,7 +4965,9 @@ function parseSpec() {
     document.getElementById('dimL').value = dVal;
     document.getElementById('dimH').value = hVal;
     if (innerD) { document.getElementById('pfDrill').checked = true; document.getElementById('pfHoleDia').value = innerD; }  // 圆环有孔
-    // 圆环默认合格率 85%（用户手动设过则不覆盖）
+    // 圆环默认合格率 90%（用户手动设过则不覆盖）
+    // [v5.6.17·2026-10-09 修正] 原注释写「85%」但代码是 0.90、提示也是「基础90%(圆环)」→ **注释写错**，已订正为 90%。
+    //   口径依据：圆环带内孔（D*D*H）本身已含「孔>2mm 扣 5%」等降档，故基础值取 90% 而非 85%。
     if (innerD && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.90'; updateQrHint('基础90%(圆环)', true); }
     // 同步圆环快捷栏：仅真圆环（有内径 innerD）才填，避免普通圆片污染 ring 字段
     if (innerD) {
@@ -5852,7 +5858,7 @@ function calculate() {
   const platingCoef = v(parseFloat(document.getElementById('platingCoef').value), (PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016));
   const slicingCoef = v(parseFloat(document.getElementById('slicingCoef').value), 0.0004);
   const scrapPrice = v(parseFloat(document.getElementById('scrapPrice').value), 100);
-  const sQR = v(parseFloat(document.getElementById('stockQualifyRate').value), 0.9);
+  const sQR = v(parseFloat(document.getElementById('stockQualifyRate').value), 0.95);
   const sPR = v(parseFloat(document.getElementById('stockProfitRate').value), 1.05);
   const sOQ = v(parseFloat(document.getElementById('stockOrderQty').value), 20000);
   const sFF = v(parseFloat(document.getElementById('stockFixtureFee').value), 0);
@@ -6090,7 +6096,7 @@ function calculateTile() {
   const sSPPv = 0;
   
   // 加工费（合格率已由 computeQualifyRate 在入口统一算好，此处直接读取，杜绝重复扣减）
-  const sQR = v(parseFloat(document.getElementById('stockQualifyRate').value), 0.9);
+  const sQR = v(parseFloat(document.getElementById('stockQualifyRate').value), 0.95);
   _lastPf = getProcessFees(L, H, Math.min(L,W,H), c1, c3, kt);
   const totalPf = _lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + (_lastPf.core||0) + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch;
   
@@ -6310,7 +6316,7 @@ function renderCalcDetail(stock, fit) {
   const t3 = parseFloat(document.getElementById('knifeThick3').value)||0;
   const matNet = stock.singleMaterial - stock.scrapPerPiece;
   const oq = parseFloat(document.getElementById('stockOrderQty').value)||0;
-  const qr = parseFloat(document.getElementById('stockQualifyRate').value)||0.9;
+  const qr = parseFloat(document.getElementById('stockQualifyRate').value)||0.95;
   const pr = parseFloat(document.getElementById('stockProfitRate').value)||1.05;
   const up = parseFloat(document.getElementById('unitPrice').value)||(PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300);
   const chf = stock.chamferFee || 0;
@@ -7975,7 +7981,7 @@ function calculateDisc() {
   const _rpc = parseFloat(document.getElementById('platingCoef').value); const platingCoef = isNaN(_rpc) ? (PLATING_DEFAULTS[document.getElementById('plating').value] ?? 0.00016) : _rpc;
   const slicingCoef = (function(){var _v=parseFloat(document.getElementById('slicingCoef').value);return isNaN(_v)?0.0004:_v;})(); const sc = slicingCoef;
   const _rsp = parseFloat(document.getElementById('scrapPrice').value); const scrapPrice = isNaN(_rsp) ? 100 : _rsp;
-  const sQR = parseFloat(document.getElementById('stockQualifyRate').value) || 0.9;
+  const sQR = parseFloat(document.getElementById('stockQualifyRate').value) || 0.95;
   const sPR = parseFloat(document.getElementById('stockProfitRate').value) || 1.05;
   const sOQ = parseFloat(document.getElementById('stockOrderQty').value) || 20000;
   const sFF = parseFloat(document.getElementById('stockFixtureFee').value) || 0;
@@ -8539,7 +8545,7 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal) {
   _lastDisc = {
     stock: stock, fit: fit, cyl: cyl,
     meta: {
-      qr: parseFloat(document.getElementById('stockQualifyRate').value) || 0.9,
+      qr: parseFloat(document.getElementById('stockQualifyRate').value) || 0.95,
       pr: parseFloat(document.getElementById('stockProfitRate').value) || 1.05,
       oq: parseInt(document.getElementById('stockOrderQty').value) || 20000,
       ff: parseFloat(document.getElementById('stockFixtureFee').value) || 0,
@@ -8558,7 +8564,7 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal) {
 function renderDiscCalcDetail(stock, fit, cyl, knifeTotal) {
   const D = _discD, H = _discH;
   const oq = parseFloat(document.getElementById('stockOrderQty').value)||0;
-  const qr = parseFloat(document.getElementById('stockQualifyRate').value)||0.9;
+  const qr = parseFloat(document.getElementById('stockQualifyRate').value)||0.95;
   const pr = parseFloat(document.getElementById('stockProfitRate').value)||1.05;
   const up = parseFloat(document.getElementById('unitPrice').value)||(PDF_PRICES[document.getElementById('grade').value] || PDF_PRICES[document.getElementById('grade').value.replace(/^N/,'')] || 300);
   const t1 = parseFloat(document.getElementById('knifeThick1').value)||0;
@@ -8911,7 +8917,7 @@ function buildCostStrip(routes) {
 
     html += '<div style="display:flex;justify-content:space-between;border-top:1px dashed rgba(0,0,0,.08);padding-top:4px;margin-top:4px"><span style="color:var(--sub)">无合格率成本</span><span style="font-weight:600">¥' + res.rawCost.toFixed(4) + '</span></div>';
     // [v5.5.83] 合格率显示：卡片内显示算价实际使用的合格率（读 stockQualifyRate 真值框；computeQualifyRate 已在 L5511 写回实际值；通用/合适共用同一合格率）
-    const _qrShow = ((parseFloat(document.getElementById('stockQualifyRate')?.value) || 0.9) * 100).toFixed(0);
+    const _qrShow = ((parseFloat(document.getElementById('stockQualifyRate')?.value) || 0.95) * 100).toFixed(0);
     html += '<div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">合格率</span><span style="font-weight:500">' + _qrShow + '%</span></div>';
     html += '<div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">合格率成本</span><span style="font-weight:700;color:var(--blue)">¥' + res.yieldCost.toFixed(4) + '</span></div>';
     html += '</div>'; // close flex:1
@@ -10750,7 +10756,7 @@ function exportToCSV() {
     const pfTotal = (pf.grind||0)+(pf.granule||0)+(pf.carve||0)+(pf.drill||0)+(pf.core||0)+(pf.laser||0)+(pf.jet||0)+(pf.shoulder||0)+(pf.multiPunch||0);
     const scrap = parseFloat(s.scrap) || 0;
     const raw = mat + slice + plate + chamfer + pfTotal - scrap;
-    const qr = parseFloat(s.qr) || 0.9;
+    const qr = parseFloat(s.qr) || 0.95;
     const yieldCost = raw / qr;
     const pr = parseFloat(s.pr) || 1.05;
     // P0修复: 改用已正确存档的 h.quote/h.qty/h.totalValue，不再从残缺settings重算
@@ -12754,6 +12760,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.6.17</span></td><td>合格率口径统一修正（2026-10-09 用户拍板）：① <b>大小头默认合格率 0.90 → 0.85</b>——原代码值与同��注释（85%）不一致，按注释与工具实测（大小头 qr=0.85）订正，提示文字同步改为「基础85%(大小头)」；② <b>圆环默认合格率注释订正为 90%</b>——代码与提示本就正确（0.90 / 基础90%(圆环)），仅注释误写 85%；③ 清除手动覆盖的白名单新增 0.85，避免大小头新默认值被误判为非标准值而拉回 0.95；④ <b>10 处合格率兜底值统一 0.9 → 0.95</b>（用户口径「基础值=95%」）——均为读取同一个输入框 stockQualifyRate （末处为历史记录 s.qr）的空值/NaN 兜底，与形状特定默认值无关，不与圆环 0.90 冲突；⑤ 智能输入提示文字「合格率/良率/直通率/成品率」示例值 0.9 → 0.95。形状特定默认值保持差异：方块/异形/瓦片 0.95、大小头 0.85、圆环 0.90。算价公式零改动</td></tr>
         <tr><td><span>v5.6.16</span></td><td>P0 回归保护（纯测试与基准数据，算价公式零改动）：① 黄金标准库新增 GC-T28（瓦片 + 库存毛坯路线）—— 规格 2R23.5*25*7.5*2.8、N42SH、40000 片、库存毛坯 54*45*34。拱全高按 [算法文档 §4.4] 公式手算为 2.8+(23.5−√(23.5²−7.5²/4))=3.1011；出刀 2*5*9、kt 90、t1/t2/t3 均 0.27、多线免切片故切片费为 0。补上此前全库瓦片样本只走通用坯的盲区。规格列须写成 R 前缀五段式（记2R 等价 R外=R内=23.5，故写 R23.5*23.5*25*7.5*2.8）—— 裁判走 price_oracle.parseTileSpec，该函数只认单个 R、不认 2R 前缀，写错会退回普通长宽高路径导致几何错位。② 冒烟新增 3 条断言，把 v5.6.15 修的「材料单价被毛坯关键词误吃」P0 bug 锁住：喂含「材料288」且同时含「毛坯规格」的输入，断言解析层取到单价覆盖值 288、单价输入框显示 288（非牌号表价）、且毛坯规格未被误伤。这三道断言放在冒烟而非黄金门禁，是因为预言机纯做算价、完全不经过智能输入解析层（实测对 recognizeBlank/recognizeOverrides 调用 0 次），黄金库无论加多少样本都发现不了此类回归 —— 冒烟是唯一覆盖解析层的门禁。验证：黄金标准 597/597、变异 10/10、冒烟 208/208 全绿</td></tr>
         <tr><td><span>v5.6.15</span></td><td>【P0 修复】智能输入「材料单价」指令失效：输入「2R23.5×25×7.5×2.8 N42SH 材料288 NI 数量40000 毛坯规格54×45×34」时，材料单价框不生效、仍显示牌号表价 349。根因是毛坯关键词表末尾混入了「材料」一词：当文本同时出现「材料288」与「毛坯规格54×45×34」时，解析器把「材料」误判为毛坯关键词并先行剥离，导致后续「材料+数字」的单价识别规则失配、单价覆盖值停在 0。修复方式为给「材料」加前瞻断言——仅当其后紧跟三轴尺寸（数字*数字*数字）时才视作毛坯关键词，单独出现（如「材料288」「材料单价350」）不再触发毛坯分支。修复后单价框正确显示 288，且毛坯规格识别不受影响。算价公式零改动。验证：黄金标准 596/596、变异 10/10、对拍 164/164、冒烟 205/205 全绿</td></tr>
         <tr><td><span>v5.6.14</span></td><td>两项易误解性改进（纯文案与输入保护，算价公式零改动）：① 报价结果区新增「两条路线材料费口径」说明行——合适毛坯按工具自动选取的合适坯尺寸计算，不受用户手动填写的库存毛坯规格影响；库存毛坯按用户手填规格计算；两者是并列的两条报价路线，并非同一路线的前后变化。此前两条路线的材料费并列展示，易被误读为同一路线的变化（实测有用户据此认为材料单价指令失效）。② 手动材料单价保护加固——用户手改材料单价框时打上内部标记，其后切换牌号等自动事件不再覆盖该值；仅当用户点击「恢复标准价」或清空输入时才解除保护并回填牌号表价。此前手改单价缺乏显式保护，任何未来新增的自动事件都可能冲掉用户设定值。验证：黄金标准 596/596、变异 10/10、对拍 164/164、冒烟 205/205 全绿</td></tr>
