@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.15</title>
+<title>昊铭磁材报价计算工具 v5.6.16</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.15</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.16</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -11719,6 +11719,41 @@ function runSmokeTest() {
     else err('D4×0.5 顶层c3='+_gc3+' 与 cylKnives='+_cylK+' 不符：工具侧择优逻辑可能已变更，请同步复核 [算法文档 G15.7] 与 disc_oracle 的 c3 口径');
   }catch(e){err('cyl覆写断言异常: '+e.message);}
 
+  // —— [v5.6.15·2026-10-08 P0 回归断言] 「材料288」不得被毛坯关键词误吃——
+  //  【P0 bug 回顾】recognizeBlank 的毛坯关键词表末尾混入了「材料」（L3058），
+  //    当输入同时含「材料288」与「毛坯规格54*45*34」时，「材料」被当成毛坯关键词先行剥离，
+  //    末尾 `ctx.text = text`（L3099）把「材料」二字剥掉而数字 288 留下 →
+  //    recognizeOverrides 的「材料+数字」正则失配 → **unitPriceOverride 停在 0**，
+  //    单价框回落牌号表价（实测 N42SH：应为 288、实际显示 349）。
+  //  【修复】给「材料」加前瞻断言——仅当其后紧跟三轴尺寸（数字*数字*数字）才算毛坯关键词。
+  //  【为何必须放冒烟】黄金库链路是「CSV 数值列 → 预言机（纯算价，**不经过解析层**）」，
+  //    而本 bug 在**智能输入解析层** —— 预言机 0 次调用 recognizeBlank/recognizeOverrides
+  //    ⇒ 黄金自测**无论怎么加样本都发现不了本类回归**，**冒烟是唯一覆盖解析层的门禁**。
+  //  【断言口径】两条同时成立才算过：①ctx.unitPriceOverride=288（解析层取到覆盖值）
+  //    ②unitPrice 输入框 value=288（DOM 回填正确）；另顺带验证毛坯规格仍被正确识别。
+  try {
+    var _sic3=document.getElementById('smartInput');
+    var _set3=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(_sic3),'value').set;
+    _set3.call(_sic3,'2R23.5*25*7.5*2.8 N42SH 材料288 NI 数量40000 毛坯规格54*45*34');
+    _sic3.dispatchEvent(new Event('input',{bubbles:true}));
+    _sic3.dispatchEvent(new Event('change',{bubbles:true}));
+    calculate();
+    // ⚠ 单调 recognizeBlank **不会**产出 unitPriceOverride（那是 recognizeOverrides 的职责），
+    //   故解析层断言须走完整链：recognizeBlank → … → recognizeOverrides（与真实 autoParse 同序）。
+    var _ctx3={text:'2R23.5*25*7.5*2.8 N42SH 材料288 NI 数量40000 毛坯规格54*45*34'};
+    ['recognizeBlank','recognizeShape','recognizeGrade','recognizePlating','recognizeQty','recognizeOverrides']
+      .forEach(function(fn){ if(typeof window[fn]==='function'){ try{ window[fn](_ctx3); }catch(_e){} } });
+    var _up3=(_ctx3&&_ctx3.unitPriceOverride)||0;
+    var _dom3=document.getElementById('unitPrice')?document.getElementById('unitPrice').value:'';
+    var _sb3=document.getElementById('stockBlock')?document.getElementById('stockBlock').value:'';
+    if(_up3===288) ok('P0 材料单价解析（recognize* 链）：unitPriceOverride=288（材料288 未被毛坯关键词吃掉）');
+    else err('P0 材料单价解析回归：unitPriceOverride 应为 288，实测 '+_up3+' —— 「材料」可能又被当毛坯关键词剥离（复核 L3058 关键词表前瞻断言）');
+    if(String(_dom3).trim()==='288') ok('P0 材料单价回填：unitPrice 框=288（未回落牌号表价349）');
+    else err('P0 材料单价回填回归：unitPrice 框应为 288，实测 "'+_dom3+'"（若为牌号表价349 说明覆盖未落到 DOM）');
+    if(String(_sb3).trim()==='54*45*34') ok('P0 毛坯规格未被误伤：stockBlock=54*45*34');
+    else err('P0 毛坯规格识别回归：stockBlock 应为 54*45*34，实测 "'+_sb3+'"');
+  }catch(e){err('P0 材料单价断言异常: '+e.message);}
+
   try {
     var _si2=document.getElementById('smartInput');
     _si2.value='D10*5 N52 NI 500';
@@ -12719,6 +12754,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
         <tr><th>版本</th><th>更新亮点</th></tr>
+        <tr><td><span>v5.6.16</span></td><td>P0 回归保护（纯测试与基准数据，算价公式零改动）：① 黄金标准库新增 GC-T28（瓦片 + 库存毛坯路线）—— 规格 2R23.5*25*7.5*2.8、N42SH、40000 片、库存毛坯 54*45*34。拱全高按 [算法文档 §4.4] 公式手算为 2.8+(23.5−√(23.5²−7.5²/4))=3.1011；出刀 2*5*9、kt 90、t1/t2/t3 均 0.27、多线免切片故切片费为 0。补上此前全库瓦片样本只走通用坯的盲区。规格列须写成 R 前缀五段式（记2R 等价 R外=R内=23.5，故写 R23.5*23.5*25*7.5*2.8）—— 裁判走 price_oracle.parseTileSpec，该函数只认单个 R、不认 2R 前缀，写错会退回普通长宽高路径导致几何错位。② 冒烟新增 3 条断言，把 v5.6.15 修的「材料单价被毛坯关键词误吃」P0 bug 锁住：喂含「材料288」且同时含「毛坯规格」的输入，断言解析层取到单价覆盖值 288、单价输入框显示 288（非牌号表价）、且毛坯规格未被误伤。这三道断言放在冒烟而非黄金门禁，是因为预言机纯做算价、完全不经过智能输入解析层（实测对 recognizeBlank/recognizeOverrides 调用 0 次），黄金库无论加多少样本都发现不了此类回归 —— 冒烟是唯一覆盖解析层的门禁。验证：黄金标准 597/597、变异 10/10、冒烟 208/208 全绿</td></tr>
         <tr><td><span>v5.6.15</span></td><td>【P0 修复】智能输入「材料单价」指令失效：输入「2R23.5×25×7.5×2.8 N42SH 材料288 NI 数量40000 毛坯规格54×45×34」时，材料单价框不生效、仍显示牌号表价 349。根因是毛坯关键词表末尾混入了「材料」一词：当文本同时出现「材料288」与「毛坯规格54×45×34」时，解析器把「材料」误判为毛坯关键词并先行剥离，导致后续「材料+数字」的单价识别规则失配、单价覆盖值停在 0。修复方式为给「材料」加前瞻断言——仅当其后紧跟三轴尺寸（数字*数字*数字）时才视作毛坯关键词，单独出现（如「材料288」「材料单价350」）不再触发毛坯分支。修复后单价框正确显示 288，且毛坯规格识别不受影响。算价公式零改动。验证：黄金标准 596/596、变异 10/10、对拍 164/164、冒烟 205/205 全绿</td></tr>
         <tr><td><span>v5.6.14</span></td><td>两项易误解性改进（纯文案与输入保护，算价公式零改动）：① 报价结果区新增「两条路线材料费口径」说明行——合适毛坯按工具自动选取的合适坯尺寸计算，不受用户手动填写的库存毛坯规格影响；库存毛坯按用户手填规格计算；两者是并列的两条报价路线，并非同一路线的前后变化。此前两条路线的材料费并列展示，易被误读为同一路线的变化（实测有用户据此认为材料单价指令失效）。② 手动材料单价保护加固——用户手改材料单价框时打上内部标记，其后切换牌号等自动事件不再覆盖该值；仅当用户点击「恢复标准价」或清空输入时才解除保护并回填牌号表价。此前手改单价缺乏显式保护，任何未来新增的自动事件都可能冲掉用户设定值。验证：黄金标准 596/596、变异 10/10、对拍 164/164、冒烟 205/205 全绿</td></tr>
         <tr><td><span>v5.6.13</span></td><td>车肩费规则全形状统一为「仅勾选才收」：此前方块/瓦片/异形按最小边大于 2mm 自动收取车肩费（v5.6.09 选项C），圆片/圆环自 v5.6.12 起已收窄为仅手动勾选，两条路径口径不一致；本次统一为——除大小头固定自带 0.2 元/颗外，方块/瓦片/异形/圆片/圆环一律须用户主动勾选或手填金额才计入。理由是车肩属选择性加工，薄板与薄方块实际多数不车肩，按厚度自动收会凭空多收 0.2 元/颗。SHOULDER_THICK_T 阈值常量在两条路径中均降级为不参与判定的历史常量。同步三处：工具 getProcessFees 车肩判据、price_oracle 车肩判据（否则两处口径不一致会出现门禁假绿）、oracle_golden_test 裁判脚本改为一律采用预言机独立复算的加工费（原写法优先读黄金 CSV 自身加工费，会形成自证闭环导致口径变更传导不下去）。黄金标准库同步重录 163 行受影响的加工费/原料成本/单价派生列。冒烟新增 2 条方块路径车肩断言（未勾选为 0、勾选为 0.2），变异门禁新增车肩费变异点。算价公式本体零改动。验证：黄金标准 593/593、对拍 161/161、变异 10/10、冒烟 204/204 全绿</td></tr>
