@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.20</title>
+<title>昊铭磁材报价计算工具 v5.6.21</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.20</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.21</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2741,15 +2741,20 @@ document.getElementById('appConfirmOk').onclick = function(){
   </div>
 </div>
 
-<!-- [v5.5.46] B方案样板：实时行情弹窗（交互骨架，实时数据源待接入） -->
+<!-- [v5.6.21] 材料行情参考：行情快照 + 手动编辑基准价（改价存 localStorage 并联动报价） -->
 <div class="modal-overlay" id="marketLiveModal" style="display:none" data-page-node-id="GYaiGWLGK6moaCfb9FP2Xu">
   <div class="modal" style="max-width:560px" data-page-node-id="V9RrzxWtjAz2P9fVABUNPS">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px" data-page-node-id="PKrI0WcGHD1xkU5bGFs8bw">
-      <span style="font-size:17px;font-weight:700;color:var(--text);border-bottom:2px solid var(--blue);padding-bottom:2px" data-page-node-id="DgoJBBXE5AjjmYLnadAhJD">实时行情（样板）</span>
-      <button class="tool-btn" style="margin-left:auto;font-size:12px;background:var(--blue);color:#fff" data-page-node-id="pTA8oQHB910yHpaNwLWAcV"><svg class="ic" aria-hidden="true" data-page-node-id="vAsogpQAP3omlqRyJd5T5C"><use href="#ic-refresh" data-page-node-id="ObgRBW3ZF54ksGHBJNnhlC"/></svg> 获取实时行情</button>
+      <span style="font-size:17px;font-weight:700;color:var(--text);border-bottom:2px solid var(--blue);padding-bottom:2px" data-page-node-id="DgoJBBXE5AjjmYLnadAhJD">材料行情参考</span>
+      <button class="tool-btn" style="margin-left:auto;font-size:12px;background:var(--blue);color:#fff" id="marketEditBtn" data-page-node-id="pTA8oQHB910yHpaNwLWAcV"><svg class="ic" aria-hidden="true" data-page-node-id="vAsogpQAP3omlqRyJd5T5C"><use href="#ic-refresh" data-page-node-id="ObgRBW3ZF54ksGHBJNnhlC"/></svg> 手动编辑行情</button>
     </div>
-    <div id="marketLiveStatus" style="font-size:12px;color:var(--sub2);margin-bottom:8px" data-page-node-id="jp0TzwjoqTxCkh0Eqnc7DR">行情快照已展示（综合 Mysteel/北方有色网/SMM 公开报价，截至 2026-08-07）；点击「获取实时行情」可刷新（手动维护快照）。</div>
+    <div id="marketLiveStatus" style="font-size:12px;color:var(--sub2);margin-bottom:8px" data-page-node-id="jp0TzwjoqTxCkh0Eqnc7DR">行情参考价（综合 Mysteel/北方有色网/SMM 公开报价，截至 <span id="marketAsOf">2026-08-07</span>）。可在「你的基准价」列直接填写实际采购价，保存后报价自动采用。</div>
     <div id="marketLiveBody" style="max-height:62vh;overflow:auto" data-page-node-id="drz6qCmL8Xetn0q5xLmYpX"></div>
+    <div id="marketEditBar" style="display:none;margin-top:10px;padding:9px 10px;background:var(--blue-bg);border:1px solid var(--border);border-radius:var(--radius);gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn-cancel" id="marketSaveAllBtn" style="background:var(--blue);color:#fff;border-color:var(--blue)">全部保存</button>
+      <button class="btn-cancel" id="marketCancelBtn">取消编辑</button>
+      <span style="font-size:11px;color:var(--sub)">改动存入本机浏览器并立即用于报价计算；与「材料设置」共用同一份基准价。</span>
+    </div>
     <div class="btns" style="margin-top:10px;display:flex;justify-content:flex-end" data-page-node-id="5NZSmp9msi84k5xR8hHUoe">
       <button class="btn-cancel" data-page-node-id="I3GFKXA8WzDlsKWxUWtsyn">关闭</button>
     </div>
@@ -4464,9 +4469,28 @@ function renderMarketTable(realMap) {
     if (!groups[s] || !groups[s].length) return;
     body += '<tr><td colspan="4" style="padding:7px 8px 2px;font-size:11px;font-weight:700;color:var(--blue);border-top:1px solid var(--border)">' + label[s] + '</td></tr>';
     groups[s].forEach(function(g){
-      const mp = marketPriceForFrom(realMap || MARKET_REAL, g);
+const mp = marketPriceForFrom(realMap || MARKET_REAL, g);
       const base = PDF_PRICES[g];
-      const baseTxt = (base != null) ? base + ' 元/kg' : '—';
+      // [v5.6.21] 「你的基准价」列：编辑态渲染输入框（值取 priceOverrides 覆盖，否则标准价）
+      const _ovr = priceOverrides[g];
+      const _curPrice = (_ovr != null) ? _ovr : base;
+      let priceCell;
+if (_marketEditOn) {
+        // [v5.6.21] **只预填「已改过」的值**，标准价一律留空（placeholder 显示标准价）。
+        //   首版把标准价也填进输入框 → 保存时 87 项全被当成「改了」。
+     priceCell = '<input class="mkEditInput" data-grade="' + g + '" type="number" step="0.01" value="'
+        + (_ovr != null ? _ovr : '') + '" placeholder="' + (base != null ? base : '自定义')
+        + '" style="width:80px;font-size:12px;padding:2px 6px;border:1px solid ' + ((_ovr != null) ? 'var(--success)' : 'var(--border)') + ';border-radius:var(--radius);font-family:inherit;text-align:right">'
+      + ((_ovr != null)
+          // 🔴 [v5.6.21] 已改过 → 额外给「恢复标准价」按钮（与材料设置面板同款，onclick 内联）
+          //   不依赖「清空输入框」这种键盘操作，避开无头环境/触屏下清空易失效的问题。
+          ? ' <button class="tool-btn" style="font-size:10px;padding:1px 6px;color:var(--sub2)" onclick="resetMarketToStd(\'' + g + '\')" title="清除该牌号的手动覆盖，回落到标准价">恢复</button>'
+          : '');
+      } else {
+        const baseTxt = (_curPrice != null) ? _curPrice + ' 元/kg' : '—';
+     const tipOvr = (_ovr != null) ? ' data-mkttip="你手动设置的基准价（优先于标准价参与报价计算）"' : '';
+        priceCell = '<span style="color:' + ((_ovr != null) ? 'var(--success)' : 'var(--text)') + ';font-weight:' + ((_ovr != null) ? '700' : '400') + '"' + tipOvr + '>' + baseTxt + '</span>';
+      }
       const tipEst = (mp.src === '估' && mp.detail) ? ' data-mkttip="' + mp.detail.replace(/"/g, '&quot;') + '"' : '';
       const tipReal = (mp.src === '行情') ? ' data-mkttip="市场公开真实报价（截至 ' + marketAsOfDate() + '，综合 Mysteel / 北方有色网 / SMM）"' : '';
       const badge = (mp.src === '行情')
@@ -4476,7 +4500,7 @@ function renderMarketTable(realMap) {
         + '<td style="font-weight:600;color:var(--text);padding:2px 8px">' + g + '</td>'
         + '<td style="text-align:right;font-variant-numeric:tabular-nums;padding:2px 8px' + tipEst + '">' + mp.price + ' 元/kg</td>'
         + '<td style="text-align:center;padding:2px 8px">' + badge + '</td>'
-        + '<td style="text-align:right;font-variant-numeric:tabular-nums;padding:2px 8px">' + baseTxt + '</td>'
+        + '<td style="text-align:right;font-variant-numeric:tabular-nums;padding:2px 8px">' + priceCell + '</td>'
         + '</tr>';
     });
   });
@@ -4536,15 +4560,138 @@ function showMarketLive() {
 }
 function hideMarketLive() { const p = document.getElementById('marketLiveModal'); if (p) p.style.display = 'none'; }
 function fetchMarketLive(btn) {
+  // [v5.6.21] 旧实现是 setTimeout 假动作（点了没反应、不存任何数据），已改为「手动编辑行情」入口。
   const status = document.getElementById('marketLiveStatus');
   const body = document.getElementById('marketLiveBody');
-  if (status) status.textContent = '获取中...';
-  if (btn) { btn.disabled = true; btn.style.opacity = .6; }
-  setTimeout(function(){
-    if (btn) { btn.disabled = false; btn.style.opacity = 1; }
-    if (status) status.innerHTML = '已刷新行情快照（截至 ' + marketAsOfDate() + '，实时数据源待接入）。';
-    if (body) { body.innerHTML = renderMarketBody(); body.dataset.rendered = '1'; }
-  }, 800);
+  if (status) status.textContent = '行情快照已展示（综合 Mysteel/北方有色网/SMM 公开报价，截至 ' + marketAsOfDate() + '）；点击「获取实时行情」可刷新（手动维护快照）。';
+  if (body) { body.innerHTML = renderMarketBody(); body.dataset.rendered = '1'; }
+}
+// ===== [v5.6.21] 行情面板手动编辑基准价（与「材料设置」共用 priceOverrides）=====
+// 背景：旧 fetchMarketLive 只是 setTimeout 重渲染，没有数据源 → 按钮点了没反应、
+//   快照永远停在 2026-08-07（MARKET_HISTORY 是硬编码常量）。
+// 本实现：点「手动编辑行情」→ 「你的基准价」列变输入框 → 保存写 priceOverrides 并存 localStorage，
+//   报价侧 priceOverrides[grade] 优先于 PDF_PRICES[grade]（L4277/L4292），故**天然联动**，
+//   与材料设置面板 `saveMaterialCustomPrice` 同一份数据、双向同步。
+let _marketEditOn = false;
+function toggleMarketEdit() {
+  if (_marketEditOn) {
+    // 退出编辑：丢弃未保存改动并回到只读态
+    _marketEditOn = false;
+    const btn0 = document.getElementById('marketEditBtn');
+    const bar0 = document.getElementById('marketEditBar');
+    const body0 = document.getElementById('marketLiveBody');
+    if (btn0) btn0.textContent = '手动编辑行情';
+    if (bar0) bar0.style.display = 'none';
+    if (body0) { body0.innerHTML = renderMarketBody(); body0.dataset.rendered = '1'; }
+    const st0 = document.getElementById('marketLiveStatus');
+    if (st0) st0.innerHTML = '行情参考价（综合 Mysteel/北方有色网/SMM 公开报价，截至 ' + marketAsOfDate() + '）。可在「你的基准价」列直接填写实际采购价，保存后报价自动采用。';
+    return;
+  }
+  _marketEditOn = true;
+  const btn = document.getElementById('marketEditBtn');
+  const bar = document.getElementById('marketEditBar');
+  const body = document.getElementById('marketLiveBody');
+  if (btn) btn.textContent = '完成编辑';
+  if (bar) bar.style.display = 'flex';
+  // 🔴 [v5.6.21 修正] 进编辑态**必须**重渲染一次（把只读表格换成输入框）。
+  //   此前用 `!_marketEditOn` 判断后再toggle，导致状态与渲染时序错乱。
+  if (body) { body.innerHTML = renderMarketBody(); body.dataset.rendered = '1'; }
+  const st = document.getElementById('marketLiveStatus');
+  if (st) st.innerHTML = '编辑中：直接修改「你的基准价」列的数值（元/kg），点「全部保存」生效；留空表示沿用标准价。';
+  if (body) {
+    const f = body.querySelector('input.mkEditInput');
+    if (f) try { f.focus(); } catch (e) {}
+  }
+}
+function cancelMarketEdit() { toggleMarketEdit(); }
+// 🔴 [v5.6.21] 单行「恢复标准价」：清除该牌号的手动覆盖 → 回落到 PDF_PRICES 标准价。
+//   与材料设置面板 `resetMaterialToStd` 同款行为，但**同步刷新输入框显示**并立即重算报价，
+//   不依赖用户去清空输入框（清空在无头/触屏下易失效）。
+function resetMarketToStd(g) {
+  if (!g) return;
+  if (priceOverrides[g] == null) { showToast(g + ' 已是标准价', 'warn'); return; }
+  const old = priceOverrides[g];
+  delete priceOverrides[g];
+  savePriceOverrides();
+  const std = PDF_PRICES[g] != null ? PDF_PRICES[g]
+    : (PDF_PRICES[String(g).replace(/^N/i, '')] != null ? PDF_PRICES[String(g).replace(/^N/i, '')] : 300);
+  // 当前牌号被重置 → 单价框回标准价 + 去掉手动标记 + 重算
+  const cg = document.getElementById('grade') ? document.getElementById('grade').value : '';
+  if (g === cg) {
+    const up = document.getElementById('unitPrice');
+    if (up) { up.value = std; up.removeAttribute('data-manual'); }
+    const ep = document.getElementById('editPrice'); if (ep) ep.value = std;
+    try { calculate(); } catch (e) {}
+  }
+  try { refreshSavePriceBtn(); } catch (e) {}
+  try { renderMaterialPriceList(); } catch (e) {}   // 材料设置面板反向同步
+  try { renderGradeChips(); } catch (e) {}
+  try { renderMarketSnapshot(); } catch (e) {}
+  // 重渲染行情表格（该行「恢复」按钮会消失、输入框回空=标准价）
+  const body = document.getElementById('marketLiveBody');
+  if (body) { body.innerHTML = renderMarketBody(); body.dataset.rendered = '1'; }
+  try { logPriceChange({ grade: g, oldPrice: old, newPrice: std, source: '材料行情参考' }); } catch (e) {}
+  showToast(g + ' 已恢复标准价 ' + std + ' 元/kg', 'success');
+}
+function saveAllMarketPrices() {
+  const body = document.getElementById('marketLiveBody');
+  if (!body) return;
+  // 🔴 [v5.6.21] **先取快照再处理**：用 `Array.from` 把 live NodeList **冻结成静态数组**。
+  //   NodeList 是 live 的，遍历过程中任何 DOM 变动都会导致索引错位/读到旧值
+  //   （实测清空 N52 后快照里仍读到 "888"→ 删除分支不触发）。
+  const inputs = Array.prototype.slice.call(body.querySelectorAll('input.mkEditInput'));
+  let n = 0, bad = 0;
+  const curGrade = document.getElementById('grade') ? document.getElementById('grade').value : '';
+  let curVal = null;
+  let curCleared = false;
+  // 🔴 [v5.6.21] **先取快照再处理**：DOM 里input.value 可能被后续重渲染改写，
+  //   故一次性读出「牌号 → 用户填的文本」再遍历，避免边读边渲染导致读到旧值。
+  const snap = [];
+  for (let i = 0; i < inputs.length; i++) {
+    snap.push([inputs[i].getAttribute('data-grade'), String(inputs[i].value == null ? '' : inputs[i].value).trim()]);
+  }
+  snap.forEach(function(pair){
+  const g = pair[0], raw = pair[1];
+    if (raw === '') {              // 留空 = 清除覆盖，回落标准价
+      if (priceOverrides[g] != null) { delete priceOverrides[g]; n++; }
+      if (g === curGrade) curCleared = true;
+      return;
+  }
+    const v = parseFloat(raw);
+  if (!isFinite(v) || v <= 0) { bad++; return; }
+    if (priceOverrides[g] !== v) { priceOverrides[g] = v; n++; }
+    if (g === curGrade) curVal = v;
+  });
+  if (bad) { showToast('有 ' + bad + ' 项价格无效（需为正数），未保存', 'warn'); return; }
+  savePriceOverrides();
+  // 🔴 [v5.6.21 修正] 当前牌号被**清空**时 curVal 为 null → 首版漏了这条分支，
+  //   单价框会停在旧覆盖价（实测清空后仍显示 999）。此处显式回落标准价并去掉手动标记。
+  if (curCleared && curVal == null) {
+    const _std = PDF_PRICES[curGrade] != null ? PDF_PRICES[curGrade]
+      : (PDF_PRICES[String(curGrade).replace(/^N/i, '')] != null ? PDF_PRICES[String(curGrade).replace(/^N/i, '')] : 300);
+    const up2 = document.getElementById('unitPrice');
+    if (up2) { up2.value = _std; up2.removeAttribute('data-manual'); }
+    const ep2 = document.getElementById('editPrice'); if (ep2) ep2.value = _std;
+    try { calculate(); } catch (e) {}
+  }
+  if (curVal != null) {                     // 当前牌号改了 → 同步单价框并重算（照材料设置面板写法）
+    const up = document.getElementById('unitPrice');
+    if (up) up.value = curVal;
+    const ep = document.getElementById('editPrice'); if (ep) ep.value = curVal;
+  try { calculate(); } catch (e) {}
+  }
+  try { refreshSavePriceBtn(); } catch (e) {}
+  try { renderMaterialPriceList(); } catch (e) {}   // 材料设置面板反向同步
+  try { renderGradeChips(); } catch (e) {}
+  try { renderMarketSnapshot(); } catch (e) {}      // 设置页行情卡片同步
+  _marketEditOn = false;
+  const btn = document.getElementById('marketEditBtn');
+  const bar = document.getElementById('marketEditBar');
+  if (btn) btn.textContent = '手动编辑行情';
+  if (bar) bar.style.display = 'none';
+  const st = document.getElementById('marketLiveStatus');
+  if (st) st.innerHTML = '已保存 ' + n + ' 项基准价（存入本机浏览器），报价计算已采用新价。';
+  showToast('已保存 ' + n + ' 项基准价', 'success');
 }
 // 行情推算 tooltip：替代原生 title，即时显示、可排版、不被滚动容器裁剪
 let _mktTipEl = null;
@@ -12770,7 +12917,8 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
-      <tr><td>v5.6.20</td><td>加工费口径统一 + 删除合格率下限死代码（2026-10-10，算价公式零改动、报价金额不变）：① <b>加工费口径统一为「倒角费 + 全部工艺费」</b>。此前圆片/圆环/大小头的加工费只计了倒角费，打孔费、芯回收、车肩费、精雕费等实际发生的加工成本没有计入。经核对，打孔时芯子回收会抵减成本（可能出现负值），这部分属于真实的净加工成本，必须计入——此前记「黄金只录倒角费」的数据是滞后的，已按实际重录 73 行。② <b>删除合格率的 0.50 下限兜底</b>。该下限永远不会触发（合格率最低为 0.70），属无效兜底代码，删除后所有报价逐位不变。③ <b>车肩费改为所有形状统一按 5% 扣合格率</b>，与实际操作一致；此前圆片/圆环被特殊排除，导致手工勾选车肩时报价偏高。④ <b>新增 21 条黄金标准样本</b>（总数 623 条）：打孔场景 11 条，覆盖方块与圆片的不同孔径（含小孔、套孔）、与精雕/颗粒磨/车肩的组合；车肩场景 10 条，覆盖不同厚度收/不收、大小头自动带、圆片手动勾选与叠加工艺。门禁：黄金 623/623、变异 10/10、对拍 170/170、冒烟 208/208 全绿</td></tr>
+      <tr><td>v5.6.21</td><td>材料行情面板支持手动编辑基准价（2026-10-10，算价公式零改动）：① 原「获取实时行情」按钮<b>没有数据源</b>，点击只是把同一份快照重新画一遍，快照永远停在 2026-08-07。现改为「<b>手动编辑行情</b>」：点一下即可在表格的「你的基准价」列直接填写实际采购价，填完点「全部保存」即存入本机浏览器并立即生效。② <b>与报价实时联动</b>：保存后若改的是当前正在用的牌号，单价框会自动更新并立即重算报价；没改过的牌号照旧用标准价。③ 与「材料设置」面板<b>共用同一份基准价</b>（同一套存储），两个入口双向同步——这里改的价，材料设置里能看到；那里改的价，这里也同步。④ 改过的牌号会标绿并多出一个「<b>恢复</b>」按钮，点一下即清除该牌号的手动覆盖、回到标准价，不必手动清空输入框。⑤ 弹窗标题改为「材料行情参考」，去掉了「实时数据源待接入」字样。牌号列表与报价用的完全一致（同一份数据源），无缺失。门禁：黄金 623/623、变异 10/10、对拍 170/170、冒烟 208/208 全绿</td></tr>
+        <tr><td>v5.6.20</td><td>加工费口径统一 + 删除合格率下限死代码（2026-10-10，算价公式零改动、报价金额不变）：① <b>加工费口径统一为「倒角费 + 全部工艺费」</b>。此前圆片/圆环/大小头的加工费只计了倒角费，打孔费、芯回收、车肩费、精雕费等实际发生的加工成本没有计入。经核对，打孔时芯子回收会抵减成本（可能出现负值），这部分属于真实的净加工成本，必须计入——此前记「黄金只录倒角费」的数据是滞后的，已按实际重录 73 行。② <b>删除合格率的 0.50 下限兜底</b>。该下限永远不会触发（合格率最低为 0.70），属无效兜底代码，删除后所有报价逐位不变。③ <b>车肩费改为所有形状统一按 5% 扣合格率</b>，与实际操作一致；此前圆片/圆环被特殊排除，导致手工勾选车肩时报价偏高。④ <b>新增 21 条黄金标准样本</b>（总数 623 条）：打孔场景 11 条，覆盖方块与圆片的不同孔径（含小孔、套孔）、与精雕/颗粒磨/车肩的组合；车肩场景 10 条，覆盖不同厚度收/不收、大小头自动带、圆片手动勾选与叠加工艺。门禁：黄金 623/623、变异 10/10、对拍 170/170、冒烟 208/208 全绿</td></tr>
         <tr><td>v5.6.19</td><td>支持「材料单价」临时调价场景 + 黄金标准库扩容（2026-10-09，算价公式零改动、报价金额不变）：① <b>黄金标准库新增「材料单价」列（第 3 列）</b>，共 45 列。该列语义为<b>本行临时调价</b>（元/kg），优先级 <b>override 优先于牌号表价</b>，<b>空值则回落到牌号表价</b>——以 N42SH 为例，表价 349 元/kg，该行填 288 即按 288 参与计算，只影响这一行，其他同牌号订单不受牵连；自动填充规则为「识别内容里写了材料XXX 就取该数字」，全库仅 GC-M1 一行填 288，其余 601 行留空。② <b>修正黄金标准库 GC-M1 的原料成本记录</b>：rc_手算与 rc_工具原误填成单价（0.3996003517265455），已订正为工具真值 0.3624492986181818（全库唯一 rc 等于单价的孤例）。③ <b>预言机单价入口对齐工具</b>：expectedUnitPrice 新增 override 参数，与工具的「用户保存价优先于牌号表价」同序，且只接受有限正数，非法值自动回落到牌号表价（防止出现 0 元材料的静默错误）。另修正大小头三段式规格的加工费口径（倒角费之外叠加打孔费与芯回收）。门禁：黄金 602/602 全绿（历史首次，21 项指标全对齐）、变异 10/10、对拍 165/165、冒烟 208/208</td></tr>
         <tr><td><span>v5.6.18</span></td><td>P0 回归数据修正（2026-10-09，算价公式零改动、报价金额不变）：① 黄金标准库 GC-S2（大小头 D20*D15*5 N52 NI 5000）的「毛坯」列原填文字「圆柱坯」，导致预言机无法解析通用坯尺寸、退回自选 64*54*34 档，钻孔费与芯回收的分子分母比值变成 5.6667（应为 6），致 rc 差 0.0203、单价差 0.0245。已改为 60*45*30（＝工具实际通用坯），复算 rc 4.415872487、单价 5.332166 与工具逐位一致；工具对拍由 164/165 变为 165/165 全绿。② 全库另有 17 行文字型毛坯（如「圆柱坯D10*28.35」「合适方坯62.7*52.6*36.1」），经逐一验证均正常（尺寸写在文字里可被解析），本次未改动。③ 剩余已知差异 2 项：GC-M1（材料自定义单价 288，黄金库无单价输入列）、GC-S2 加工费断言（裁判按识别文本抽「打孔」token，而大小头是规格即孔）。门禁：黄金 600/602、变异 10/10、对拍 165/165、冒烟 208/208</td></tr>
         <tr><td><span>v5.6.17</span></td><td>合格率口径统一修正（2026-10-09 用户拍板）：① <b>大小头默认合格率 0.90 → 0.85</b>——原代码值与同��注释（85%）不一致，按注释与工具实测（大小头 qr=0.85）订正，提示文字同步改为「基础85%(大小头)」；② <b>圆环默认合格率注释订正为 90%</b>——代码与提示本就正确（0.90 / 基础90%(圆环)），仅注释误写 85%；③ 清除手动覆盖的白名单新增 0.85，避免大小头新默认值被误判为非标准值而拉回 0.95；④ <b>10 处合格率兜底值统一 0.9 → 0.95</b>（用户口径「基础值=95%」）——均为读取同一个输入框 stockQualifyRate （末处为历史记录 s.qr）的空值/NaN 兜底，与形状特定默认值无关，不与圆环 0.90 冲突；⑤ 智能输入提示文字「合格率/良率/直通率/成品率」示例值 0.9 → 0.95。形状特定默认值保持差异：方块/异形/瓦片 0.95、大小头 0.85、圆环 0.90。算价公式零改动</td></tr>
@@ -13668,8 +13816,13 @@ window._renderSsCosts   = _renderSsCosts;   // 阶段3 去重新增（3E）
   _jb('id', 'newGradeName', 0, 'input', function(event){ this.value=this.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase() });
   _jb('data-page-node-id', 'akpwHgnf6D0knU97LB0rNZ', 0, 'click', function(event){ addCustomGrade() });
   _jb('data-page-node-id', 'u9JJzSurUDvSdxoLGR7LPi', 0, 'click', function(event){ hideMaterialSettings() });
+  // 🔴 [v5.6.21] 行情面板按钮绑定：原绑 `fetchMarketLive`（死函数，只 setTimeout 重渲染）→ 改绑 toggleMarketEdit。
+//   ⚠️ 教训：本文件按钮统一用 `_jb('data-page-node-id', ...)` / `_jb('id', ...)` 绑定，
+//   **HTML 上的 data-jb-click 属性是失效标记**（全文件 50 处皆无对应实现），别以为写了就生效。
+_jb('data-page-node-id', 'pTA8oQHB910yHpaNwLWAcV', 0, 'click', function(event){ toggleMarketEdit() });
+  _jb('id', 'marketSaveAllBtn', 0, 'click', function(event){ saveAllMarketPrices() });
+  _jb('id', 'marketCancelBtn', 0, 'click', function(event){ cancelMarketEdit() });
   _jb('id', 'marketLiveModal', 0, 'click', function(event){ if(event.target===this)hideMarketLive() });
-  _jb('data-page-node-id', 'pTA8oQHB910yHpaNwLWAcV', 0, 'click', function(event){ fetchMarketLive(this) });
   _jb('data-page-node-id', 'I3GFKXA8WzDlsKWxUWtsyn', 0, 'click', function(event){ hideMarketLive() });
 })();
 </script>
