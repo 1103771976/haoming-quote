@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.22</title>
+<title>昊铭磁材报价计算工具 v5.6.26</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.22</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.26</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2746,9 +2746,10 @@ document.getElementById('appConfirmOk').onclick = function(){
   <div class="modal" style="max-width:560px" data-page-node-id="V9RrzxWtjAz2P9fVABUNPS">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px" data-page-node-id="PKrI0WcGHD1xkU5bGFs8bw">
       <span style="font-size:17px;font-weight:700;color:var(--text);border-bottom:2px solid var(--blue);padding-bottom:2px" data-page-node-id="DgoJBBXE5AjjmYLnadAhJD">材料行情参考</span>
+      <button class="tool-btn" style="font-size:12px" id="marketSnapBtn"><svg class="ic" aria-hidden="true"><use href="#ic-save"/></svg> 记录新快照</button>
       <button class="tool-btn" style="margin-left:auto;font-size:12px;background:var(--blue);color:#fff" id="marketEditBtn" data-page-node-id="pTA8oQHB910yHpaNwLWAcV"><svg class="ic" aria-hidden="true" data-page-node-id="vAsogpQAP3omlqRyJd5T5C"><use href="#ic-refresh" data-page-node-id="ObgRBW3ZF54ksGHBJNnhlC"/></svg> 手动编辑行情</button>
     </div>
-    <div id="marketLiveStatus" style="font-size:12px;color:var(--sub2);margin-bottom:8px" data-page-node-id="jp0TzwjoqTxCkh0Eqnc7DR">行情参考价（综合 Mysteel/北方有色网/SMM 公开报价，截至 <span id="marketAsOf">2026-08-07</span>）。可在「你的基准价」列直接填写实际采购价，保存后报价自动采用。</div>
+    <div id="marketLiveStatus" style="font-size:12px;color:var(--sub2);margin-bottom:8px" data-page-node-id="jp0TzwjoqTxCkh0Eqnc7DR">行情参考价（综合 Mysteel/北方有色网/SMM 公开报价，截至 <span id="marketAsOf">—</span>），行情为手动维护快照，改价见「手动编辑行情」。可在「你的基准价」列直接填写实际采购价，保存后报价自动采用。</div>
     <div id="marketLiveBody" style="max-height:62vh;overflow:auto" data-page-node-id="drz6qCmL8Xetn0q5xLmYpX"></div>
     <div id="marketEditBar" style="display:none;margin-top:10px;padding:9px 10px;background:var(--blue-bg);border:1px solid var(--border);border-radius:var(--radius);gap:8px;flex-wrap:wrap;align-items:center">
       <button class="btn-cancel" id="marketSaveAllBtn" style="background:var(--blue);color:#fff;border-color:var(--blue)">全部保存</button>
@@ -2973,7 +2974,7 @@ function canonicalShapeCheck(t) {
     .replace(/(?:切片|电镀|倒角|工装|夹具|废料)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复B：剥离系数/价/费类费用词数字（废料价80/倒角费0.3/电镀系数0.00016 全剥；(?:价|费|系数)*无硬约束不会卡住后续数字）
     .replace(/(?:利润率|利润|毛利)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复D：剥离利润率/利润/毛利+数字词，避免"利润率1.2"被误当规格维度导致圆片判定失败
     .replace(/(?:合格率|良率|成品率|直通率|合格)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复E：剥离合格率/良率/成品率/直通率+数字词，避免"合格率80"被误当规格维度导致圆片判定失败
-    .replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切粒|切颗|切割|线切|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|无心磨|平磨|内外圆|双端面|研光|喷码|镭雕|多机冲|车削|压制成型|模压|烧结|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）
+    .replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|无心磨|喷码|镭雕|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）
     .replace(/(?:车肩|无心磨|多级冲|喷码|镭雕|精雕|颗粒磨)(?:价|费)?\s*\d*\.?\d*/gi, ' ')  // 修复C：剥离旋转体加工/表面处理类工艺词（含价/费数字）；车肩费0.2 / 无心磨0.1 等不再污染形状校验
     .replace(/\d+\.?\d*\s*[万千]/g, ' ')  // 修复B：剥离中文数量单位数字
     .replace(/(?<![.\d])\d{1,2}\s*(?:片|个|件|只|颗|pcs)/gi, ' ')  // [修复] 剥离「1–2位数字+单位词」数量token（1片/20片/99片/1个/5pcs…）：清理管道此前只剥 3+ 位裸数与紧凑式「数量N」，漏了带单位词的 1–2 位数量 → 圆片残留第3个数 →「恰2数」判定失败 → R1 闸门静默退回方块并清空订单数量。⚠ 位置必须在下方 \d{3,} 剥离之前：若放其后，100片/500片 的三位数已被剥走，残留的「片」会隔着空格被本规则挂到规格末位数字上（实测 D10*3 100片 → 连 "3" 一起剥成 D10* → 只剩 1 个数 → 圆片误退方块）。⚠ 末尾不可加 \b：\b 是 ASCII 词界而 片/圆 皆非 \w，加 \b 后对中文单位永不匹配（实测命中 null）。D10*3 后无单位词，零误伤
@@ -3268,14 +3269,14 @@ function recognizeQty(ctx) {
   // [阶段4 拆分] 原 L3208-3233：数量识别
   var text = ctx.text;
   var spec = ctx.spec;
-  var _qtyText = text.replace(/(?:磨型|颗粒磨|无心磨|平磨|内外圆|双端面|研光|喷码|镭雕|多机冲|车削|压制成型|模压|烧结|精雕)\d*\.?\d*/g, ' ');
+  var _qtyText = text.replace(/(?:磨型|颗粒磨|无心磨|喷码|镭雕|精雕)\d*\.?\d*/g, ' ');
   var qtyUnit = _qtyText.match(/(\d+)\s*(?:个|片|件|只|颗|[Pp][Cc][Ss]|[Qq][Tt][Yy])/);
   var qty = '';
   if (qtyUnit) qty = qtyUnit[1];
   var qtyKw = _qtyText.match(/(?:数量|下单量|订单量|下单|订单)\s*[:：]?\s*(\d+(?:\.\d+)?)/);
   if (qtyKw) qty = qtyKw[1];
   if (!qty) {
-    var textForQty = _qtyText.replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切粒|切颗|切割|线切|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价)(?:价|费|系数|率)*\s*\d*\.?\d*|(?:精雕|颗粒磨|无心磨|平磨|内外圆|双端面|研光|喷码|镭雕|多机冲|车削|压制成型|模压|烧结|磨型)(?:价|费|系数|率)+\s*\d*\.?\d*/gi, ' ');
+    var textForQty = _qtyText.replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价)(?:价|费|系数|率)*\s*\d*\.?\d*|(?:精雕|颗粒磨|无心磨|喷码|镭雕|磨型)(?:价|费|系数|率)+\s*\d*\.?\d*/gi, ' ');
     var un=new Set([spec].filter(Boolean).flatMap(function(s){return s.split(/[^\d.]/).filter(Boolean);}));
     var nr=/(\d+)/g, cs=[], nm;
     while ((nm=nr.exec(textForQty))!==null) { var n=parseInt(nm[1]); if (nm[1].length>=3 && !un.has(nm[1]) && n<1000000000) cs.push(n); }
@@ -3630,6 +3631,16 @@ function applyParse(ctx) {
     if ((ctx.hasGranule || ctx.hasCarveWord) && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.90'; updateQrHint('基础90%(颗粒磨/精雕)', true); }
     if (ctx.ringHasHole) {
       document.getElementById('pfDrill').checked = true;
+      // 🔴 [2026-10-12 · 修 cyl 计算状态污染] 圆环有孔时**直接**勾 pfDrill，不经过 _chk()，
+      //   ⇒ _lastOverrides.chDrill 从未被置 1。而 L3627 的清空守卫是
+      //   `if (_wasDrillChk && !ctx.hasDrill) pfHoleDia.value=''`，_wasDrillChk 来自
+      //   `_lastOverrides.chDrill` ⇒ 恒为 false ⇒ **pfHoleDia 不会被清**。
+      //   ⇒ 上一条若为带孔圆环（φ≤2），残留的 pfDrill.checked + pfHoleDia 会被下一条
+      //   **无孔**规格继承，`autoCalcDisc`（L7503-7504 读 pfHoleDia/pfDrill）据此判
+      //   hasSmallHoleCyl=true ⇒ cylLimit 由 29 压到 15/20 ⇒ cylH 由 28.35 变 12.54 ⇒
+      //   圆柱坯体积 2225.475→984.39，报价被污染（实测 GC-046 差 −0.140748）。
+      //   修法：此处同步登记 _lastOverrides.chDrill，使下一条的清空守卫生效（纯状态记账，不改算价）。
+      _lastOverrides.chDrill = 1;
       if (ctx.rParts && ctx.rParts[2]) document.getElementById('pfHoleDia').value = ctx.rParts[2];
     }
     for (var pi=0; pi<ctx.pfPricePatterns.length; pi++) {
@@ -4554,23 +4565,53 @@ function showMarketLive() {
   const p = document.getElementById('marketLiveModal');
   if (!p) return;
   p.style.display = 'flex';
-  const st = document.getElementById('marketLiveStatus');
-  if (st) st.innerHTML = '行情快照已展示（综合 Mysteel/北方有色网/SMM 公开报价，截至 ' + marketAsOfDate() + '）；点击「获取实时行情」可刷新（手动维护快照）。';
+  // [v5.6.23] 行情为手动维护快照，不再谎称「点击获取实时行情可刷新」。
+  // 动态刷新「截至」日期，并去掉一次性渲染守卫，保证同会话内快照更新后面板立即刷新。
+  refreshMarketAsOf();
   const hdrBtn = document.querySelector('button[data-jb-click="showMarketLive()"]');
   if (hdrBtn) hdrBtn.title = '查看钕铁硼毛坯行情参考（截至 ' + marketAsOfDate() + '）';
   const body = document.getElementById('marketLiveBody');
-  if (body && !body.dataset.rendered) {
+  if (body) {
     body.innerHTML = renderMarketBody();
     body.dataset.rendered = '1';
   }
+}
+// [v5.6.23] 行情面板「截至」日期动态填充：优先复用状态栏内的 #marketAsOf 占位 span；
+// 若编辑态消息已改写状态栏（无该 span），则重建只读态文案并注入 span，再填日期。
+function refreshMarketAsOf() {
+  const st = document.getElementById('marketLiveStatus');
+  if (!st) return;
+  let span = st.querySelector('#marketAsOf');
+  if (!span) {
+    st.innerHTML = '行情参考价（综合 Mysteel/北方有色网/SMM 公开报价，截至 <span id="marketAsOf"></span>），行情为手动维护快照，改价见「手动编辑行情」。可在「你的基准价」列直接填写实际采购价，保存后报价自动采用。';
+    span = st.querySelector('#marketAsOf');
+  }
+  if (span) span.textContent = marketAsOfDate();
 }
 function hideMarketLive() { const p = document.getElementById('marketLiveModal'); if (p) p.style.display = 'none'; }
 function fetchMarketLive(btn) {
   // [v5.6.21] 旧实现是 setTimeout 假动作（点了没反应、不存任何数据），已改为「手动编辑行情」入口。
   const status = document.getElementById('marketLiveStatus');
   const body = document.getElementById('marketLiveBody');
-  if (status) status.textContent = '行情快照已展示（综合 Mysteel/北方有色网/SMM 公开报价，截至 ' + marketAsOfDate() + '）；点击「获取实时行情」可刷新（手动维护快照）。';
+  if (status) status.textContent = '行情为手动维护快照（综合 Mysteel/北方有色网/SMM 公开报价，截至 ' + marketAsOfDate() + '），改价见「手动编辑行情」。';
   if (body) { body.innerHTML = renderMarketBody(); body.dataset.rendered = '1'; }
+}
+// [v5.6.23] 「记录新快照」：把当前 MARKET_REAL 追加进 MARKET_HISTORY（带今日日期），
+// 「截至」日期由 marketAsOfDate() 自动取最新一条，无需手改常量。面板立即刷新。
+function recordMarketSnapshot() {
+  const today = new Date().toISOString().slice(0, 10);
+  const last = MARKET_HISTORY[MARKET_HISTORY.length - 1];
+  if (last && last.date === today) {
+    showToast('今日已记录行情快照（' + today + '）');
+    return;
+  }
+  MARKET_HISTORY.push({
+    date: today,
+    note: '手动记录的新快照（MARKET_REAL 当前值）',
+    prices: Object.assign({}, MARKET_REAL)
+  });
+  showToast('已记录新行情快照：截至 ' + today);
+  showMarketLive(); // 立即刷新面板与「截至」日期
 }
 // ===== [v5.6.21] 行情面板手动编辑基准价（与「材料设置」共用 priceOverrides）=====
 // 背景：旧 fetchMarketLive 只是 setTimeout 重渲染，没有数据源 → 按钮点了没反应、
@@ -8267,6 +8308,19 @@ function calculateDisc() {
   //  下面把 Phase4/5/6 依赖的常量前移，供循环内逐档试算（纯计算，不写 DOM）。
   const FT = 0.27;                 // 合适毛坯固定刀厚（原在 Phase4 声明）
   const endWaste = 1.5, safetyMargin = 0.5;
+  // 🔴 [2026-10-12 · 修 cyl 状态污染 · GC-046 对拍 FAIL −0.140748] 取快照**之前**按当前
+  //   DOM 状态刷新一次圆柱坯推算。原缺陷链：
+  //     ① 解析阶段 pfDrill/pfHoleDia 仍是**上一条**的值（脏）
+  //     ② onDiscSpecChange → autoCalcDisc() 读到脏值 ⇒ cylLimit 由 29 被压到 15/20
+  //        ⇒ cylH 28.35→12.54、cylKnives 5→2，写进 cylD/cylH DOM
+  //     ③ 随后解析器才把 pfDrill/pfHoleDia 清干净
+  //     ④ 但 cylH 已是脏值，且**再无人重跑 autoCalcDisc**
+  //     ⑤ calculateDisc 此处读 cylH=12.54 ⇒ cylVol 2225.475→984.39、报价被污染
+  //   ⇒ 此处在非用户定制（!_cylCustomSpec）时按**当前** pfDrill/pfHoleDia 重算，
+  //      保证快照永远取自当前输入的干净状态；用户手工定制圆柱坯时保持原样不动。
+  if (!_cylCustomSpec && typeof autoCalcDisc === 'function') {
+    try { autoCalcDisc(); } catch (e) { /* 保底：刷新失败沿用原值，不阻断报价 */ }
+  }
   const cylDVal = parseFloat(document.getElementById('cylD').value) || 0;
   const cylHVal = parseFloat(document.getElementById('cylH').value) || 0;
   const cylPriceVal = parseFloat(document.getElementById('cylPrice').value) || getCylPrice(D, document.getElementById('grade').value);
@@ -8322,10 +8376,15 @@ function calculateDisc() {
     // ===== 拦截结束 =====
     const _kt = _c1 * _c2 * _prodC3;
     if (_kt <= 0) continue;
-    // 无心磨费：D≤1→0.3/_c3, 1<D≤2→0.2/_c3, 2<D≤3.5→0.1/_c3（分母用不分段_c3）
+    // 无心磨费：D≤1→0.3, 1<D≤2→0.2, 2<D≤3.5→0.1（元/条）
+    //   [v5.6.26·2026-10-22 BUG修复·老板拍板] 分母必须是「每根条实际切出的片数」：
+    //   轴向 _prodC3（= 分段后 K_total；无分段时 L8355 初始化为 _c3 原值，行为不变）、
+    //   径向 _c2（L8371 分段时已覆写为 K_total，本就是分段后，不动）。
+    //   原写 _c3（分段前）→ 分段场景分母偏大、每片分摊偏低：如 D1.5*3 分段后每根只出 9 片却除 10。
+    //   ⚠ 与 L8377 `_kt = _c1*_c2*_prodC3` 对齐（总出刀数本就用分段后值）。
     const _autoGrind = (D <= 3.5) ? (
       D <= 1 ? 0.3 : D <= 2 ? 0.2 : 0.1
-    ) / (discCutDir === 'axial' ? _c3 : _c2) : 0;
+    ) / (discCutDir === 'axial' ? _prodC3 : _c2) : 0;
     const _grindFee = (D <= 3.5) ? pfManualOrCalc('pfCenterlessManual', _autoGrind) : 0;
     const _bv = _gbL * _gbW * _gbH;
     const _bw = _bv * DENSITY / 1000;
@@ -12923,6 +12982,10 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
+      <tr><td>v5.6.26</td><td>无心磨费分母 BUG 修复（2026-10-22，老板拍板必须改）：轴向无心磨费分母由「分段前 _c3」改为「分段后 _prodC3」（segmentForCenterless 的 K_total，即每根方条实际切出的片数）；径向本就是分段后 _c2 不动；无分段时 _prodC3=_c3 行为逐位不变。影响面：disc 系 D≤2 触发无心磨分段的圆片/圆环，黄金标准 4 条（GS-D2H3/D2R/D2A/D2B）每片分摊 0.008→0.0090909、0.005→0.0055556， quote 同步上调。服务端引擎同构同改（engine_core.js v5.6.26）。门禁：老HTML 4 条实跑与引擎修复版逐位一致（PASS 4/4、JS 错误 0）；引擎 A/B 铁证 4 条变化+3 对照零变化。</td></tr>
+      <tr><td>v5.6.25</td><td>噪音工艺词清理（2026-10-18，算价公式零改动）：autoParse 文本剥离链路三处正则移除 12 个纯噪音工艺词（平磨/内外圆/双端面/研光/车削/压制成型/模压/烧结/多机冲/线切/切粒/切颗），保留切条/切割/精雕等真实费用与工艺词。门禁：冒烟全过、形状识别回归无退化。</td></tr>
+      <tr><td>v5.6.24</td><td>行情面板完善（2026-10-13，算价公式零改动）：① 幽灵文案如实化——移除「点击获取实时行情可刷新」误导文案，改为「行情为手动维护快照，改价见手动编辑行情」。② 新增「记录新快照」入口——把当前 MARKET_REAL 追加进 MARKET_HISTORY 并刷新「截至」日期。③ 「截至」日期动态化——由 marketAsOfDate() 取最新快照日期，不再写死。④ 面板刷新守卫修复——去掉一次性渲染守卫，同会话内快照更新后面板立即刷新（此前「更新了动都不动」的直接根因）。⑤ 截图发群按钮——结果卡表头「📸 截图发群」已确认可用（html2canvas 一键截图，Ctrl+S 同效）。⑥ 黄金标准库 4 行出刀订正与瓦片路线差异标记。门禁：冒烟全过、黄金 660/660 全绿</td></tr>
+      <tr><td>v5.6.23</td><td>GC-046 圆柱坯状态污染修复 + 黄金库标记订正（2026-10-13）：① 工具侧修复毛坯规格切换后圆柱坯钻孔/套孔状态污染（_lastOverrides.chDrill 同步登记，六场景 cyl 全部回 1.4200726363818756）。② 黄金库 GC-EXT20/EXT30（15*5*2 N45/N40）出刀列订正 4*10*15→4*9*15（600→540，工具择优真值）、kt 联动、手算三列对齐工具并补✓。③ GC-T16/T25b 瓦片单价_一致 撤回（工具通用坯价 vs 手算合适坯价＝路线差异）。门禁：黄金 660/660、冒烟全过 JS0</td></tr>
       <tr><td>v5.6.22</td><td>材料行情参考价更新（2026-10-10，纯数据更新，不改算价）：① <b>N/M/H 系列行情更新至 2026-10-08 北方有色网逐牌号公开报价</b>（此前为 2026-08-07，已两个月未更新）。本次实际变动两个牌号：<b>N42 由 221 降至 215、N52 由 287 降至 282</b>，其余 20 个牌号持平。② <b>SH/UH/EH 系列本次未更新</b>：Mysteel 只发布系列区间报价（如 SH 系列 320-340 元/kg）而无逐牌号数据，若用区间中值覆盖，会把不同牌号之间的合理价差抹平（例如 33UH 现为 259 而 30UH 为 355，用中值 355 会误把 33UH 抬到与 30UH 同价），属于用推算值冒充真实报价，故保留原值并在面板中标注各自的数据基准日期。N30 市场无公开报价，维持原值。③ 历史快照新增一条 2026-10-08 记录，<b>旧快照完整保留不覆盖</b>，面板「截至」日期自动同步为 2026-10-08。④ <b>行情价仅作报价输入参考，与材料单价默认价是两回事，本次未改动任何默认价</b>（N52 默认仍为 303 元/kg）。⑤ SH/UH/EH 系列下次更新需等待 Mysteel 发布逐牌号报价。门禁：黄金 623/623、变异 10/10、对拍 170/170、冒烟 208/208 全绿</td></tr>
         <tr><td>v5.6.21</td><td>材料行情面板支持手动编辑基准价（2026-10-10，算价公式零改动）：① 原「获取实时行情」按钮<b>没有数据源</b>，点击只是把同一份快照重新画一遍，快照永远停在 2026-08-07。现改为「<b>手动编辑行情</b>」：点一下即可在表格的「你的基准价」列直接填写实际采购价，填完点「全部保存」即存入本机浏览器并立即生效。② <b>与报价实时联动</b>：保存后若改的是当前正在用的牌号，单价框会自动更新并立即重算报价；没改过的牌号照旧用标准价。③ 与「材料设置」面板<b>共用同一份基准价</b>（同一套存储），两个入口双向同步——这里改的价，材料设置里能看到；那里改的价，这里也同步。④ 改过的牌号会标绿并多出一个「<b>恢复</b>」按钮，点一下即清除该牌号的手动覆盖、回到标准价，不必手动清空输入框。⑤ 弹窗标题改为「材料行情参考」，去掉了「实时数据源待接入」字样。牌号列表与报价用的完全一致（同一份数据源），无缺失。门禁：黄金 623/623、变异 10/10、对拍 170/170、冒烟 208/208 全绿</td></tr>
         <tr><td>v5.6.20</td><td>加工费口径统一 + 删除合格率下限死代码（2026-10-10，算价公式零改动、报价金额不变）：① <b>加工费口径统一为「倒角费 + 全部工艺费」</b>。此前圆片/圆环/大小头的加工费只计了倒角费，打孔费、芯回收、车肩费、精雕费等实际发生的加工成本没有计入。经核对，打孔时芯子回收会抵减成本（可能出现负值），这部分属于真实的净加工成本，必须计入——此前记「黄金只录倒角费」的数据是滞后的，已按实际重录 73 行。② <b>删除合格率的 0.50 下限兜底</b>。该下限永远不会触发（合格率最低为 0.70），属无效兜底代码，删除后所有报价逐位不变。③ <b>车肩费改为所有形状统一按 5% 扣合格率</b>，与实际操作一致；此前圆片/圆环被特殊排除，导致手工勾选车肩时报价偏高。④ <b>新增 21 条黄金标准样本</b>（总数 623 条）：打孔场景 11 条，覆盖方块与圆片的不同孔径（含小孔、套孔）、与精雕/颗粒磨/车肩的组合；车肩场景 10 条，覆盖不同厚度收/不收、大小头自动带、圆片手动勾选与叠加工艺。门禁：黄金 623/623、变异 10/10、对拍 170/170、冒烟 208/208 全绿</td></tr>
@@ -13823,10 +13886,12 @@ window._renderSsCosts   = _renderSsCosts;   // 阶段3 去重新增（3E）
   _jb('id', 'newGradeName', 0, 'input', function(event){ this.value=this.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase() });
   _jb('data-page-node-id', 'akpwHgnf6D0knU97LB0rNZ', 0, 'click', function(event){ addCustomGrade() });
   _jb('data-page-node-id', 'u9JJzSurUDvSdxoLGR7LPi', 0, 'click', function(event){ hideMaterialSettings() });
-  // 🔴 [v5.6.21] 行情面板按钮绑定：原绑 `fetchMarketLive`（死函数，只 setTimeout 重渲染）→ 改绑 toggleMarketEdit。
-//   ⚠️ 教训：本文件按钮统一用 `_jb('data-page-node-id', ...)` / `_jb('id', ...)` 绑定，
-//   **HTML 上的 data-jb-click 属性是失效标记**（全文件 50 处皆无对应实现），别以为写了就生效。
+  // [v5.6.21] 行情面板按钮绑定：原绑 `fetchMarketLive`（死函数，只 setTimeout 重渲染）→ 改绑 toggleMarketEdit。
+//   [v5.6.23] 订正旧注释：本文件有**两套等效绑定机制**——`_jb('data-page-node-id'|'id', ...)`（见本块）
+//   与 HTML 上的 `data-jb-click="fn()"` 属性（由文件末尾 `_jbDeliver('click','data-jb-click')` 用 new Function 委托执行）。
+//   两者都生效；旧注释称 data-jb-click 为「失效标记」是错误的，会误导维护者，特此更正。
 _jb('data-page-node-id', 'pTA8oQHB910yHpaNwLWAcV', 0, 'click', function(event){ toggleMarketEdit() });
+  _jb('id', 'marketSnapBtn', 0, 'click', function(event){ recordMarketSnapshot() });
   _jb('id', 'marketSaveAllBtn', 0, 'click', function(event){ saveAllMarketPrices() });
   _jb('id', 'marketCancelBtn', 0, 'click', function(event){ cancelMarketEdit() });
   _jb('id', 'marketLiveModal', 0, 'click', function(event){ if(event.target===this)hideMarketLive() });
