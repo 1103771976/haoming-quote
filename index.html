@@ -13,7 +13,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<title>昊铭磁材报价计算工具 v5.6.26</title>
+<title>昊铭磁材报价计算工具 v5.6.27</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2088,7 +2088,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.26</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.27</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2867,6 +2867,9 @@ let _pendingAutoSave = false; // 识别到"保存"→自动存正式记录
 let _matSaveArmed = false; // 智能输入"保存材料"命令防重触发
 var shapeMode = 'block'; // 'block' | 'tile' | 'irregular' | 'disc'
 var _discDrillFeePerPiece = 0; // 圆片「按片打孔费」（识别词典优化：打孔费0.2 = ¥0.2/片）
+// [v5.6.27] 无心磨口语识别：全局态（与 _discDrillFeePerPiece 同范式；calculateDisc 不接收 ctx，故走全局）
+var _centerlessPerBarOverride = -1;  // 口语值（默认元/条），-1 = 未命中（0 是合法费率，必须能区分）
+var _clUnit = '条';                   // 口语单位：'条' = 元/条÷刀数；'片' = 元/片直接用
 // ===== 模块命名空间（分模块骨架 v5.5.88 起，仅容器，逻辑分批迁入）=====
 const State   = {};   // 单一状态收口（后续批次逐步迁入 67 顶层全局）
 const CostCore= {};   // 算价核心（数学 0 改动，本批不迁入）
@@ -2974,8 +2977,9 @@ function canonicalShapeCheck(t) {
     .replace(/(?:切片|电镀|倒角|工装|夹具|废料)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复B：剥离系数/价/费类费用词数字（废料价80/倒角费0.3/电镀系数0.00016 全剥；(?:价|费|系数)*无硬约束不会卡住后续数字）
     .replace(/(?:利润率|利润|毛利)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复D：剥离利润率/利润/毛利+数字词，避免"利润率1.2"被误当规格维度导致圆片判定失败
     .replace(/(?:合格率|良率|成品率|直通率|合格)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复E：剥离合格率/良率/成品率/直通率+数字词，避免"合格率80"被误当规格维度导致圆片判定失败
-    .replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|无心磨|喷码|镭雕|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）
-    .replace(/(?:车肩|无心磨|多级冲|喷码|镭雕|精雕|颗粒磨)(?:价|费)?\s*\d*\.?\d*/gi, ' ')  // 修复C：剥离旋转体加工/表面处理类工艺词（含价/费数字）；车肩费0.2 / 无心磨0.1 等不再污染形状校验
+    .replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|喷码|镭雕|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）⚠ [v5.6.27·拆出修复] "无心磨"已从本组拆出（下方专用行）——大组 `\s*\d*\.?\d*` 贪婪会把"无心磨"后隔空格的数量一起吞（D3*2 无心磨 N52 NI 500片 → 500 被吞 → 尾数被误剥 → 圆片误退方块）
+    .replace(/(?:车肩|多级冲|喷码|镭雕|精雕|颗粒磨)(?:价|费)?\s*\d*\.?\d*/gi, ' ')  // 修复C：剥离旋转体加工/表面处理类工艺词（含价/费数字）；车肩费0.2 等不再污染形状校验 ⚠ [v5.6.27·拆出修复] "无心磨"已从本组拆出（下方专用行）
+    .replace(/无心磨(?:价|费)?(?: ?\d*\.?\d*)?/gi, ' ')  // [v5.6.27·拆出修复] 无心磨专用剥离：最多吃 1 个空格+数字（"无心磨0.15"/"无心磨 0.15"），不再跨多空格吞大数字（"无心磨 N52 NI 500片" 中的 500 保住）；费率解析已在 autoParse 口语块提前完成，此处只做净化（与引擎 engine_core.js 修复C/C补 同构）
     .replace(/\d+\.?\d*\s*[万千]/g, ' ')  // 修复B：剥离中文数量单位数字
     .replace(/(?<![.\d])\d{1,2}\s*(?:片|个|件|只|颗|pcs)/gi, ' ')  // [修复] 剥离「1–2位数字+单位词」数量token（1片/20片/99片/1个/5pcs…）：清理管道此前只剥 3+ 位裸数与紧凑式「数量N」，漏了带单位词的 1–2 位数量 → 圆片残留第3个数 →「恰2数」判定失败 → R1 闸门静默退回方块并清空订单数量。⚠ 位置必须在下方 \d{3,} 剥离之前：若放其后，100片/500片 的三位数已被剥走，残留的「片」会隔着空格被本规则挂到规格末位数字上（实测 D10*3 100片 → 连 "3" 一起剥成 D10* → 只剩 1 个数 → 圆片误退方块）。⚠ 末尾不可加 \b：\b 是 ASCII 词界而 片/圆 皆非 \w，加 \b 后对中文单位永不匹配（实测命中 null）。D10*3 后无单位词，零误伤
     .replace(/^(\s*\d+(?:\.\d+)?(?:\*\s*\d+(?:\.\d+)?){0,2})/, function(__t){ return __t.replace(/(?<![Dd])\d{3,}/g, function(__n){ _masked.push(__n); return '\uE000'; }); })  // [2026-09-28 修复] 遮蔽开头方块维度三段内≥100的数(如300*100*10)，交还下方 L2943 时它不会误剥这些真实维度；圆片(D/Φ前缀)不在此遮蔽范围→原有剥离逻辑不变
@@ -3364,6 +3368,18 @@ function recognizeProcess(ctx) {
     text = text.replace(granuleDao[0], '\u9897\u7c92\u78e8'); // 归一化为「颗粒磨」
   } else {
     document.getElementById('pfGranulePasses').value = 1;     // 未识别到道数：复位为 1，避免上一条文本的道数残留
+  }
+  // [精雕道数] 与颗粒磨/磨型同机制：从文本解析「精雕N道」→ 写入 pfCarvePasses，并归一化为「精雕」。
+  //   ⚠ 位置须在 grindDao 之前（与 granuleDao 同理，避免磨型正则先吃掉「雕2道」里的数字）。
+  //   仅改道数「来源」（DOM 默认值 → 文本解析值），不动任何算价公式（0.5 × 道数 保持不变）。
+  var carveDao = text.match(/精雕\s*(\d+|[零一二两三四五六七八九十])\s*(?:道|次|遍)/i);
+  if (carveDao) {
+    var ccn = carveDao[1];
+    var carveCount = cnNumMap[ccn] || parseInt(ccn) || 1;
+    document.getElementById('pfCarvePasses').value = carveCount;
+    text = text.replace(carveDao[0], '\u7cbe\u96d5'); // 归一化为「精雕」
+  } else {
+    document.getElementById('pfCarvePasses').value = 1;       // 未识别到道数：复位为 1，避免上一条文本的道数残留
   }
   var grindDao = text.match(/磨(?:型|条)?\s*(\d+|[^\s]{1})\s*(?:道|次|遍)/i);
   if (grindDao) {
@@ -3842,6 +3858,10 @@ function renderResult(ctx) {
   var lrEl = document.getElementById('stockLossRate'); var lrNow = parseFloat(lrEl.value);
   items.push({ k: '损耗率', v: ctx.lossRateOverride>=0 ? '◉ ×'+ctx.lossRateOverride.toFixed(2) : (isNaN(lrNow)||lrEl.value.trim()==='' ? '◈ 自动' : '◈ ×'+lrNow.toFixed(2)) });
 
+  // [v5.6.27] 无心磨口语识别回显（与引擎 engine_core.js L1111-1113 同构）：◉ 口语值（带单位）/ ◈ 自动
+  items.push({ k: '无心磨', v: (typeof _centerlessPerBarOverride !== 'undefined' && _centerlessPerBarOverride >= 0)
+    ? '◉ ¥'+_centerlessPerBarOverride.toFixed(4)+'/'+_clUnit : '◈ 自动' });
+
   var qrNow = parseFloat(document.getElementById('stockQualifyRate').value); qrNow = isNaN(qrNow) ? 0.95 : qrNow;
   items.push({ k: '合格率', v: ctx.qualifyRate>0 ? '◉ '+(ctx.qualifyRate>1?ctx.qualifyRate.toFixed(0):(ctx.qualifyRate*100).toFixed(0))+'%' : '◈ '+(qrNow*100).toFixed(0)+'%' });
 
@@ -3982,6 +4002,9 @@ function renderResult(ctx) {
 function autoParse() {
   // [阶段4 拆分 · 编排器] 原 L2984-3974：建 ctx → 调各识别子模块 → 落盘(render 内) → 渲染
   _discDrillFeePerPiece = 0;
+  // [v5.6.27] 无心磨口语值 **成对复位**：位置必须在函数最开头（早于所有 return），
+  //   保证清空/退格/合成中等每条路径都被覆盖（与引擎 engine_core.js L1257 同构）
+  _centerlessPerBarOverride = -1; _clUnit = '条';
   window.__irrR = null;
   var r = document.getElementById('smartResult');
   var inp = document.getElementById('smartInput');
@@ -4009,6 +4032,22 @@ function autoParse() {
   };
   var norm = normalizeInput(v);
   ctx.text = norm.text; ctx.autoSave = norm.autoSave; ctx.platingProtect = norm.platingProtect;
+  // ===== [v5.6.27] 无心磨口语识别（插入点：ctx.text 已赋值之后、recognizeBlank 之前）=====
+  //   与引擎 engine_core.js L1285-1299 逐字同构。
+  //   必须在形状识别之前：命中后口语段整体移除，避免 "0.15" 污染 canonicalShapeCheck 的维度数校验（见定稿 C2）。
+  //   正则三段关键：(?![.\d]) 防回溯把 0.15 退化成 0；(?![eE]) 防 "1e-3" 被吃成 1；
+  //                 (?!\s*(?:道|次|遍)) 排除「无心磨0.15道」（那是磨道数，不是费率）。
+  //   ⚠ 命中后【整体移除、不留"无心磨"字样】：实测留下该字样会引爆形状净化链缺陷——净化链先剥掉牌号/镀层
+  //     成空格，"无心磨"后的 `\s*\d*` 会把规格与数量之间的数量一起贪吃（D3*2 无心磨0.15 N52 NI 500片 → 剩 "D3*2"），
+  //     尾数"2 片"再被「1-2位数字+单位词」规则误剥成 "D3*" → 圆片"恰2数"判定失败 → 静默误退 block。
+  var _clM = ctx.text.match(/无心磨(?:费|价)?\s*(\d+(?:\.\d+)?)(?![.\d])(?![eE])(?!\s*(?:道|次|遍))(?:(?:\/|每|一)?\s*(条|片))?/);
+  if (_clM) {
+    _centerlessPerBarOverride = parseFloat(_clM[1]);
+    _clUnit = _clM[2] || '条';
+    ctx.text = ctx.text.replace(_clM[0], ' ');   // 整体移除（勿改成留下"无心磨"字样，见上方净化链缺陷说明）
+    var _cEl = document.getElementById('pfCenterlessManual');
+    if (_cEl) _cEl.value = '';   // 口语命中即清手动框（该框无任何 input/change 监听，不会触发重算）
+  }
   recognizeBlank(ctx);
   recognizeShape(ctx);
   recognizeGrade(ctx);
@@ -6908,6 +6947,17 @@ function checkWarnings(stock, fit, knifeTotal) {
     var dVal2 = parseFloat(document.getElementById('dimD')?.value) || parseFloat(document.getElementById('discD')?.value) || 0;
     if (dVal2 > 0 && dVal2 <= 3.5) ws.push(`D=${dVal2}mm ≤3.5，需无心磨加工`);
   }
+  // [v5.6.27] 无心磨口语值「写了没生效」提示（与引擎 engine_core.js L4209-4219 同构）
+  if (typeof _centerlessPerBarOverride !== 'undefined' && _centerlessPerBarOverride >= 0) {
+    var _clSpoken = '¥' + _centerlessPerBarOverride + '/' + _clUnit;
+    if (typeof shapeMode !== 'undefined' && shapeMode === 'disc') {
+      if (!(dVal2 > 0 && dVal2 <= 3.5)) {
+        ws.push(`已识别无心磨 ${_clSpoken}，但 D=${dVal2}>3.5 不计无心磨费（含圆柱坯路线），口语值未生效`);
+      }
+    } else {
+      ws.push(`已识别无心磨 ${_clSpoken}，但当前形状（方块/瓦片/异形）不计算无心磨费，口语值未生效`);
+    }
+  }
   const wbox = document.getElementById('warningsBox');
   if (ws.length > 0) {
     const hasWarn = ws.some(w=>w.includes('#ic-alert')||w.includes('翻倍')||w.includes('异常'));
@@ -6919,6 +6969,9 @@ function checkWarnings(stock, fit, knifeTotal) {
 
 function clearResults() {
   _discDrillFeePerPiece = 0; // 识别词典优化：清场时重置按片打孔费
+  // [v5.6.27] ⚠ 此处**刻意不复位** _centerlessPerBarOverride / _clUnit（与引擎 engine_core.js L4210 同构）：
+  //   clearResults 有 26 处调用，含 onDiscSpecChange 的「用户临时清空 D 框」分支等高频路径，
+  //   放这里会导致口语值静默丢失。复位统一放在 autoParse 开头 + resetAll。
   buildResultCards();
   document.getElementById('scrapBar').className = 'scrap-bar none';
   document.getElementById('scrapBar').textContent = '';
@@ -6954,6 +7007,8 @@ function showBlankWarning(reason) {
 function resetAll() {
   // 复用权威清场函数（单一真相源）：全量复位当前单据 + 形状回退 block
   window._lowestCost = false; // 须在清场/重算前复位,否则 onGradeChange 触发重算会用陈旧 true 把 fitKnifeThick3 设回 0.20(#572)
+  // [v5.6.27] 官方重置：无心磨口语值成对复位（与引擎 engine_core.js L4277 同构）
+  _centerlessPerBarOverride = -1; _clUnit = '条';
   var _lct0 = document.getElementById('lowestCostToggle'); if (_lct0) _lct0.checked = false;
   if (typeof shapeMode !== 'undefined' && shapeMode !== 'block') { try { switchShape('block'); } catch(e) {} }
   try { _fullClearParseState(); } catch(e) {}
@@ -8385,7 +8440,15 @@ function calculateDisc() {
     const _autoGrind = (D <= 3.5) ? (
       D <= 1 ? 0.3 : D <= 2 ? 0.2 : 0.1
     ) / (discCutDir === 'axial' ? _prodC3 : _c2) : 0;
-    const _grindFee = (D <= 3.5) ? pfManualOrCalc('pfCenterlessManual', _autoGrind) : 0;
+    // [v5.6.27] 无心磨口语识别：口语值作为 pfManualOrCalc 的 autoVal 传入（与引擎 engine_core.js L5710-5718 同构）
+    //   ⇒ 手动框非空永远优先（用户随时可手填覆盖）；框空 → 口语值；无口语 → 自动三档
+    //   单位：'条' = 元/条 ÷ 刀数（轴向 _prodC3 / 径向 _c2，均为分段后 K_total）；'片' = 元/片直接用
+    const _autoOrSpoken = (typeof _centerlessPerBarOverride !== 'undefined' && _centerlessPerBarOverride >= 0)
+      ? ( _clUnit === '片'
+            ? _centerlessPerBarOverride
+            : _centerlessPerBarOverride / (discCutDir === 'axial' ? _prodC3 : _c2) )
+      : _autoGrind;
+    const _grindFee = (D <= 3.5) ? pfManualOrCalc('pfCenterlessManual', _autoOrSpoken) : 0;
     const _bv = _gbL * _gbW * _gbH;
     const _bw = _bv * DENSITY / 1000;
     const _bp = _bw * unitPrice;
@@ -12982,7 +13045,8 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
-      <tr><td>v5.6.26</td><td>无心磨费分母 BUG 修复（2026-10-22，老板拍板必须改）：轴向无心磨费分母由「分段前 _c3」改为「分段后 _prodC3」（segmentForCenterless 的 K_total，即每根方条实际切出的片数）；径向本就是分段后 _c2 不动；无分段时 _prodC3=_c3 行为逐位不变。影响面：disc 系 D≤2 触发无心磨分段的圆片/圆环，黄金标准 4 条（GS-D2H3/D2R/D2A/D2B）每片分摊 0.008→0.0090909、0.005→0.0055556， quote 同步上调。服务端引擎同构同改（engine_core.js v5.6.26）。门禁：老HTML 4 条实跑与引擎修复版逐位一致（PASS 4/4、JS 错误 0）；引擎 A/B 铁证 4 条变化+3 对照零变化。</td></tr>
+      <tr><td>v5.6.27</td><td><b>无心磨口语识别</b>（2026-10-24，算价公式零改动，仅新增识别入口）：智能输入直接写「无心磨0.15」即生效——此前该写法被识别层静默忽略，只能去面板手填。① 语法：无心磨0.15 / 无心磨费0.15 / 无心磨价0.15 / 带单位 /条 /片 每条 每片 一片；元/条按「÷对应方向刀数」折算（轴向 _prodC3、径向 _c2，均为分段后 K_total），元/片直接用。② 负向断言排除「无心磨0.15道」（磨道数）与「1e-3」（科学计数法，防止 0.001 被当 1）。③ 口语命中即清空面板手动框（该框无事件监听，不触发重算），用户随后手填框仍优先——口语值作为 pfManualOrCalc 的 autoVal 传入，手动框非空永远赢。④ 识别回显新增「无心磨 ◉¥0.15/条 / ◈ 自动」一行；D&gt;3.5 或方块/瓦片等不计算无心磨的形状，在警告区明确提示「口语值未生效」，不再静默。⑤ 已知提示：识别串里只写「无心磨」二字不带数字时，形状净化链会把它后面的数量一起吞掉导致圆片误判方块（既有缺陷，v5.6.26 及以前同样存在），请写带数字的完整写法。服务端引擎同构同改。门禁：黄金 660/660 全绿、完整链路 660 行输出与改前基线逐字节一致。</td></tr>
+      <tr><td>v5.6.26</td><td>无心磨费分母 BUG 修复（2026-10-22，老板拍板必须改）：轴向无心磨费分母由「分段前 _c3」改为「分段后 _prodC3」（segmentForCenterless 的 K_total，即每根方条实际切出的片数）；径向本就是分段后 _c2 不动；无分段时 _prodC3=_c3 行为逐位不变。影响面：disc 系 D≤2 触发无心磨分段的圆片/圆环，黄金标准 4 条（GS-D2H3/D2R/D2A/D2B）每片分摊 0.008→0.0090909、0.005→0.0055556， quote 同步上调。服务端引擎同构同改（engine_core.js v5.6.26）。门禁：老HTML 4 条实跑与引擎修复版逐位一致（PASS 4/4、JS 错误 0）；引擎 A/B 铁证 4 条变化+3 对照零变化。<b>另含 G23 精雕道数识别修复</b>（2026-10-21，autoParse 识别层，算价公式零改动）：此前「精雕2道」只按 1 道计费（pfCarvePasses 从不由文本驱动），修复 GC-027 rc 差 −0.5；解析顺序铁律「颗粒磨→精雕→磨型」不可调换，磨型正则会把「雕2道」的数字吃掉。</td></tr>
       <tr><td>v5.6.25</td><td>噪音工艺词清理（2026-10-18，算价公式零改动）：autoParse 文本剥离链路三处正则移除 12 个纯噪音工艺词（平磨/内外圆/双端面/研光/车削/压制成型/模压/烧结/多机冲/线切/切粒/切颗），保留切条/切割/精雕等真实费用与工艺词。门禁：冒烟全过、形状识别回归无退化。</td></tr>
       <tr><td>v5.6.24</td><td>行情面板完善（2026-10-13，算价公式零改动）：① 幽灵文案如实化——移除「点击获取实时行情可刷新」误导文案，改为「行情为手动维护快照，改价见手动编辑行情」。② 新增「记录新快照」入口——把当前 MARKET_REAL 追加进 MARKET_HISTORY 并刷新「截至」日期。③ 「截至」日期动态化——由 marketAsOfDate() 取最新快照日期，不再写死。④ 面板刷新守卫修复——去掉一次性渲染守卫，同会话内快照更新后面板立即刷新（此前「更新了动都不动」的直接根因）。⑤ 截图发群按钮——结果卡表头「📸 截图发群」已确认可用（html2canvas 一键截图，Ctrl+S 同效）。⑥ 黄金标准库 4 行出刀订正与瓦片路线差异标记。门禁：冒烟全过、黄金 660/660 全绿</td></tr>
       <tr><td>v5.6.23</td><td>GC-046 圆柱坯状态污染修复 + 黄金库标记订正（2026-10-13）：① 工具侧修复毛坯规格切换后圆柱坯钻孔/套孔状态污染（_lastOverrides.chDrill 同步登记，六场景 cyl 全部回 1.4200726363818756）。② 黄金库 GC-EXT20/EXT30（15*5*2 N45/N40）出刀列订正 4*10*15→4*9*15（600→540，工具择优真值）、kt 联动、手算三列对齐工具并补✓。③ GC-T16/T25b 瓦片单价_一致 撤回（工具通用坯价 vs 手算合适坯价＝路线差异）。门禁：黄金 660/660、冒烟全过 JS0</td></tr>
