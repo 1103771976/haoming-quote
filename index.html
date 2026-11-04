@@ -13,9 +13,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" data-page-node-id="lA6umIH4oQ5ea2O0DpqzJX">
 <meta http-equiv="Pragma" content="no-cache" data-page-node-id="b0due8yF6BQpDCISOVuujV">
 <meta http-equiv="Expires" content="0" data-page-node-id="SJov3DgZYG75gHyhcgKHZF">
-<!-- [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
+<!-- [v5.6.30·2026-11-04 报价卡渲染修复] displayResults 补调 buildPriceOverview（瓦片/异形算价后占位残留根因）+_placeholder 占位卡兼容——渲染层，算价公式零改动
+     [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
      [v5.6.28·2026-10-28 两档制阶段7] 合适坯双候选+极限提示+A1瓦片恒择优+B1批量档读stockBlock实际值+cyl引用修复(L7041 _cylCand恒null)——算价公式零改动 -->
-<title>昊铭磁材报价计算工具 v5.6.29</title>
+<title>昊铭磁材报价计算工具 v5.6.30</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2090,7 +2091,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.29</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.30</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -7060,6 +7061,7 @@ function displayResults(stock, fit, customStock, prodVol, placeholderLabel) {   
     _recRoute = (_cylCand && _cylCand.quote < _fitCand.quote) ? _cylCand : _fitCand;
   }
   poRoutes.forEach(r => { r.isBest = (r.res === _recRoute); r.recommended = (r.res === _recRoute); });
+  buildPriceOverview(poRoutes);   // [v5.6.30 修复] 方块/瓦片/异形算价后渲染报价卡进 #priceOverview（此前仅圆片路径调用，瓦片/异形算价后占位残留——主Agent派单 2026-11-04）
 
   // === Cost Strip: 双列并排 ===
   const c1v = parseInt(document.getElementById('knife1').value)||0;
@@ -9407,8 +9409,14 @@ function buildPriceOverview(routes) {
     const cardClass = r.isBest ? 'quote-card highlight' : 'quote-card';
     html += '<div class="' + cardClass + '">';
     html += '<div class="po-label" style="font-size:13px">' + r.label + '</div>';
-    html += '<div class="po-value price">¥' + r.quote.toFixed(4) + '</div>';
-    html += '<div class="po-label" style="font-size:12px;color:var(--text2);margin-top:2px">总货值 ¥' + r.totalValue.toFixed(2) + '</div>';
+    // [v5.6.30] 兼容 _placeholder 占位卡（瓦片无自定义坯时 quote/totalValue 为 null，不可 toFixed 否则崩渲染）
+    if (r._placeholder || r.quote == null || r.totalValue == null) {
+      html += '<div class="po-value price" style="color:var(--sub2)">—</div>';
+      html += '<div class="po-label" style="font-size:12px;color:var(--text2);margin-top:2px">填入规格后自动计算</div>';
+    } else {
+      html += '<div class="po-value price">¥' + r.quote.toFixed(4) + '</div>';
+      html += '<div class="po-label" style="font-size:12px;color:var(--text2);margin-top:2px">总货值 ¥' + r.totalValue.toFixed(2) + '</div>';
+    }
     html += '</div>';
   }
   html += '</div>';
@@ -13362,6 +13370,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
+      <tr><td>v5.6.30</td><td>报价卡渲染修复（2026-11-04，渲染层，算价公式零改动）：方块/瓦片/异形共用 displayResults 此前未调 buildPriceOverview → 算价后 #priceOverview 残留清场占位（老板截图实证）。补调渲染+占位卡兼容（quote=null 输出「—」不崩）。</td></tr>
       <tr><td>v5.6.29</td><td>清场占位文案场景化（2026-11-04，仅文案/提示层，算价公式零改动）：① clearResults 加可选 reason 参数（默认中性文案「暂无计算结果——粘贴识别串后自动计算」）；② 关键三路径场景提示（无镀层/尺寸不全/识别要素不全）；③ L10462/L10477 占位识别正则同步新文案并保留旧词兼容历史记录。</td></tr>
       <tr><td>v5.6.28</td><td>合适坯双候选+极限提示+瓦片恒择优+批量档口径+cyl修复（2026-10-28，两档制阶段7，算价公式零改动）：① 合适坯双候选（每片坯料体积口径取低）；② 极限轴独立+1提示（L66/W56/H39）；③ 瓦片A1恒择优；④ 批量档B1读stockBlock实际值；⑤ cyl引用修复（L7041 _cylCand恒null，报价卡全挂根因）。门禁：golden828 838绿+0失败（839行含锚点行）。</td></tr>
       <tr><td>v5.6.27</td><td><b>无心磨口语识别</b>（2026-10-24，算价公式零改动，仅新增识别入口）：智能输入直接写「无心磨0.15」即生效——此前该写法被识别层静默忽略，只能去面板手填。① 语法：无心磨0.15 / 无心磨费0.15 / 无心磨价0.15 / 带单位 /条 /片 每条 每片 一片；元/条按「÷对应方向刀数」折算（轴向 _prodC3、径向 _c2，均为分段后 K_total），元/片直接用。② 负向断言排除「无心磨0.15道」（磨道数）与「1e-3」（科学计数法，防止 0.001 被当 1）。③ 口语命中即清空面板手动框（该框无事件监听，不触发重算），用户随后手填框仍优先——口语值作为 pfManualOrCalc 的 autoVal 传入，手动框非空永远赢。④ 识别回显新增「无心磨 ◉¥0.15/条 / ◈ 自动」一行；D&gt;3.5 或方块/瓦片等不计算无心磨的形状，在警告区明确提示「口语值未生效」，不再静默。⑤ 已知提示：识别串里只写「无心磨」二字不带数字时，形状净化链会把它后面的数量一起吞掉导致圆片误判方块（既有缺陷，v5.6.26 及以前同样存在），请写带数字的完整写法。服务端引擎同构同改。门禁：黄金 660/660 全绿、完整链路 660 行输出与改前基线逐字节一致。</td></tr>
