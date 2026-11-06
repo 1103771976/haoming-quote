@@ -16,7 +16,7 @@
 <!-- [v5.6.30·2026-11-04 报价卡渲染修复] displayResults 补调 buildPriceOverview（瓦片/异形算价后占位残留根因）+_placeholder 占位卡兼容——渲染层，算价公式零改动
      [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
      [v5.6.28·2026-10-28 两档制阶段7] 合适坯双候选+极限提示+A1瓦片恒择优+B1批量档读stockBlock实际值+cyl引用修复(L7041 _cylCand恒null)——算价公式零改动 -->
-<title>昊铭磁材报价计算工具 v5.6.34</title>
+<title>昊铭磁材报价计算工具 v5.6.35</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2091,7 +2091,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.34</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.35</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -8659,9 +8659,11 @@ function calculateDisc() {
       _c3 = Math.floor((_gbH - 1.5) / (side + _t3));
     }
     // ===== 分段拦截 =====
-    // [v5.6.34-fix] 分段触发源同时认内径孔与显式孔，取最小孔径判「是否需分段」（分段条件是孔≤2）
-    const _segHoles = [(parseFloat(document.getElementById('ringInnerD')?.value) || 0), (parseFloat(document.getElementById('pfHoleDia')?.value) || 0)].filter(v => v > 0);
-    const holeDia = _segHoles.length ? Math.min.apply(null, _segHoles) : 0;
+    // [v5.6.35] 分段只按「内径孔」判定：圆环是先成环再钻额外孔，额外孔不参与分段（老板 2026-11-07 工艺事实）
+    //   圆环(有内径) → 只看 ringInnerD；非圆环(无内径，如圆片/大小头) → 仍按显式孔 pfHoleDia（原行为不变）
+    const _segInnerDia = parseFloat(document.getElementById('ringInnerD')?.value) || 0;
+    const _segExtraDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
+    const holeDia = _segInnerDia > 0 ? _segInnerDia : _segExtraDia;
     const hasHole = document.getElementById('pfDrill')?.checked && holeDia > 0;
     const barH = (discCutDir === 'axial') ? _gbH : _gbW;
     _prodC3 = _c3, _segCutFee = 0, _segDrill = null, _segInfo = null;
@@ -8729,10 +8731,15 @@ function calculateDisc() {
     const _matNet = _sm - _spp;
     // 圆环打孔/套孔：D≤2走分段新公式，2<D<6走旧表，≥6套孔
     let _drillFee = 0, _coreRecovery = 0;
-    // [v5.6.34] 圆环两孔计价（方案A + 0.01 容差）：内径孔 ringInnerD ＋ 额外孔 pfHoleDia
-    //   同孔判定：|额外孔 − 内径| ≤ 0.01 → 视为同一孔只收一次
-    //   分段：只对第一个孔生效（一条棒料只分一次段）
-    //   分母：两孔共用 heightKnives
+    // ===== [v5.6.34/v5.6.35] 圆环「内径孔 ＋ 额外孔」两孔计价·六条规则（维护必读）=====
+    //   ① 字段：内径孔 = ringInnerD（规格 D外*D内*H 的第二段）；额外孔 = pfHoleDia（识别串「打孔/套孔 + 孔径」）
+    //      内径不再写入 pfHoleDia（v5.6.34 起，避免覆盖显式孔）
+    //   ② 同孔判定：两孔径「数值严格相等」→ 视为同一孔只收一次；不相等 → 两孔各收一份（不加任何容差）
+    //   ③ 打孔费累加：每个孔按各自档位算（≥6 套孔公式 / ≤2 且分段 / 2~6 价目表），Σ 累加
+    //   ④ 芯回收各算：每孔若 ≥6 各产生一份负值，Σ 累加
+    //   ⑤ qr 取最重不叠加：两孔径取最小判档（任一 ≤2 → 扣10%；都 >2 → 扣5%）
+    //   ⑥ 分段只按内径孔（v5.6.35）：圆环先成环再钻额外孔，额外孔不参与分段；非圆环仍按显式孔
+    //   附：电镀面积只扣内径孔（额外孔不计入面积）；分母 heightKnives 两孔共用
     if (document.getElementById('pfDrill')?.checked) {
       const heightKnives = discCutDir === 'axial' ? _prodC3 : _c2;
       const blankHeightAxis = discCutDir === 'axial' ? _gbH : _gbW;
@@ -13402,6 +13409,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
+      <tr><td>v5.6.35</td><td>取消「额外孔参与分段」（2026-11-07 老板工艺事实）：圆环先成环再钻额外孔，<b>分段只按内径孔 ringInnerD 判定</b>，额外孔再小也不触发分段；非圆环（圆片/大小头）仍按显式孔，原行为不变。影响：`D20*D8*5 打孔D2` 由「有分段 0.1256 + 分段孔深费」改为「无分段、走价目表」，加工费 0.432413896→0.248953438（−0.18346/件）。另将两孔六条规则收成总注释（字段/同孔/累加/芯回收/取重/分段）便于维护。</td></tr>
       <tr><td>v5.6.34</td><td>圆环「内径孔 + 额外孔」两孔计价（2026-11-07 老板拍板）：①内径孔(ringInnerD)与额外孔(pfHoleDia)分离，内径不再覆盖显式孔 ②同孔判定=数值相等（不加容差），相等只收一次 ③两孔各算打孔费/芯回收并累加 ④qr 按最小孔径取最重不叠加 ⑤分段只分一次 ⑥电镀面积只扣内径孔。另修工序文案：圆环显示「打孔 Ø内径(内径) + Ø额外」，方块/瓦片/圆片/大小头文案与算价零变化。</td></tr>
       <tr><td>v5.6.33</td><td>修复圆片「打孔φN」解析失败（2026-11-06 DSH 量化实验：25 组里唯一失败组合＝圆片+打孔φN，且静默不出价）：根因＝canonicalShapeCheck L2978 打孔剥离正则只写 [Dd]? 缺 Φφ，φ2 残留成第3个数 → 圆片「恰2数」校验失败 → 退回方块且无结果；套孔那条 L2979 本就有 Φφ。本次补齐 Φφ（两处同源正则），并新增解析失败 showToast 兜底提示。算价公式零改动。</td></tr>
       <tr><td>v5.6.32</td><td>修复圆片/圆环/大小头「成本构成」不显示（2026-11-06 老板报）：displayDiscResults 漏调 buildCostStrip，导致 costStrip 停留清场占位；v5.6.25 开发副本 L8719 本有调用，迁移中丢失。本次只补一次渲染调用（csRoutes 已完成 5 路构造与 isBest 标注），算价公式零改动。</td></tr>
