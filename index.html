@@ -16,7 +16,7 @@
 <!-- [v5.6.30·2026-11-04 报价卡渲染修复] displayResults 补调 buildPriceOverview（瓦片/异形算价后占位残留根因）+_placeholder 占位卡兼容——渲染层，算价公式零改动
      [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
      [v5.6.28·2026-10-28 两档制阶段7] 合适坯双候选+极限提示+A1瓦片恒择优+B1批量档读stockBlock实际值+cyl引用修复(L7041 _cylCand恒null)——算价公式零改动 -->
-<title>昊铭磁材报价计算工具 v5.6.32</title>
+<title>昊铭磁材报价计算工具 v5.6.33</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2091,7 +2091,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.32</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.33</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2975,7 +2975,7 @@ function canonicalShapeCheck(t) {
     .replace(/\d{2,3}(?:SH|UH|EH|AH|H)T?[+\-]{0,2}|\d{2,3}M(?![Mm])/gi, ' ')
     .replace(/(?:镍|铜|锌|环氧|黑|彩|ni|cu|zn|epoxy|nickel)/gi, ' ')
     .replace(/(?:小批|大批|打样|批量|加急|急)/g, ' ')
-    .replace(/打孔\s*费?\s*[Dd]?\s*\d*\.?\d*/gi, ' ')  // 修复A：剥离打孔/打孔费孔径词，避免误当圆片直径
+    .replace(/打孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ')  // 修复A：剥离打孔/打孔费孔径词，避免误当圆片直径
     .replace(/套孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ')  // 修复A补：剥离套孔/套孔费孔径词(φ/D前缀)，与圆片识别 autoParse L3083 同口径，避免套孔φ10 残留第3数致圆片恰2数判定失败→误退方块
     .replace(/(?:切片|电镀|倒角|工装|夹具|余料价格|余料价|余料|废料)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复B：剥离系数/价/费类费用词数字（废料价80/倒角费0.3/电镀系数0.00016 全剥；(?:价|费|系数)*无硬约束不会卡住后续数字）
     .replace(/(?:利润率|利润|毛利)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复D：剥离利润率/利润/毛利+数字词，避免"利润率1.2"被误当规格维度导致圆片判定失败
@@ -3136,7 +3136,7 @@ function recognizeShape(ctx) {
   var cutDir = '';
   if (/\u5f84\u5411|radial/i.test(text)) cutDir = 'radial';
   else if (/\u8f74\u5411|axial/i.test(text)) cutDir = 'axial';
-  var shapeText = text.replace(/打孔\s*费?\s*[Dd]?\s*\d*\.?\d*/gi, ' ').replace(/套孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ');
+  var shapeText = text.replace(/打孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ').replace(/套孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ');
   var dm = shapeText.match(/([\u03A6\u03C6Dd])\s*(\d+(?:\.\d+)?)\s*(?:[x\u0445*\u00d7]|\s)\s*(\d+(?:\.\d+)?)/i);
   var discPrefix = !!dm;
   var ringHasHole = shapeText.match(/[Dd]\s*\d+(?:\.\d+)?\s*[x\u0445*\u00d7]\s*[Dd]\s*\d+(?:\.\d+)?\s*[x\u0445*\u00d7]\s*\d+/i);
@@ -3207,6 +3207,7 @@ function recognizeShape(ctx) {
       window._parseStatus = { ok:false, hint: _cc.hint };
       var _sh = document.getElementById('smartHint');
       if (_sh) { _sh.style.display = ''; _sh.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> ' + _cc.hint; }
+      try { if (typeof showToast === 'function') showToast('规格未识别，未出价：' + _cc.hint, 'warn', 6000); } catch(e) {}   // [v5.6.33] 解析失败兜底提示，杜绝静默不出价
     }
   }
   ctx.cutDir = cutDir;
@@ -13370,6 +13371,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
+      <tr><td>v5.6.33</td><td>修复圆片「打孔φN」解析失败（2026-11-06 DSH 量化实验：25 组里唯一失败组合＝圆片+打孔φN，且静默不出价）：根因＝canonicalShapeCheck L2978 打孔剥离正则只写 [Dd]? 缺 Φφ，φ2 残留成第3个数 → 圆片「恰2数」校验失败 → 退回方块且无结果；套孔那条 L2979 本就有 Φφ。本次补齐 Φφ（两处同源正则），并新增解析失败 showToast 兜底提示。算价公式零改动。</td></tr>
       <tr><td>v5.6.32</td><td>修复圆片/圆环/大小头「成本构成」不显示（2026-11-06 老板报）：displayDiscResults 漏调 buildCostStrip，导致 costStrip 停留清场占位；v5.6.25 开发副本 L8719 本有调用，迁移中丢失。本次只补一次渲染调用（csRoutes 已完成 5 路构造与 isBest 标注），算价公式零改动。</td></tr>
       <tr><td>v5.6.31</td><td>余料术语统一 + 合适坯余料按核心算法 §3.5 统一抵减（2026-11-05）：① 术语「能抵价=余料／不可回收损耗=废料」，参数统一为「余料价格」（默认 100 元/kg，废料价同义保留）；② 合适毛坯 fSPPv 不再强制归零，按 calcScrap 结果抵减，2mm 门槛由 calcScrap 判定；③ 识别层新增「余料价格／余料价」，净化链同步；④ 前端材料格守卫挡「余」防「余料价80」误吞。算价公式结构零改动，但报价数值会变化。</td></tr>
       <tr><td>v5.6.30</td><td>报价卡渲染修复（2026-11-04，渲染层，算价公式零改动）：方块/瓦片/异形共用 displayResults 此前未调 buildPriceOverview → 算价后 #priceOverview 残留清场占位（老板截图实证）。补调渲染+占位卡兼容（quote=null 输出「—」不崩）。</td></tr>
