@@ -16,7 +16,7 @@
 <!-- [v5.6.30·2026-11-04 报价卡渲染修复] displayResults 补调 buildPriceOverview（瓦片/异形算价后占位残留根因）+_placeholder 占位卡兼容——渲染层，算价公式零改动
      [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
      [v5.6.28·2026-10-28 两档制阶段7] 合适坯双候选+极限提示+A1瓦片恒择优+B1批量档读stockBlock实际值+cyl引用修复(L7041 _cylCand恒null)——算价公式零改动 -->
-<title>昊铭磁材报价计算工具 v5.6.33</title>
+<title>昊铭磁材报价计算工具 v5.6.34</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2091,7 +2091,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.33</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.34</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -3661,7 +3661,7 @@ function applyParse(ctx) {
       //   圆柱坯体积 2225.475→984.39，报价被污染（实测 GC-046 差 −0.140748）。
       //   修法：此处同步登记 _lastOverrides.chDrill，使下一条的清空守卫生效（纯状态记账，不改算价）。
       _lastOverrides.chDrill = 1;
-      if (ctx.rParts && ctx.rParts[2]) document.getElementById('pfHoleDia').value = ctx.rParts[2];
+      if (ctx.rParts && ctx.rParts[2]) { document.getElementById('pfDrill').checked = true; }  // [v5.6.34] 圆环内径由 ringInnerD 承载，不再写入 pfHoleDia（避免覆盖显式孔）
     }
     for (var pi=0; pi<ctx.pfPricePatterns.length; pi++) {
       var pp = ctx.pfPricePatterns[pi];
@@ -4112,7 +4112,18 @@ function updateProcReadout() {
   }
   if (isOn('pfDrill')) {
     var dia = (document.getElementById('pfHoleDia').value || '').trim();
-    items.push('打孔' + (dia ? ' Ø' + dia : ''));
+    // [v5.6.34] 圆环两孔文案：内径孔与额外孔都写出（如「打孔 Ø8(内径) + Ø2」）；非圆环（ringInnerD 空）保持原行为
+    var _innerEl = document.getElementById('ringInnerD');
+    var _innerDia = (_innerEl && _innerEl.value ? String(_innerEl.value) : '').trim();
+    var _pv = parseFloat(dia) || 0, _iv = parseFloat(_innerDia) || 0;
+    if (_iv > 0 && _pv > 0) {
+      if (_iv === _pv) items.push('打孔 Ø' + _innerDia + '(内径)');
+      else items.push('打孔 Ø' + _innerDia + '(内径) + Ø' + dia);
+    } else if (_iv > 0) {
+      items.push('打孔 Ø' + _innerDia + '(内径)');
+    } else {
+      items.push('打孔' + (dia ? ' Ø' + dia : ''));
+    }
   }
   if (isOn('pfLaser')) items.push('镭雕');
   if (isOn('pfJet')) items.push('喷码');
@@ -5215,7 +5226,7 @@ function parseSpec() {
     document.getElementById('discH').value = hVal;
     document.getElementById('dimL').value = dVal;
     document.getElementById('dimH').value = hVal;
-    if (innerD) { document.getElementById('pfDrill').checked = true; document.getElementById('pfHoleDia').value = innerD; }  // 圆环有孔
+    if (innerD) { document.getElementById('pfDrill').checked = true; }  // 圆环有孔：[v5.6.34] 内径由 ringInnerD 承载，不再写入 pfHoleDia（避免覆盖显式孔）
     // 圆环默认合格率 90%（用户手动设过则不覆盖）
     // [v5.6.17·2026-10-09 修正] 原注释写「85%」但代码是 0.90、提示也是「基础90%(圆环)」→ **注释写错**，已订正为 90%。
     //   口径依据：圆环带内孔（D*D*H）本身已含「孔>2mm 扣 5%」等降档，故基础值取 90% 而非 85%。
@@ -5872,7 +5883,8 @@ function computeQualifyRate() {
   // 带加工判定：覆盖全部 8 种加工工序（L2635 初始化列表），任一勾选即视为带加工
   const _pfIds = ['pfGrind','pfGranule','pfCarve','pfDrill','pfLaser','pfJet','pfShoulder','pfMultiPunch'];
   const hasPF = _pfIds.some(id => document.getElementById(id)?.checked);
-  const hasDrillHole = document.getElementById('pfDrill')?.checked && document.getElementById('pfHoleDia')?.value;
+  // [v5.6.34-fix] 打孔存在性同时认「显式孔 pfHoleDia」与「圆环内径 ringInnerD」（内径不再写入 pfHoleDia，只认前者会让无显式孔的圆环丢打孔扣减）
+  const hasDrillHole = document.getElementById('pfDrill')?.checked && (document.getElementById('pfHoleDia')?.value || document.getElementById('ringInnerD')?.value);
   let base = C.base;
   let baseDrop = 0;
   let baseWhy = '';
@@ -5936,14 +5948,18 @@ function computeQualifyRate() {
   const _set = (d, w) => { if (d > procDelta) { procDelta = d; procWhy = w; } };
   if (hasPF) {
     const holeDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
-    const isSmallHole = hasDrillHole && holeDia > 0 && holeDia <= C.thresholds.smallHoleLE;
+    // [v5.6.34] 圆环两孔：按最小孔径判档（任一孔≤2 → 扣10%；取最重不叠加）
+    const _ringInnerQ = parseFloat(document.getElementById('ringInnerD')?.value) || 0;
+    const _qHoles = [_ringInnerQ, holeDia].filter(v => v > 0);
+    const _minHoleDia = _qHoles.length ? Math.min.apply(null, _qHoles) : 0;
+    const isSmallHole = hasDrillHole && _minHoleDia > 0 && _minHoleDia <= C.thresholds.smallHoleLE;
     // [v5.5.66 领域修正] 加工难度扣减：颗粒磨扣；磨型不扣(除非道数≥阈值)；其余按原档（v5.5.67 由 QR_CONFIG.proc 驱动）
     if (_chk('pfGranule')) _set(C.proc.granule, '颗粒磨');
     if (_chk('pfGrind')) {
       const _gp = parseInt(document.getElementById('pfGrindPasses')?.value) || 1;
       if (_gp >= C.thresholds.grindPassesGE) _set(C.proc.grindPassesGE4, '磨型' + _gp + '道'); // 磨型道数<阈值：不扣
     }
-    if (isSmallHole) _set(C.proc.smallHole, '打孔D' + holeDia + '≤' + C.thresholds.smallHoleLE);
+    if (isSmallHole) _set(C.proc.smallHole, '打孔D' + _minHoleDia + '≤' + C.thresholds.smallHoleLE);   // [v5.6.34-fix] 文案用最小孔径（内径孔不再写 pfHoleDia，原用 holeDia 会显示 D0）
     else if (_chk('pfDrill')) _set(C.proc.drill, '打孔');
     if (_chk('pfCarve')) _set(C.proc.carve, '精雕');
     if (_chk('pfLaser')) _set(C.proc.laser, '镭雕');
@@ -7885,7 +7901,7 @@ function onRingSpecChange() {
   document.getElementById('dimH').value = H;
   if (D_in > 0) {
     document.getElementById('pfDrill').checked = true;
-    document.getElementById('pfHoleDia').value = D_in;
+    // [v5.6.34] 内径由 ringInnerD 承载，不再写入 pfHoleDia（避免覆盖显式孔）
   }
   // 圆环默认合格率由 computeQualifyRate 按形状基础值统一计算
   computeQualifyRate();
@@ -8518,7 +8534,8 @@ function calculateDisc() {
     prodArea = 3.14 * ((D1/2)*(D1/2) + (D2/2)*(D2/2) + D1*H1 + D2*H2 + ((D1/2)*(D1/2) - (D2/2)*(D2/2)));
   }
   if (document.getElementById('pfDrill')?.checked) {
-    const holeR = (parseFloat(document.getElementById('pfHoleDia')?.value) || 0) / 2;
+    // [v5.6.34] 电镀面积只扣「圆环内径孔」（真实通孔）；无内径时退回 pfHoleDia（方块/圆片行为不变）。额外孔不计入电镀面积。
+    const holeR = ((parseFloat(document.getElementById('ringInnerD')?.value) || 0) || (parseFloat(document.getElementById('pfHoleDia')?.value) || 0)) / 2;
     if (holeR > 0) {
       prodArea = prodArea - 2 * 3.14 * holeR * holeR + 2 * 3.14 * holeR * H;
     }
@@ -8642,7 +8659,9 @@ function calculateDisc() {
       _c3 = Math.floor((_gbH - 1.5) / (side + _t3));
     }
     // ===== 分段拦截 =====
-    const holeDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
+    // [v5.6.34-fix] 分段触发源同时认内径孔与显式孔，取最小孔径判「是否需分段」（分段条件是孔≤2）
+    const _segHoles = [(parseFloat(document.getElementById('ringInnerD')?.value) || 0), (parseFloat(document.getElementById('pfHoleDia')?.value) || 0)].filter(v => v > 0);
+    const holeDia = _segHoles.length ? Math.min.apply(null, _segHoles) : 0;
     const hasHole = document.getElementById('pfDrill')?.checked && holeDia > 0;
     const barH = (discCutDir === 'axial') ? _gbH : _gbW;
     _prodC3 = _c3, _segCutFee = 0, _segDrill = null, _segInfo = null;
@@ -8710,20 +8729,32 @@ function calculateDisc() {
     const _matNet = _sm - _spp;
     // 圆环打孔/套孔：D≤2走分段新公式，2<D<6走旧表，≥6套孔
     let _drillFee = 0, _coreRecovery = 0;
+    // [v5.6.34] 圆环两孔计价（方案A + 0.01 容差）：内径孔 ringInnerD ＋ 额外孔 pfHoleDia
+    //   同孔判定：|额外孔 − 内径| ≤ 0.01 → 视为同一孔只收一次
+    //   分段：只对第一个孔生效（一条棒料只分一次段）
+    //   分母：两孔共用 heightKnives
     if (document.getElementById('pfDrill')?.checked) {
-      const holeDiaLocal = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
       const heightKnives = discCutDir === 'axial' ? _prodC3 : _c2;
       const blankHeightAxis = discCutDir === 'axial' ? _gbH : _gbW;
-      if (holeDiaLocal > 0 && blankHeightAxis > 0 && heightKnives > 0) {
-        if (holeDiaLocal >= 6) {
-          _drillFee = holeDiaLocal * 3.14 * blankHeightAxis * 0.0009 / heightKnives;
-          const coreR = (holeDiaLocal - 1.8) / 2;
-          _coreRecovery = -1 * coreR * coreR * 3.14 * blankHeightAxis * DENSITY / 1000 * scrapPrice / heightKnives;
-        } else if (holeDiaLocal <= 2 && _segDrill !== null) {
-          _drillFee = _segDrill; // D≤2 打孔：总孔深×0.02/K_total
-        } else {
-          const perBar = pfManualOrCalc('pfDrillManual', getDrillPerBarDefault(holeDiaLocal));
-          _drillFee = perBar / heightKnives;
+      const _holeInner = parseFloat(document.getElementById('ringInnerD')?.value) || 0;
+      const _holeExtra = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
+      const _holes = [];
+      if (_holeInner > 0) _holes.push(_holeInner);
+      if (_holeExtra > 0 && !(_holeInner > 0 && _holeExtra === _holeInner)) _holes.push(_holeExtra);   // [v5.6.34] 同孔判定=数值严格相等（老板 2026-11-07 否掉容差）
+      if (_holes.length && blankHeightAxis > 0 && heightKnives > 0) {
+        let _segUsed = false;
+        for (const _hd of _holes) {
+          if (_hd >= 6) {
+            _drillFee += _hd * 3.14 * blankHeightAxis * 0.0009 / heightKnives;
+            const coreR = (_hd - 1.8) / 2;
+            _coreRecovery += -1 * coreR * coreR * 3.14 * blankHeightAxis * DENSITY / 1000 * scrapPrice / heightKnives;
+          } else if (_hd <= 2 && _segDrill !== null && !_segUsed) {
+            _drillFee += _segDrill; // D≤2 打孔：总孔深×0.02/K_total（每棒只分一次段）
+            _segUsed = true;
+          } else {
+            const perBar = pfManualOrCalc('pfDrillManual', getDrillPerBarDefault(_hd));
+            _drillFee += perBar / heightKnives;
+          }
         }
       }
     }
@@ -13371,6 +13402,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
+      <tr><td>v5.6.34</td><td>圆环「内径孔 + 额外孔」两孔计价（2026-11-07 老板拍板）：①内径孔(ringInnerD)与额外孔(pfHoleDia)分离，内径不再覆盖显式孔 ②同孔判定=数值相等（不加容差），相等只收一次 ③两孔各算打孔费/芯回收并累加 ④qr 按最小孔径取最重不叠加 ⑤分段只分一次 ⑥电镀面积只扣内径孔。另修工序文案：圆环显示「打孔 Ø内径(内径) + Ø额外」，方块/瓦片/圆片/大小头文案与算价零变化。</td></tr>
       <tr><td>v5.6.33</td><td>修复圆片「打孔φN」解析失败（2026-11-06 DSH 量化实验：25 组里唯一失败组合＝圆片+打孔φN，且静默不出价）：根因＝canonicalShapeCheck L2978 打孔剥离正则只写 [Dd]? 缺 Φφ，φ2 残留成第3个数 → 圆片「恰2数」校验失败 → 退回方块且无结果；套孔那条 L2979 本就有 Φφ。本次补齐 Φφ（两处同源正则），并新增解析失败 showToast 兜底提示。算价公式零改动。</td></tr>
       <tr><td>v5.6.32</td><td>修复圆片/圆环/大小头「成本构成」不显示（2026-11-06 老板报）：displayDiscResults 漏调 buildCostStrip，导致 costStrip 停留清场占位；v5.6.25 开发副本 L8719 本有调用，迁移中丢失。本次只补一次渲染调用（csRoutes 已完成 5 路构造与 isBest 标注），算价公式零改动。</td></tr>
       <tr><td>v5.6.31</td><td>余料术语统一 + 合适坯余料按核心算法 §3.5 统一抵减（2026-11-05）：① 术语「能抵价=余料／不可回收损耗=废料」，参数统一为「余料价格」（默认 100 元/kg，废料价同义保留）；② 合适毛坯 fSPPv 不再强制归零，按 calcScrap 结果抵减，2mm 门槛由 calcScrap 判定；③ 识别层新增「余料价格／余料价」，净化链同步；④ 前端材料格守卫挡「余」防「余料价80」误吞。算价公式结构零改动，但报价数值会变化。</td></tr>
