@@ -16,7 +16,7 @@
 <!-- [v5.6.30·2026-11-04 报价卡渲染修复] displayResults 补调 buildPriceOverview（瓦片/异形算价后占位残留根因）+_placeholder 占位卡兼容——渲染层，算价公式零改动
      [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
      [v5.6.28·2026-10-28 两档制阶段7] 合适坯双候选+极限提示+A1瓦片恒择优+B1批量档读stockBlock实际值+cyl引用修复(L7041 _cylCand恒null)——算价公式零改动 -->
-<title>昊铭磁材报价计算工具 v5.6.30</title>
+<title>昊铭磁材报价计算工具 v5.6.32</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -1855,7 +1855,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
 }
 #appToast.t-show { animation: toastIn .34s cubic-bezier(.22,1,.36,1); }
 
-/* 废料提示条 */
+/* 余料提示条 */
 #scrapBar { font-size: 12px; line-height: 1.5; margin-top: 6px; }
 
 /* 镀层提示留白 */
@@ -2091,7 +2091,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.30</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.32</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2336,7 +2336,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
         </div>
         <div class="param-row" data-page-node-id="ID9Ehshcw7cPAJL8EpDiAT">
           <div class="f-row adv-item" style="margin-bottom:0" data-page-node-id="L7qGvE3ECEI8JFGtjFV9mG">
-            <label style="min-width:52px" data-page-node-id="CCVdFbMBAeA7x1Aptvwok4">废料</label>
+            <label style="min-width:52px" data-page-node-id="CCVdFbMBAeA7x1Aptvwok4">余料价格</label>
             <input id="scrapPrice" type="number" step="1" value="100" style="width:68px" data-page-node-id="JZQNnQPc3XwA5C4LmQA9k0">
             <span class="unit" data-page-node-id="WFeAjh0oduD6OTBg3nmHoY">元/kg</span>
           </div>
@@ -2977,10 +2977,10 @@ function canonicalShapeCheck(t) {
     .replace(/(?:小批|大批|打样|批量|加急|急)/g, ' ')
     .replace(/打孔\s*费?\s*[Dd]?\s*\d*\.?\d*/gi, ' ')  // 修复A：剥离打孔/打孔费孔径词，避免误当圆片直径
     .replace(/套孔\s*费?\s*[\u03A6\u03C6Dd]?\s*\d*\.?\d*/gi, ' ')  // 修复A补：剥离套孔/套孔费孔径词(φ/D前缀)，与圆片识别 autoParse L3083 同口径，避免套孔φ10 残留第3数致圆片恰2数判定失败→误退方块
-    .replace(/(?:切片|电镀|倒角|工装|夹具|废料)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复B：剥离系数/价/费类费用词数字（废料价80/倒角费0.3/电镀系数0.00016 全剥；(?:价|费|系数)*无硬约束不会卡住后续数字）
+    .replace(/(?:切片|电镀|倒角|工装|夹具|余料价格|余料价|余料|废料)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复B：剥离系数/价/费类费用词数字（废料价80/倒角费0.3/电镀系数0.00016 全剥；(?:价|费|系数)*无硬约束不会卡住后续数字）
     .replace(/(?:利润率|利润|毛利)(?:价|费|系数)*\s*\d*\.?\d*/gi, ' ')  // 修复D：剥离利润率/利润/毛利+数字词，避免"利润率1.2"被误当规格维度导致圆片判定失败
     .replace(/(?:合格率|良率|成品率|直通率|合格)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复E：剥离合格率/良率/成品率/直通率+数字词，避免"合格率80"被误当规格维度导致圆片判定失败
-    .replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|喷码|镭雕|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）⚠ [v5.6.27·拆出修复] "无心磨"已从本组拆出（下方专用行）——大组 `\s*\d*\.?\d*` 贪婪会把"无心磨"后隔空格的数量一起吞（D3*2 无心磨 N52 NI 500片 → 500 被吞 → 尾数被误剥 → 圆片误退方块）
+    .replace(/(?:工装|夹具|余料价格|余料价|余料|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|喷码|镭雕|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）⚠ [v5.6.27·拆出修复] "无心磨"已从本组拆出（下方专用行）——大组 `\s*\d*\.?\d*` 贪婪会把"无心磨"后隔空格的数量一起吞（D3*2 无心磨 N52 NI 500片 → 500 被吞 → 尾数被误剥 → 圆片误退方块）
     .replace(/(?:车肩|多级冲|喷码|镭雕|精雕|颗粒磨)(?:价|费)?\s*\d*\.?\d*/gi, ' ')  // 修复C：剥离旋转体加工/表面处理类工艺词（含价/费数字）；车肩费0.2 等不再污染形状校验 ⚠ [v5.6.27·拆出修复] "无心磨"已从本组拆出（下方专用行）
     .replace(/无心磨(?:加工费|价|费)?(?: ?\d*\.?\d*)?/gi, ' ')  // [v5.6.27·拆出修复] 无心磨专用剥离：最多吃 1 个空格+数字（"无心磨0.15"/"无心磨 0.15"），不再跨多空格吞大数字（"无心磨 N52 NI 500片" 中的 500 保住）；费率解析已在 autoParse 口语块提前完成，此处只做净化（与引擎 engine_core.js 修复C/C补 同构）
     .replace(/\d+\.?\d*\s*[万千]/g, ' ')  // 修复B：剥离中文数量单位数字
@@ -3283,7 +3283,7 @@ function recognizeQty(ctx) {
   var qtyKw = _qtyText.match(/(?:数量|下单量|订单量|下单|订单)\s*[:：]?\s*(\d+(?:\.\d+)?)/);
   if (qtyKw) qty = qtyKw[1];
   if (!qty) {
-    var textForQty = _qtyText.replace(/(?:工装|夹具|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价)(?:价|费|系数|率)*\s*\d*\.?\d*|(?:精雕|颗粒磨|无心磨|喷码|镭雕|磨型)(?:价|费|系数|率)+\s*\d*\.?\d*/gi, ' ');
+    var textForQty = _qtyText.replace(/(?:工装|夹具|余料价格|余料价|余料|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价)(?:价|费|系数|率)*\s*\d*\.?\d*|(?:精雕|颗粒磨|无心磨|喷码|镭雕|磨型)(?:价|费|系数|率)+\s*\d*\.?\d*/gi, ' ');
     var un=new Set([spec].filter(Boolean).flatMap(function(s){return s.split(/[^\d.]/).filter(Boolean);}));
     var nr=/(\d+)/g, cs=[], nm;
     while ((nm=nr.exec(textForQty))!==null) { var n=parseInt(nm[1]); if (nm[1].length>=3 && !un.has(nm[1]) && n<1000000000) cs.push(n); }
@@ -3309,7 +3309,7 @@ function recognizeOverrides(ctx) {
   barSliceFeeOverride = barSliceFeeOverride ? parseFloat(barSliceFeeOverride[1]) : -1;
   var plateOverride = text.match(/(?:\u7535\u9540\u7cfb\u6570|\u7535\u9540\u8d39|\u9540\u7cfb\u6570|\u9540\u8d39|\u7535\u9540|\u9540)\s*(\d+\.?\d*)/);
   var platingCoefOverride = plateOverride ? parseFloat(plateOverride[1]) : -1;
-  var scrapOverride = text.match(/(?:\u5e9f\u6599\u4ef7?|\u5e9f\u6599\u8d39|\u5e9f\u54c1\u4ef7)\s*(\d+)/);
+  var scrapOverride = text.match(/(?:\u4f59\u6599\u4ef7\u683c|\u4f59\u6599\u4ef7|\u5e9f\u6599\u4ef7?|\u5e9f\u6599\u8d39|\u5e9f\u54c1\u4ef7)\s*(\d+)/);
   var scrapPriceOverride = scrapOverride ? parseInt(scrapOverride[1]) : -1;
   var lossOverride = text.match(/(?:\u6bdb\u576f\u635f\u8017|\u6bdb\u576f\u6d88\u8017|\u6bdb\u576f\u6d88|\u6bdb\u576f\u8017|\u6bdb\u576f\u635f|\u635f\u8017\u7387|\u635f\u8017|\u62a5\u5e9f\u7387|\u6bdb\u576f\u7387)\s*(\d+\.?\d*)/);
   var lossRateOverride = lossOverride ? parseFloat(lossOverride[1]) : -1;
@@ -3847,7 +3847,7 @@ function renderResult(ctx) {
   items.push({ k: '电镀系数', v: ctx.platingCoefOverride>=0 ? '◉ '+ctx.platingCoefOverride.toFixed(5) : '◈ '+pcNow.toFixed(5) });
 
   var spNow = parseFloat(document.getElementById('scrapPrice').value); spNow = isNaN(spNow) ? 100 : spNow;
-  items.push({ k: '废料价', v: ctx.scrapPriceOverride>=0 ? '◉ ¥'+ctx.scrapPriceOverride : '◈ ¥'+spNow });
+  items.push({ k: '余料价格', v: ctx.scrapPriceOverride>=0 ? '◉ ¥'+ctx.scrapPriceOverride : '◈ ¥'+spNow });
 
   var ktNow = parseFloat(document.getElementById('knifeThick1').value); ktNow = isNaN(ktNow) ? 0.4 : ktNow;
   items.push({ k: '刀厚', v: ctx.knifeThickOverride>=0 ? '◉ '+ctx.knifeThickOverride.toFixed(2) : '◈ '+ktNow.toFixed(2)+'mm' });
@@ -4276,7 +4276,7 @@ function toggleSmartHint() {
       '<b>可输入关键词：</b>',
       '规格 D/L*W*H | 等级 N52/48SH | 镀层 NI/ZN/蓝白锌/彩锌/黑环氧/环氧/化学镍/黑镍/锖色/镍铜+黑环氧/NI+黑环氧 | 数量 500/2万',
       '第一刀/第二刀/第三刀 0.4 | 切片系数 0.0004 | 电镀系数 0.00016',
-      '废料/废料价 100 | 工装/夹具费 500 | 倒角/倒角费 0.2',
+      '余料价格 100（废料价同义） | 工装/夹具费 500 | 倒角/倒角费 0.2',
       '利润率/利润/毛利 1.05 | 合格率/良率/直通率/成品率 0.95',
       '毛坯损耗/毛坯消耗 1.1 | 磨型/磨条 | 颗粒磨 | 精雕 | 打孔 | 镭雕 | 喷码 | 车肩 | 多级冲/两级冲/三级冲/四级冲',
       '保存（末尾输入即可存入报价记录）'
@@ -6126,7 +6126,7 @@ function clampPrVar(v) {                     // 利润率，照 sanitizeProfitRa
   if (v > 10) v = 10.0;
   return v;
 }
-function clampScrapVar(v) {                  // 废料价，照 sanitizeScrapPrice L5711-5712（原函数无上限，此处同步不加）
+function clampScrapVar(v) {                  // 余料价格，照 sanitizeScrapPrice L5711-5712（原函数无上限，此处同步不加）
   v = parseFloat(v);
   if (isNaN(v) || v < 0) return 100;
   return v;
@@ -6290,14 +6290,13 @@ function calculate() {
     fSPP = (fitVol>0 && _fitCut) ? calcScrap(fbd[0]||0, fbd[1]||0, fbd[2]||0,
       _fitCut.Lout||W, _fitCut.Wout||L, H, _fitCut.c1, _fitCut.c2, _fitCut.c3,
       _fitCut.t1, _fitCut.t2, _fitCut.t3, scrapPrice, _fitCut.knifeTotal) : null;
-    // [口径D·2026-10-21 首批改动3] 合适毛坯没有余料：废料金额恒为 0、不回收、不抵钱。
-    //   老板口径原文：「合适毛坯没有余料（废料=0，不回收、不抵钱）」。
-    //   仅改合适坯路线的「废料抵钱金额」（本变量 fSPPv，作为 calcOne 第15位传入 → 影响 yieldCost/rc/quote）；
-    //   fSPP 本身继续计算、fr.scrapInfo = fSPP（下方 L3414 附近）继续保留余料明细 → 金额不抵钱、明细仍可见。
-    //   ⚠ 不动 L6796-6798 / L6765 的「毛坯需求量估算」（那是坯数与重量，不是废料回收）。
-    //   ⚠ 不动通用方块路线的 sSPPv（sr 走 L3403）—— 老板本轮只拍合适坯，GC-EXT09/35/42 三条
-    //     方块通用坯余料回收老板尚未拍板，一律不动。
-    fSPPv = 0;
+    // [口径变更·2026-11-05 老板拍板] 按核心算法 §3.5 统一抵减，不再区分自有料/客户料。
+    //   合适毛坯的余料与其他路线一样按 calcScrap 结果（fSPP.perPiece）计入余料抵钱；
+    //   2mm 门槛由 calcScrap 内部处理（余料不足 2mm 自然为 0）。
+    //   fSPP 明细（scrapInfo）照常输出，金额与明细一致。
+    //   ⚠ 若某单确实不抵钱，由报价人在识别串显式写「余料价格0」（override=0 → spp=0）。
+    //   ⚠ 不动 calcScrap 公式 / 2mm 门槛 / 默认值 100 / 通用坯 sSPPv / 毛坯需求量估算。
+    fSPPv = fSPP ? (fSPP.perPiece || 0) : 0;
   }
 
   // ===== 电镀系数翻倍（面积>阈值时）＋ 轴>30 加系数（2026-09-04 新增）=====
@@ -9097,6 +9096,7 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal, customCyl, cus
   );
   const csBestQ = Math.min(...csRoutes.map(r => r.result.quote));
   csRoutes.forEach(r => r.isBest = (r.result === _recRoute));   // [五路同侧·C2] 与 poRoutes 同规则（按订单数量推荐）
+  buildCostStrip(csRoutes);   // [v5.6.32] 圆片/圆环/大小头成本构成渲染（v5.6.25 L8719 有，迁移中丢失；只补渲染，算价零改动）
 
   // === 毛坯参数 ===
   stock.knifeTotal = c1dv*c2dv*c3dv;
@@ -9556,7 +9556,7 @@ function calcUtilDecomp(bL,bW,bH, c1,c2,c3, p1,p2,p3, t, isFit) {
     const core = (bL-1.5)*(bW-1.5)*(bH-1.5);
     V_head = Math.max(0, V_blank - core);          // 仅端头1.5薄壳
     V_left = Math.max(0, core - gridBox);           // 余料=未利用核心（开口子那块“大料头”）
-    // v5.5.10：通用毛坯三轴端面余料中，仅最大那块可回收(按废料价)，其余算废料——与 calcScrap 口径对齐
+    // v5.5.10：通用毛坯三轴端面剩余中，仅最大那块作为可回收余料(按余料价格)，其余为不可回收废料——与 calcScrap 口径对齐
     const wL = bL - c1*(p1+t) - 0.75, wW = bW - c2*(p2+t) - 0.75, wH = bH - c3*(p3+t) - 0.75;
     const vols = [wL*bW*bH, wW*bL*bH, wH*bL*bW];
     let maxVol = 0; for (const v of vols) if (v > maxVol) maxVol = v;
@@ -9596,7 +9596,7 @@ function calcDiscDecomp(bL,bW,bH, a1,a2,a3, D, Ding, H, side, radial, FT, isFit)
     const core = (bL-1.5)*(bW-1.5)*(bH-1.5);
     V_head = Math.max(0, V_blank - core);
     V_left = Math.max(0, core - gridBox);
-    // v5.5.10：通用毛坯三轴端面余料中，仅最大那块可回收(按废料价)，其余算废料——与 calcScrap 口径对齐
+    // v5.5.10：通用毛坯三轴端面剩余中，仅最大那块作为可回收余料(按余料价格)，其余为不可回收废料——与 calcScrap 口径对齐
     const wL = bL - a1*(p1+FT) - 0.75, wW = bW - a2*(p2+FT) - 0.75, wH = bH - a3*(p3+FT) - 0.75;
     const vols = [wL*bW*bH, wW*bL*bH, wH*bL*bW];
     let maxVol = 0; for (const v of vols) if (v > maxVol) maxVol = v;
@@ -13025,7 +13025,7 @@ const _TUTORIAL_HTML = `
     <tr><td>多毛坯选最优</td><td>毛坯 64*54*36 64*54*34</td><td>写两个让工具自己挑最好的</td></tr>
     <tr><td>改刀厚</td><td>刀厚 0.27</td><td>三把刀全改成 0.27mm</td></tr>
     <tr><td>单独改第三刀</td><td>第三刀 0.27</td><td>只改最后一把切颗粒的刀</td></tr>
-    <tr><td>废料回收价</td><td>废料价 80</td><td>默认 100 元/kg，改成客户的回收价</td></tr>
+    <tr><td>余料价格</td><td>余料价格 80（原「废料价」同义）</td><td>默认 100 元/kg，改成客户的回收价</td></tr>
     <tr><td>倒角费</td><td>倒角费 0.2</td><td>手动定倒角价格</td></tr>
     <tr><td>固定加工价</td><td>磨型费 0.03</td><td>不按公式算，直接定死 0.03 元/片</td></tr>
   </table>
@@ -13370,6 +13370,8 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
+      <tr><td>v5.6.32</td><td>修复圆片/圆环/大小头「成本构成」不显示（2026-11-06 老板报）：displayDiscResults 漏调 buildCostStrip，导致 costStrip 停留清场占位；v5.6.25 开发副本 L8719 本有调用，迁移中丢失。本次只补一次渲染调用（csRoutes 已完成 5 路构造与 isBest 标注），算价公式零改动。</td></tr>
+      <tr><td>v5.6.31</td><td>余料术语统一 + 合适坯余料按核心算法 §3.5 统一抵减（2026-11-05）：① 术语「能抵价=余料／不可回收损耗=废料」，参数统一为「余料价格」（默认 100 元/kg，废料价同义保留）；② 合适毛坯 fSPPv 不再强制归零，按 calcScrap 结果抵减，2mm 门槛由 calcScrap 判定；③ 识别层新增「余料价格／余料价」，净化链同步；④ 前端材料格守卫挡「余」防「余料价80」误吞。算价公式结构零改动，但报价数值会变化。</td></tr>
       <tr><td>v5.6.30</td><td>报价卡渲染修复（2026-11-04，渲染层，算价公式零改动）：方块/瓦片/异形共用 displayResults 此前未调 buildPriceOverview → 算价后 #priceOverview 残留清场占位（老板截图实证）。补调渲染+占位卡兼容（quote=null 输出「—」不崩）。</td></tr>
       <tr><td>v5.6.29</td><td>清场占位文案场景化（2026-11-04，仅文案/提示层，算价公式零改动）：① clearResults 加可选 reason 参数（默认中性文案「暂无计算结果——粘贴识别串后自动计算」）；② 关键三路径场景提示（无镀层/尺寸不全/识别要素不全）；③ L10462/L10477 占位识别正则同步新文案并保留旧词兼容历史记录。</td></tr>
       <tr><td>v5.6.28</td><td>合适坯双候选+极限提示+瓦片恒择优+批量档口径+cyl修复（2026-10-28，两档制阶段7，算价公式零改动）：① 合适坯双候选（每片坯料体积口径取低）；② 极限轴独立+1提示（L66/W56/H39）；③ 瓦片A1恒择优；④ 批量档B1读stockBlock实际值；⑤ cyl引用修复（L7041 _cylCand恒null，报价卡全挂根因）。门禁：golden828 838绿+0失败（839行含锚点行）。</td></tr>
