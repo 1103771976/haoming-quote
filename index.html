@@ -16,7 +16,7 @@
 <!-- [v5.6.30·2026-11-04 报价卡渲染修复] displayResults 补调 buildPriceOverview（瓦片/异形算价后占位残留根因）+_placeholder 占位卡兼容——渲染层，算价公式零改动
      [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
      [v5.6.28·2026-10-28 两档制阶段7] 合适坯双候选+极限提示+A1瓦片恒择优+B1批量档读stockBlock实际值+cyl引用修复(L7041 _cylCand恒null)——算价公式零改动 -->
-<title>昊铭磁材报价计算工具 v5.6.38</title>
+<title>昊铭磁材报价计算工具 v5.6.52</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2091,7 +2091,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.38</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.52</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2983,8 +2983,9 @@ function canonicalShapeCheck(t) {
     .replace(/(?:工装|夹具|余料价格|余料价|余料|废料|倒角|电镀|镀|切片|切条|切割|材料|材料价|单价|料价|料费|原材料价|材料费|毛坯损耗|毛坯消耗|毛坯损|报废率|损耗率|损耗|合格率|良率|利润|牌价|毛坯|精雕|颗粒磨|喷码|镭雕|磨型)(?:价|费|系数|率)*\s*\d*\.?\d*/gi, ' ')  // 修复F：复用 textForQty 费用+工艺词全集，彻底剥离"词+数字"参数，杜绝形状校验误判（与B/C/D/E互补，覆盖材料/损耗/报废/牌价等盲区）⚠ [v5.6.27·拆出修复] "无心磨"已从本组拆出（下方专用行）——大组 `\s*\d*\.?\d*` 贪婪会把"无心磨"后隔空格的数量一起吞（D3*2 无心磨 N52 NI 500片 → 500 被吞 → 尾数被误剥 → 圆片误退方块）
     .replace(/(?:车肩|多级冲|喷码|镭雕|精雕|颗粒磨)(?:价|费)?\s*\d*\.?\d*/gi, ' ')  // 修复C：剥离旋转体加工/表面处理类工艺词（含价/费数字）；车肩费0.2 等不再污染形状校验 ⚠ [v5.6.27·拆出修复] "无心磨"已从本组拆出（下方专用行）
     .replace(/无心磨(?:加工费|价|费)?(?: ?\d*\.?\d*)?/gi, ' ')  // [v5.6.27·拆出修复] 无心磨专用剥离：最多吃 1 个空格+数字（"无心磨0.15"/"无心磨 0.15"），不再跨多空格吞大数字（"无心磨 N52 NI 500片" 中的 500 保住）；费率解析已在 autoParse 口语块提前完成，此处只做净化（与引擎 engine_core.js 修复C/C补 同构）
+    .replace(/(?<![.\d])\d{1,3}\s*(?:片|个|件|只|颗|pcs)/gi, ' ')  // [v5.6.28 修正·回灌] 数量token 数字位扩到 1–3 位且「数字+单位」整体剥离
     .replace(/\d+\.?\d*\s*[万千]/g, ' ')  // 修复B：剥离中文数量单位数字
-    .replace(/(?<![.\d])\d{1,2}\s*(?:片|个|件|只|颗|pcs)/gi, ' ')  // [修复] 剥离「1–2位数字+单位词」数量token（1片/20片/99片/1个/5pcs…）：清理管道此前只剥 3+ 位裸数与紧凑式「数量N」，漏了带单位词的 1–2 位数量 → 圆片残留第3个数 →「恰2数」判定失败 → R1 闸门静默退回方块并清空订单数量。⚠ 位置必须在下方 \d{3,} 剥离之前：若放其后，100片/500片 的三位数已被剥走，残留的「片」会隔着空格被本规则挂到规格末位数字上（实测 D10*3 100片 → 连 "3" 一起剥成 D10* → 只剩 1 个数 → 圆片误退方块）。⚠ 末尾不可加 \b：\b 是 ASCII 词界而 片/圆 皆非 \w，加 \b 后对中文单位永不匹配（实测命中 null）。D10*3 后无单位词，零误伤
+    .replace(/(?<![Dd.x*.])\d{3,}(?!\s*[x×*])/g, ' ')  // [v5.6.28·乱序容错 回灌] 孤立≥3位数剥离（后不跟×、D前缀保护圆片D300）
     .replace(/^(\s*\d+(?:\.\d+)?(?:\*\s*\d+(?:\.\d+)?){0,2})/, function(__t){ return __t.replace(/(?<![Dd])\d{3,}/g, function(__n){ _masked.push(__n); return '\uE000'; }); })  // [2026-09-28 修复] 遮蔽开头方块维度三段内≥100的数(如300*100*10)，交还下方 L2943 时它不会误剥这些真实维度；圆片(D/Φ前缀)不在此遮蔽范围→原有剥离逻辑不变
     .replace(/(?<![Dd])\d{3,}/g, ' ')  // 原 L2943 不变：剥离裸数量/大数
     .replace(/\uE000/g, function(){ return _masked.shift(); })  // 解除遮蔽，还原真实维度三段
@@ -5116,7 +5117,7 @@ function resetPlatingCoef() {
 }
 function updatePlatingNote() {
   const p = document.getElementById('plating').value;
-  const ma = PLATING_MIN_AREA[p]??40;
+  const ma = platingMinArea(p);
   const dt = PLATING_DOUBLE_THRESHOLD[p];
   let n = `基准 ${(PLATING_DEFAULTS[p]??0.00016).toFixed(5)} · 最小面积 ${ma}mm²`;
   if (dt) n += ` · >${dt}翻倍`;
@@ -6233,10 +6234,16 @@ function calculate() {
   let chamferFee = v(parseFloat(document.getElementById('chamferFee').value), 0);
   // 倒角阶梯（2026-07-20 用户新价）：方块 >=50:0.5 / >=40:0.2 / >=30:0.1；异形 >=50:0.5 / >=40:0.3 / >=30:0.2
   const isBlockShape = (shapeMode === 'block');
-  if (maxDim >= 50)        { if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) { chamferFee = 0.5; document.getElementById('chamferFee').value = chamferFee; if(_lastOverrides) _lastOverrides.cfAuto = 1; } chamferHint.textContent = '（面≥50mm）'; }
-  else if (maxDim >= 40)   { if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) { chamferFee = isBlockShape ? 0.2 : 0.3; document.getElementById('chamferFee').value = chamferFee; if(_lastOverrides) _lastOverrides.cfAuto = 1; } chamferHint.textContent = '（面≥40mm）'; }
-  else if (maxDim >= 30)   { if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) { chamferFee = isBlockShape ? 0.1 : 0.2; document.getElementById('chamferFee').value = chamferFee; if(_lastOverrides) _lastOverrides.cfAuto = 1; } chamferHint.textContent = '（面≥30mm）'; }
-  else                     { if (_lastOverrides && _lastOverrides.cfAuto) { chamferFee = 0; document.getElementById('chamferFee').value = '0'; _lastOverrides.cfAuto = 1; } chamferHint.textContent = ''; }  // <30：自动设遗留回落清零(解决前几天倒角费残留)，手动填写保留(不强制清零)
+  const _cfTier = chamferTierOf(CHAMFER_TIERS_FACE, maxDim);
+  if (_cfTier) {
+    if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) {
+      chamferFee = isBlockShape ? _cfTier.block : _cfTier.irregular; document.getElementById('chamferFee').value = chamferFee; if (_lastOverrides) _lastOverrides.cfAuto = 1;
+    }
+    chamferHint.textContent = _cfTier.hint;
+  } else {
+    if (_lastOverrides && _lastOverrides.cfAuto) { chamferFee = 0; document.getElementById('chamferFee').value = '0'; _lastOverrides.cfAuto = 1; }
+    chamferHint.textContent = '';
+  }  // <30：自动设遗留回落清零(解决前几天倒角费残留)，手动填写保留(不强制清零)
   if (chamferFee > 0) chamferHint.style.color = 'var(--blue-dark)';
 
   const c1 = parseInt(document.getElementById('knife1').value)||0;
@@ -6246,7 +6253,9 @@ function calculate() {
 
   // 加工费叠加到倒角费（共用chamferFee通道传给calcOne）
   _lastPf = getProcessFees(L, H, Math.min(L,W,H), c1, c3, knifeTotal);
-  chamferFee += _lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch + (_lastPf.core||0);
+  chamferFee += _lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch;   // [v5.6.39] 芯回收移出加工费，改走材料侧
+  // [v5.6.43] 主路线工艺费合计（供合适坯/自定义坯把工艺费换成本路线自己的）
+  const _mainProc = (_lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch);
   const t1 = parseFloat(document.getElementById('knifeThick1').value)||0.4;
   const t2 = parseFloat(document.getElementById('knifeThick2').value)||0.4;
   const t3 = parseFloat(document.getElementById('knifeThick3').value)||0.4;
@@ -6334,34 +6343,42 @@ function calculate() {
   const _isManualCoef = _pcManual || !_expectCoefs.some(v => Math.abs(_currentCoef - v) <= 1e-8);
   // 优先级：面积>阈值翻倍 ＞ 轴>30系数 ＞ 基准（手动填写已在上面最优先）
   const _shouldDouble = _dt && prodArea > _dt;
-  const _platingCoefAdj = _isManualCoef ? _currentCoef : (_shouldDouble ? _baseCoef * 2 : (_axisOver30 && _ax30 !== undefined ? _ax30 : _baseCoef));
+  const _platingCoefAdj = platingCoefOf({ manual: _isManualCoef, manualValue: _currentCoef, shouldDouble: _shouldDouble, axisOver30: _axisOver30, ax30: _ax30, baseCoef: _baseCoef });
   // 自动更新输入框显示（用户手动编辑的不干预）
   if (!_isManualCoef) {
     document.getElementById('platingCoef').value = _platingCoefAdj.toFixed(5);
   }
 
   // ===== 计算报价 =====
-  const _minPa = PLATING_MIN_AREA[_platingType] ?? 40;
+  const _minPa = platingMinArea(_platingType);
+  const _coreAbs = Math.abs((_lastPf && _lastPf.core) || 0);   // [v5.6.39] 芯回收额，走材料侧
   let sr = null;
   if (_isCustomBlk && _customBlkSnap && _customBlkSnap.gen) {
     const _g0 = _customBlkSnap.gen;
-    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, _g0.vol, _g0.kt, oOQ, oFF, _g0.sppv, null, _g0.h, 0, _minPa, chamferFee);   // [五路同侧·B2] 通用恒算（36/34 择优口径）
-    customSr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, _customBlkSnap.vol, knifeTotal, oOQ, oFF, _customBlkSnap.sppv, null, _customBlkSnap.h, 0, _minPa, chamferFee);   // 自定义库存方块（原 stock 口径，参数=快照零漂移）
+    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, _g0.vol, _g0.kt, oOQ, oFF, _g0.sppv, null, _g0.h, 0, _minPa, chamferFee, _coreAbs);   // [五路同侧·B2] 通用恒算（36/34 择优口径）
+    // [v5.6.43] 自定义库存方块：工艺费/芯回收/出刀积 全用快照坯自己的（不再借主路线）
+    const _ktC = (+_customBlkSnap.k1) * (+_customBlkSnap.k2) * (+_customBlkSnap.k3);
+    const _customPf = getProcessFees(L, H, Math.min(L,W,H), +_customBlkSnap.k1, +_customBlkSnap.k3, _ktC, _customBlkSnap.h);
+    const _customProc = (_customPf.grind + _customPf.granule + _customPf.carve + _customPf.drill + _customPf.laser + _customPf.jet + _customPf.shoulder + _customPf.multiPunch);
+    const _customCore = Math.abs(_customPf.core || 0);
+    const customChf = chamferFee - _mainProc + _customProc;
+    customSr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, _customBlkSnap.vol, _ktC, oOQ, oFF, _customBlkSnap.sppv, null, _customBlkSnap.h, 0, _minPa, customChf, _customCore);   // 自定义库存方块（快照坯自己的出刀/料高/工艺费）
     if (sr) sr.scrapInfo = null;
-    if (customSr) { customSr.scrapInfo = sSPP; customSr.routeSpec = _blkStr0; customSr._blkStr = _blkStr0; customSr._blkDims = _customBlkSnap.str.split('*').map(Number); customSr.knifeTotal = knifeTotal; customSr._routeType = 'customStock'; }   // [五路同侧] _routeType 标记（C2 断言安全查找用）   // [bugfix] curStkParts 是圆片侧变量（方块侧未定义被 shim 兜底）——改用快照解析
+    if (customSr) { customSr.scrapInfo = sSPP; customSr.routeSpec = _blkStr0; customSr._blkStr = _blkStr0; customSr._blkDims = _customBlkSnap.str.split('*').map(Number); customSr.knifeTotal = _ktC; customSr._routeType = 'customStock'; }   // [五路同侧] _routeType 标记（C2 断言安全查找用）   // [bugfix] curStkParts 是圆片侧变量（方块侧未定义被 shim 兜底）——改用快照解析
   } else {
-    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, stockVol, knifeTotal, oOQ, oFF, sSPPv, null, sbd[2], 0, _minPa, chamferFee);
+    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, stockVol, knifeTotal, oOQ, oFF, sSPPv, null, sbd[2], 0, _minPa, chamferFee, _coreAbs);
   }
   if (sr) sr.scrapInfo = sSPP;
 
   let fr = null;
   if (fitVol > 0 && _fitCut) {
     // 合适毛坯报价：用 0.27 出刀；加工费按 fit 出刀重算（倒角部分沿用主路线 chamferFee 不变）
-    const _mainProc = (_lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + (_lastPf.core||0) + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch);
-    const _fitPf = getProcessFees(L, H, Math.min(L,W,H), _fitCut.c1, _fitCut.c3, _fitCut.knifeTotal);
-    const _fitProc = (_fitPf.grind + _fitPf.granule + _fitPf.carve + _fitPf.drill + (_fitPf.core||0) + _fitPf.laser + _fitPf.jet + _fitPf.shoulder + _fitPf.multiPunch);
+    // [v5.6.43] 合适坯：工艺费按合适坯自己的出刀与料高重算（_mainProc 已在上方统一算好）
+    const _fitPf = getProcessFees(L, H, Math.min(L,W,H), _fitCut.c1, _fitCut.c3, _fitCut.knifeTotal, fitBlankH);
+    const _fitProc = (_fitPf.grind + _fitPf.granule + _fitPf.carve + _fitPf.drill + _fitPf.laser + _fitPf.jet + _fitPf.shoulder + _fitPf.multiPunch);   // [v5.6.39] 不含芯回收
+    const _fitCore = Math.abs(_fitPf.core || 0);
     const fitChf = chamferFee - _mainProc + _fitProc;
-    fr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, fitVol, _fitCut.knifeTotal, oOQ, oFF, fSPPv, null, fitBlankH, 0, _minPa, fitChf);
+    fr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, oQR, oPR, L, W, H, prodVol, prodArea, fitVol, _fitCut.knifeTotal, oOQ, oFF, fSPPv, null, fitBlankH, 0, _minPa, fitChf, _fitCore);
     if (fr) { fr.scrapInfo = fSPP; fr.c1 = _fitCut.c1; fr.c2 = _fitCut.c2; fr.c3 = _fitCut.c3; fr.t1 = _fitCut.t1; fr.t2 = _fitCut.t2; fr.t3 = _fitCut.t3; fr.knifeTotal = _fitCut.knifeTotal; }
   }
 
@@ -6435,10 +6452,16 @@ function calculateTile() {
   let chamferFee = v(parseFloat(document.getElementById('chamferFee').value), 0);
   const _chamferEl = document.getElementById('chamferFee');
   const chamferHint = document.getElementById('chamferHint');
-  if (maxDim>=50)      { if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) { chamferFee = 0.5; _chamferEl.value = '0.5'; if(_lastOverrides) _lastOverrides.cfAuto = 1; } chamferHint.textContent = '（面≥50mm）'; }
-  else if (maxDim>=40) { if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) { chamferFee = 0.3; _chamferEl.value = '0.3'; if(_lastOverrides) _lastOverrides.cfAuto = 1; } chamferHint.textContent = '（面≥40mm）'; }
-  else if (maxDim>=30) { if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) { chamferFee = 0.2; _chamferEl.value = '0.2'; if(_lastOverrides) _lastOverrides.cfAuto = 1; } chamferHint.textContent = '（面≥30mm）'; }
-  else                 { if (_lastOverrides && _lastOverrides.cfAuto) { chamferFee = 0; _chamferEl.value = '0'; _lastOverrides.cfAuto = 1; } chamferHint.textContent = ''; }  // <30：自动设遗留回落清零(解决残留)，手动填写保留
+  const _cfTierT = chamferTierOf(CHAMFER_TIERS_TILE, maxDim);
+  if (_cfTierT) {
+    if ((chamferFee <= 0 || (_lastOverrides && _lastOverrides.cfAuto)) && !(_lastOverrides && _lastOverrides.cfAuto === 0)) {
+      chamferFee = _cfTierT.v; _chamferEl.value = String(_cfTierT.v); if (_lastOverrides) _lastOverrides.cfAuto = 1;
+    }
+    chamferHint.textContent = _cfTierT.hint;
+  } else {
+    if (_lastOverrides && _lastOverrides.cfAuto) { chamferFee = 0; _chamferEl.value = '0'; _lastOverrides.cfAuto = 1; }
+    chamferHint.textContent = '';
+  }
   
   // 电镀（含面积>阈值翻倍 ＋ 轴>30 加系数，2026-09-04 新增）
   const _platingType = document.getElementById('plating').value;
@@ -6456,10 +6479,10 @@ function calculateTile() {
   if (_ax30T !== undefined && _ax30T !== null) _expectCoefsT.push(_ax30T);
   const _coefManualT = _pcManualT || !_expectCoefsT.some(v => Math.abs(_pcValT - v) <= 1e-8);
   // 优先级：面积>阈值翻倍 ＞ 轴>30系数 ＞ 基准（手动填写已在上面最优先）
-  const _platingCoefAdj = _coefManualT ? (isNaN(_pcValT) ? _baseCoef : _pcValT) : (_shouldDouble ? _baseCoef*2 : (_axisOver30T && _ax30T !== undefined ? _ax30T : _baseCoef));
+  const _platingCoefAdj = platingCoefOf({ manual: _coefManualT, manualValue: isNaN(_pcValT) ? _baseCoef : _pcValT, shouldDouble: _shouldDouble, axisOver30: _axisOver30T, ax30: _ax30T, baseCoef: _baseCoef });
   // 自动更新输入框显示（用户手动编辑的不干预）
   if (!_pcManualT) { _pcElT.value = _platingCoefAdj.toFixed(5); }
-  const _minPa = PLATING_MIN_AREA[_platingType] ?? 40;
+  const _minPa = platingMinArea(_platingType);
   
   // [五路扩展·A1] 标准坯（36/34）恒择优（老板拍板「所有都需要对比」——与方块 L2508/圆片对齐）
   const _blk0T = document.getElementById('stockBlock').value.trim();
@@ -6531,18 +6554,24 @@ function calculateTile() {
   // 加工费（合格率已由 computeQualifyRate 在入口统一算好，此处直接读取，杜绝重复扣减）
   const sQR = v(parseFloat(document.getElementById('stockQualifyRate').value), 0.95);
   _lastPf = getProcessFees(L, H, Math.min(L,W,H), c1, c3, kt);
-  const totalPf = _lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + (_lastPf.core||0) + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch;
+  const totalPf = _lastPf.grind + _lastPf.granule + _lastPf.carve + _lastPf.drill + _lastPf.laser + _lastPf.jet + _lastPf.shoulder + _lastPf.multiPunch;   // [v5.6.39] 不含芯回收
+  const _tileCore = Math.abs((_lastPf && _lastPf.core) || 0);   // [v5.6.39] 芯回收额，走材料侧
   
   // 瓦片（方块毛坯切余料回收）
   let sr = null;
   if (_tileIsCustom && _tileBlkSnap && _tileBlkSnap.gen) {
     const _tg = _tileBlkSnap.gen;
-    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, _tg.vol, _tg.kt, sOQ, sFF, 0, null, _tg.h, 0, _minPa, chamferFee+totalPf);   // [五路同侧·T2] 通用恒算（36/34 择优口径，瓦片余料恒 0）
-    customSr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, _tileBlkSnap.vol, kt, sOQ, sFF, 0, null, _tileBlkSnap.h, 0, _minPa, chamferFee+totalPf);   // 自定义库存方块（快照参数零漂移，余料恒 0）
+    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, _tg.vol, _tg.kt, sOQ, sFF, 0, null, _tg.h, 0, _minPa, chamferFee+totalPf, _tileCore);   // [五路同侧·T2] 通用恒算（36/34 择优口径，瓦片余料恒 0）
+    // [v5.6.43] 自定义库存方块：工艺费/芯回收/出刀积 全用快照坯自己的
+    const _ktCT = (+_tileBlkSnap.gen.k1) * (+_tileBlkSnap.gen.k2) * (+_tileBlkSnap.gen.k3);
+    const _customPfT = getProcessFees(L, H, Math.min(L,W,H), +_tileBlkSnap.gen.k1, +_tileBlkSnap.gen.k3, _ktCT, _tileBlkSnap.h);
+    const _customProcT = (_customPfT.grind + _customPfT.granule + _customPfT.carve + _customPfT.drill + _customPfT.laser + _customPfT.jet + _customPfT.shoulder + _customPfT.multiPunch);
+    const _customCoreT = Math.abs(_customPfT.core || 0);
+    customSr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, _tileBlkSnap.vol, _ktCT, sOQ, sFF, 0, null, _tileBlkSnap.h, 0, _minPa, chamferFee+_customProcT, _customCoreT);   // 自定义库存方块（快照坯自己的出刀/料高/工艺费，余料恒 0）
     if (sr) sr.scrapInfo = null;
-    if (customSr) { customSr.scrapInfo = null; customSr.routeSpec = _tileBlkSnap.str; customSr._blkStr = _tileBlkSnap.str; customSr._blkDims = _tileBlkSnap.str.split('*').map(Number); customSr.knifeTotal = kt; customSr._routeType = 'customStock'; }
+    if (customSr) { customSr.scrapInfo = null; customSr.routeSpec = _tileBlkSnap.str; customSr._blkStr = _tileBlkSnap.str; customSr._blkDims = _tileBlkSnap.str.split('*').map(Number); customSr.knifeTotal = _ktCT; customSr._routeType = 'customStock'; }
   } else {
-    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, stockVol, kt, sOQ, sFF, sSPPv, null, sbd[2], 0, _minPa, chamferFee+totalPf);
+    sr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, stockVol, kt, sOQ, sFF, sSPPv, null, sbd[2], 0, _minPa, chamferFee+totalPf, _tileCore);
   }
   if (sr) sr.scrapInfo = sSPP;
 
@@ -6555,7 +6584,11 @@ function calculateTile() {
   window.__fitCut = _fitCutT;
   if (_fitCutT) {
     fitVol = fbd[0] * fbd[1] * fbd[2];
-    fr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, fitVol, _fitCutT.knifeTotal, sOQ, sFF, 0, null, fbd[2], 0, _minPa, chamferFee+totalPf);
+    // [v5.6.43] 合适坯：工艺费按合适坯自己的出刀与料高重算
+    const _fitPfT = getProcessFees(L, H, Math.min(L,W,H), _fitCutT.c1, _fitCutT.c3, _fitCutT.knifeTotal, fbd[2]);
+    const _fitProcT = (_fitPfT.grind + _fitPfT.granule + _fitPfT.carve + _fitPfT.drill + _fitPfT.laser + _fitPfT.jet + _fitPfT.shoulder + _fitPfT.multiPunch);
+    const _fitCoreT = Math.abs(_fitPfT.core || 0);
+    fr = calcOne(unitPrice, _platingCoefAdj, slicingCoef, sQR, sPR, L, W, H, prodVol, prodArea, fitVol, _fitCutT.knifeTotal, sOQ, sFF, 0, null, fbd[2], 0, _minPa, chamferFee+_fitProcT, _fitCoreT);
     if (fr) { fr.c1 = _fitCutT.c1; fr.c2 = _fitCutT.c2; fr.c3 = _fitCutT.c3; fr.t1 = _fitCutT.t1; fr.t2 = _fitCutT.t2; fr.t3 = _fitCutT.t3; fr.knifeTotal = _fitCutT.knifeTotal; }
   }
 
@@ -6629,24 +6662,101 @@ function assembleFinalCost(raw, qr, pr, oq, ff) {
   return { yieldCost: yieldCost, quote: quote, totalValue: totalValue };
 }
 
-function calcOne(up, pc, sc, qr, pr, L, W, H, pv, pa, bv, kt, oq, ff, spp, saFlag, blankH, grindFee, minPa, chf) {
+// ===== [归一 R4] 圆片路线结果对象统一工厂 =====
+//   只做「装配」：rc / 材料净额 / 切片面积 / 各费项由调用处按原式算好后传入；
+//   此处只调 assembleFinalCost 与算 blanksNeeded（同参 → 与旧逐位相同）。
+//   kind：stock / customStock / fit / cyl / customCyl（决定附加字段；字段集与旧对象逐字对齐，不增不减）
+//   ⚠ 不改任何求和顺序：rc 由调用处算好传入，本函数不重新拼 rc。
+function buildDiscRoute(o) {
+  const af = assembleFinalCost(o.rawCost, o.qr, o.pr, o.oq, o.ff);
+  const blanksNeeded = Math.ceil(o.oq * o.lossRate / o.knives);
+  const r = {
+    blankVol: o.blankVol, blankWeight: o.blankWeight, blankPrice: o.blankPrice,
+    singleMaterial: o.singleMaterial, materialNet: o.materialNet, scrapPerPiece: o.scrapPerPiece,
+    slicArea: o.slicingArea, slicingArea: o.slicingArea,
+    platingArea: o.platingArea, platingAreaEffective: o.effPa, minPlatingArea: o.minPa,
+    slicingFee: o.slicingFee, barSliceFee: o.barSliceFee, discSliceFee: o.discSliceFee,
+    platingFee: o.platingFee, chamferFee: o.chamferFee, grindFee: o.grindFee, drillFee: o.drillFee,
+    coreRecovery: o.coreRecovery, shoulderFee: o.shoulderFee, segCutFee: o.segCutFee, segInfo: o.segInfo, discProcFee: o.discProcFee,
+    rawCost: o.rawCost, yieldCost: af.yieldCost, quote: af.quote, totalValue: af.totalValue,
+    scrapInfo: o.scrapInfo, totalBlankWeight: blanksNeeded * o.blankWeight, blanksNeeded: blanksNeeded, lossRate: o.lossRate,
+  };
+  if (o.kind !== 'stock' && o.kind !== 'customStock') r.blankCount = blanksNeeded;
+  if (o.extra) Object.assign(r, o.extra);
+  return r;
+}
+
+// ===== [归一 R1] 材料/切片纯函数（全形状唯一算式，0 值变化）=====
+//   重量(kg)=坯体积(mm³)×DENSITY÷1000 → 坯价=重量×单价(元/kg) → 单件材料=坯价÷本路线出刀数
+//   ⚠ 运算顺序必须与旧内联式一致：volume*DENSITY/1000，不许写成 volume*(DENSITY/1000)（末位会变）
+function materialPerPiece(volume, pricePerKg, knives) {
+  const weight = volume * DENSITY / 1000;
+  const price = weight * pricePerKg;
+  return { weight: weight, price: price, perPiece: price / knives };
+}
+// 切片费＝手填优先，否则 面积×系数（圆片「圆面切片」discSliceFee 没有手填通道，不归本函数）
+function sliceFeeOf(area, coeff) { return pfManualOrCalc('pfSliceManual', area * coeff); }
+
+// ===== [归一 R2] 电镀判定（系数链 / 最小面积）；三处/五处同款收敛到这两个函数 =====
+//   系数链：手动 ＞ 面积>阈值翻倍 ＞ 轴>30 ＞ 基准（手动值由调用方按原解析式传入，不在此处解析）
+//   ⚠ ax30 判断保持 !== undefined：null（如「铬」无轴30系数）属既有行为，不许顺手改
+function platingCoefOf(o) {
+  if (o.manual) return o.manualValue;
+  if (o.shouldDouble) return o.baseCoef * 2;
+  if (o.axisOver30 && o.ax30 !== undefined) return o.ax30;
+  return o.baseCoef;
+}
+// 最小电镀面积：查表 + 缺省 40（原 5 处同款 PLATING_MIN_AREA[x] ?? 40）
+function platingMinArea(platingType) { return PLATING_MIN_AREA[platingType] ?? 40; }
+
+// ===== [归一 R2] 倒角自动档：价表/条件搬进常量表，DOM 写入与 cfAuto 状态机留在原处 =====
+//   面尺寸三档：方块/异形两套价并排；瓦片一套（当前与异形同值，独立保留以便分别调整）
+const CHAMFER_TIERS_FACE = [
+  { min: 50, block: 0.5, irregular: 0.5, hint: '（面≥50mm）' },
+  { min: 40, block: 0.2, irregular: 0.3, hint: '（面≥40mm）' },
+  { min: 30, block: 0.1, irregular: 0.2, hint: '（面≥30mm）' },
+];
+const CHAMFER_TIERS_TILE = [
+  { min: 50, v: 0.5, hint: '（面≥50mm）' },
+  { min: 40, v: 0.3, hint: '（面≥40mm）' },
+  { min: 30, v: 0.2, hint: '（面≥30mm）' },
+];
+// 圆片四档：普通/圆环·大小头两套价；第 4 档＝D≥18 且 厚≥2（hMin）
+const CHAMFER_TIERS_DISC = [
+  { min: 50, plain: 1.0, ring: 1.0 },
+  { min: 40, plain: 0.3, ring: 0.4 },
+  { min: 30, plain: 0.2, ring: 0.3 },
+  { min: 18, hMin: 2, plain: 0.15, ring: 0.2 },
+];
+// 命中第一档返回该档，否则 null（= 无档）；hMin 不满足时要 continue 而非 break
+function chamferTierOf(tiers, size, height) {
+  for (let i = 0; i < tiers.length; i++) {
+    const t = tiers[i];
+    if (size < t.min) continue;
+    if (t.hMin !== undefined && !(height >= t.hMin)) continue;
+    return t;
+  }
+  return null;
+}
+
+
+function calcOne(up, pc, sc, qr, pr, L, W, H, pv, pa, bv, kt, oq, ff, spp, saFlag, blankH, grindFee, minPa, chf, core) {
+  core = core || 0;   // [v5.6.39] 芯回收额（正数）= 材料侧抵减，不再进加工费
   if (bv <= 0 || kt <= 0) return null;
   spp = spp || 0;
   grindFee = grindFee || 0;
   minPa = minPa || 0;
   chf = chf || 0;
-  const bw = bv * DENSITY / 1000;
-  const bp = bw * up;
-  const sm = bp / kt;
+  const { weight: bw, price: bp, perPiece: sm } = materialPerPiece(bv, up, kt);
 
   // 切片面积
   let sa = L*W + L*H + W*H;
-  let sf = pfManualOrCalc('pfSliceManual', sa * sc);
+  let sf = sliceFeeOf(sa, sc);
 
   // 电镀面积不足最小值时按最小值计算
   const effPa = Math.max(pa, minPa);
   const pf = effPa * pc;
-  const adjSm = sm - spp;
+  const adjSm = sm - spp - core;   // [v5.6.39] 材料净额 = 原材料 − 余料 − 芯回收
   const rc = adjSm + sf + pf + chf;
   const _af = assembleFinalCost(rc, qr, pr, oq, ff);
   const yc = _af.yieldCost, q = _af.quote, tv = _af.totalValue;
@@ -6654,7 +6764,7 @@ function calcOne(up, pc, sc, qr, pr, L, W, H, pv, pa, bv, kt, oq, ff, spp, saFla
   const adjOq = oq * lr;
   const bn = Math.ceil(adjOq / kt);
   const tbw = bn * bw;
-  return { blankVol:bv, blankWeight:bw, blankPrice:bp, singleMaterial:sm, slicingArea:sa, platingArea:pa,
+  return { blankVol:bv, blankWeight:bw, blankPrice:bp, singleMaterial:sm, materialNet:adjSm, coreRecovery:(-core), processFee:chf, slicingArea:sa, platingArea:pa,
     platingAreaEffective:effPa, minPlatingArea:minPa,
     slicingFee:sf, platingFee:pf, rawCost:rc, yieldCost:yc, quote:q, totalValue:tv, blanksNeeded:bn, totalBlankWeight:tbw,
     prodWeight:pv * DENSITY, scrapPerPiece:spp, grindFee:0, chamferFee:chf, lossRate:lr };
@@ -6756,7 +6866,7 @@ function renderCalcDetail(stock, fit) {
   const t1 = parseFloat(document.getElementById('knifeThick1').value)||0;
   const t2 = parseFloat(document.getElementById('knifeThick2').value)||0;
   const t3 = parseFloat(document.getElementById('knifeThick3').value)||0;
-  const matNet = stock.singleMaterial - stock.scrapPerPiece;
+  const matNet = (stock.materialNet != null) ? stock.materialNet : (stock.singleMaterial - stock.scrapPerPiece);   // [v5.6.39] 材料净额
   const oq = parseFloat(document.getElementById('stockOrderQty').value)||0;
   const qr = parseFloat(document.getElementById('stockQualifyRate').value)||0.95;
   const pr = parseFloat(document.getElementById('stockProfitRate').value)||1.05;
@@ -6837,7 +6947,7 @@ function renderCalcDetail(stock, fit) {
 
   // 倒角 + 加工费（只异形/瓦片模式可拆分加工费）
   const isBlockIrregularOrTile = (shapeMode === 'block' || shapeMode === 'irregular' || shapeMode === 'tile');
-  const pfTotal = (_lastPf && isBlockIrregularOrTile) ? (_lastPf.grind+_lastPf.granule+_lastPf.carve+_lastPf.drill+(_lastPf.core||0)+_lastPf.laser+_lastPf.jet+_lastPf.shoulder+_lastPf.multiPunch) : 0;
+  const pfTotal = (_lastPf && isBlockIrregularOrTile) ? (_lastPf.grind+_lastPf.granule+_lastPf.carve+_lastPf.drill+_lastPf.laser+_lastPf.jet+_lastPf.shoulder+_lastPf.multiPunch) : 0;   // [v5.6.39] 不含芯回收
   const actualChamfer = chf - pfTotal; // 纯倒角费（不含加工费）
   if (actualChamfer > 0.0001 || pfTotal > 0.0001) {
     html += '<div class="cd-block" style="border-left-color:var(--sub)">';
@@ -6890,7 +7000,7 @@ function renderCalcDetail(stock, fit) {
     const fitT1 = (_fc && _fc.t1) ? _fc.t1 : (parseFloat(document.getElementById('knifeThick1').value)||0);
     const fitT2 = (_fc && _fc.t2) ? _fc.t2 : (parseFloat(document.getElementById('knifeThick2').value)||0);
     const fitT3 = (_fc && _fc.t3) ? _fc.t3 : (parseFloat(document.getElementById('knifeThick3').value)||0);
-    const fitMatNet = fit.singleMaterial - (fit.scrapPerPiece || 0);
+    const fitMatNet = (fit.materialNet != null) ? fit.materialNet : (fit.singleMaterial - (fit.scrapPerPiece || 0));
     const fitSpec = document.getElementById('fitBlock').value.trim();
 
     html += '<div class="cd-block quote" style="border-left-color:var(--blue-dark)">';
@@ -6942,13 +7052,13 @@ function renderCalcDetail(stock, fit) {
     // 电镀费
     html += '<div class="cd-block plate">';
     html += '<div class="cd-title">电镀费</div>';
-    html += '<div class="cd-derive"><div class="cd-line">电镀面积 = 2×(' + L + '×' + W + '+' + L + '×' + H + '+' + W + '×' + H + ') = <span class="v">' + (fit.platingArea||0).toFixed(1) + 'mm²</span> → 有效面积 ' + (fit.platingAreaEffective||0).toFixed(1) + 'mm²（最小' + ((fit.minPlatingArea) ?? PLATING_MIN_AREA[document.getElementById('plating').value] ?? 40) + 'mm²）</div></div>';
+    html += '<div class="cd-derive"><div class="cd-line">电镀面积 = 2×(' + L + '×' + W + '+' + L + '×' + H + '+' + W + '×' + H + ') = <span class="v">' + (fit.platingArea||0).toFixed(1) + 'mm²</span> → 有效面积 ' + (fit.platingAreaEffective||0).toFixed(1) + 'mm²（最小' + ((fit.minPlatingArea) ?? platingMinArea(document.getElementById('plating').value)) + 'mm²）</div></div>';
     html += '<div class="cd-line">有效面积 × 系数 ' + parseFloat(document.getElementById('platingCoef').value).toFixed(5) + ' = <span class="r">¥' + (fit.platingFee||0).toFixed(4) + '</span></div>';
     html += '</div>';
 
     // 倒角 + 加工费
     const fitChfTotal = fit.chamferFee || 0;
-    const fitPfTotal = (_lastPf && isBlockIrregularOrTile) ? (_lastPf.grind+_lastPf.granule+_lastPf.carve+_lastPf.drill+(_lastPf.core||0)+_lastPf.laser+_lastPf.jet+_lastPf.shoulder+_lastPf.multiPunch) : 0;
+    const fitPfTotal = (_lastPf && isBlockIrregularOrTile) ? (_lastPf.grind+_lastPf.granule+_lastPf.carve+_lastPf.drill+_lastPf.laser+_lastPf.jet+_lastPf.shoulder+_lastPf.multiPunch) : 0;
     const fitActualChamfer = fitChfTotal - fitPfTotal; // 纯倒角费（不含加工费）
     if (fitActualChamfer > 0.0001 || fitPfTotal > 0.0001) {
       html += '<div class="cd-block" style="border-left-color:var(--sub)">';
@@ -7139,7 +7249,7 @@ function checkWarnings(stock, fit, knifeTotal) {
   }
   if (!stock) { document.getElementById('warningsBox').innerHTML = ''; return; }
   const plating = document.getElementById('plating').value;
-  const minArea = PLATING_MIN_AREA[plating]??40;
+  const minArea = platingMinArea(plating);
   const doubleT = PLATING_DOUBLE_THRESHOLD[plating];
   if (stock.platingArea < minArea) ws.push(`电镀面积 ${stock.platingArea.toFixed(1)}mm² < 最小面积 ${minArea}，已按最小面积计算`);
   if (doubleT && stock.platingArea > doubleT) ws.push(`电镀面积 ${stock.platingArea.toFixed(1)}mm² > ${doubleT}，系数应翻倍`);
@@ -7410,6 +7520,8 @@ const CYL_PRICE_TABLE = {
 };
 
 // 查圆柱价格：直径向上匹配
+// [毛坯精度] 毛坯规格显示统一到最多 1 位小数（只格式化字符串，不参与计算）
+function _b1(v) { const n = Number(v); return isFinite(n) ? Math.ceil((n - 1e-9) * 10) / 10 : 0; }
 function getCylPrice(d, grade) {
   const gradeKey = grade.replace(/^N/, ''); // N52 → 52
   // 尝试原始grade及去N前缀
@@ -7630,7 +7742,33 @@ function getDrillPerBarDefault(holeDia) {
   return 0.2; // 3 ≤ D < 6
 }
 
-function getProcessFees(L, H, D, c1, c3, knifeTotal) {
+// ===== [归一 R3] 打孔/套孔 + 芯回收：方块/瓦片/圆片同一套算式（0 值变化）=====
+//   holes：孔径数组（内径在前、额外孔在后，同值已去重）；coreDia：芯回收归属孔径（0=不回收）
+//   blankH：该路线料高轴；knives：该路线分母（分段后出刀）；segDrill：分段打孔费（无则 null）
+//   ⚠ 公式与顺序逐字照搬旧码：≥6 套孔 = dia×3.14×料高×0.0009÷分母；
+//     芯回收 = −((dia−1.8)/2)²×3.14×料高×DENSITY÷1000×废料价÷分母
+function holeFeesOf(o) {
+  if (!(o.blankH > 0) || !(o.knives > 0)) return { drill: 0, core: 0 };
+  let drill = 0, core = 0, segUsed = false;
+  for (let i = 0; i < o.holes.length; i++) {
+    const hd = o.holes[i];
+    if (hd >= 6) {
+      drill += hd * 3.14 * o.blankH * 0.0009 / o.knives;
+      if (o.coreDia > 0 && hd === o.coreDia) {
+        const coreR = (hd - 1.8) / 2;
+        core += -1 * coreR * coreR * 3.14 * o.blankH * DENSITY / 1000 * o.scrapPrice / o.knives;
+      }
+    } else if (hd <= 2 && o.segDrill !== null && !segUsed) {
+      drill += o.segDrill; segUsed = true;
+    } else {
+      const perBar = pfManualOrCalc('pfDrillManual', getDrillPerBarDefault(hd));
+      drill += perBar / o.knives;
+    }
+  }
+  return { drill: drill, core: core };
+}
+
+function getProcessFees(L, H, D, c1, c3, knifeTotal, blankHOverride) {   // [v5.6.43] blankHOverride=本路线料高
   let fees = { grind:0, granule:0, carve:0, drill:0, core:0, laser:0, jet:0, shoulder:0, multiPunch:0 };
   
   // 磨型（瓦片自动，异形手动勾选；磨条=磨型，同一个东西）
@@ -7659,17 +7797,11 @@ function getProcessFees(L, H, D, c1, c3, knifeTotal) {
     const holeDia = parseFloat(document.getElementById('pfHoleDia').value)||0;
     let autoDrill = 0, autoCore = 0;
     if (c3 > 0 && holeDia > 0) {
-      if (holeDia >= 6) {
-        // 套孔 + 芯子回收（钻深=毛坯第三刀方向，芯径=孔-1.8）
-        const blankH = parseFloat(document.getElementById('stockBlock')?.value.split('*')[2]) || H;
-        const scrapP = parseFloat(document.getElementById('scrapPrice')?.value); const sp = isNaN(scrapP) ? 100 : scrapP;
-        autoDrill = holeDia * 3.14 * blankH * 0.0009 / c3;
-        autoCore = -1 * ((holeDia-1.8)/2)*((holeDia-1.8)/2)*3.14*blankH*DENSITY/1000*sp/c3;
-      } else {
-        // 打孔：外面报价元/条 ÷ c3
-        const perBar = pfManualOrCalc('pfDrillManual', getDrillPerBarDefault(holeDia));
-        autoDrill = perBar / c3;
-      }
+      // [v5.6.43] 料高优先用「本路线」的坯高：合适坯/自定义坯不再借用库存坯第 3 轴
+      const blankH = (blankHOverride != null && blankHOverride > 0) ? blankHOverride : (parseFloat(document.getElementById('stockBlock')?.value.split('*')[2]) || H);
+      const scrapP = parseFloat(document.getElementById('scrapPrice')?.value); const sp = isNaN(scrapP) ? 100 : scrapP;
+      const _hf = holeFeesOf({ holes: [holeDia], coreDia: holeDia, blankH: blankH, knives: c3, segDrill: null, scrapPrice: sp });
+      autoDrill = _hf.drill; autoCore = _hf.core;
     } else {
       // 无孔径时：用手工费，没填则0（无法自动算）
       const manualD = pfManualOrCalc('pfDrillManual', 0);
@@ -7819,7 +7951,7 @@ function autoCalcDisc() {
   let bestKnives = 0, bestH = 0;
   const overhead = 2.0; // 0.5 + 1.5
   for (let k = 50; k >= 1; k--) {
-    const cylH = (H + t3) * k + overhead;
+    const cylH = _b1((H + t3) * k + overhead);
     // D≤2打孔时压低圆柱上限
     const holeDiaCyl = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
     const hasSmallHoleCyl = document.getElementById('pfDrill')?.checked && holeDiaCyl > 0 && holeDiaCyl <= 2;
@@ -7831,9 +7963,9 @@ function autoCalcDisc() {
   const chipsEl = document.getElementById('cylBlankChips');
   const sizes = [];
   for (let k = bestKnives; k >= Math.max(1, bestKnives - 3); k--) {
-    const exactH = (H + t3) * k + overhead;
+    const exactH = _b1((H + t3) * k + overhead);
     // 单刀(k=1)圆柱坯高度可超29，仍显示；多刀维持≤29约束
-    if (k === 1 || Math.round(exactH) <= 29) sizes.push({ k, h: exactH, hd: Math.round(exactH) });
+    if (k === 1 || Math.round(exactH) <= 29) sizes.push({ k, h: exactH, hd: String(exactH) });
   }
         chipsEl.innerHTML = sizes.map(s =>
     `<span class="chip chip-blue" style="cursor:pointer" data-jb-click="pickCylBlank(${s.k},${s.h})">${s.k}刀 D${D}×${s.hd}</span>`
@@ -7843,10 +7975,10 @@ function autoCalcDisc() {
     if (_cylCustomSpec) {
       // 用户自定义圆柱坯：保留 cylD/cylH/cylPrice，按自定义 cylH 反算刀数
       const cD = parseFloat(document.getElementById('cylD').value) || D;
-      const cH = parseFloat(document.getElementById('cylH').value) || bestH;
+      const cH = _b1(parseFloat(document.getElementById('cylH').value) || bestH);
       const customKnives = Math.max(1, Math.floor((cH - overhead) / (H + t3)));
       _cylKnives = customKnives;
-      document.getElementById('cylBlankNote').textContent = `定制 · ${customKnives}刀 D${cD}×${cH}`;
+      document.getElementById('cylBlankNote').textContent = `定制 · ${customKnives}刀 D${cD}×${_b1(cH)}`;
       // cylPrice：手动(data-manual)保留，否则按表价自动
       const _cpEl2 = document.getElementById('cylPrice');
       if (!_cpEl2.hasAttribute('data-manual')) {
@@ -7856,7 +7988,7 @@ function autoCalcDisc() {
     } else {
       _cylKnives = bestKnives;
       document.getElementById('cylD').value = D;
-      document.getElementById('cylH').value = bestH;
+      document.getElementById('cylH').value = String(_b1(bestH));
       // [五路同侧·Step A3] 自动值另存全局（cyl 卡 blankSpec 用——A2v2 恢复自定义 DOM 后框值≠自动值）
       const _autoPrice = getCylPrice(D, document.getElementById('grade').value);
       _autoCylVals = { D, H: bestH, price: (_autoPrice > 0) ? _autoPrice : 0, knives: bestKnives };
@@ -7947,7 +8079,7 @@ function pickCylBlank(knives, cylH) {
   _cylKnives = knives;
   document.getElementById('cylD').value = D;
   document.getElementById('cylH').value = cylH;
-  document.getElementById('cylBlankNote').textContent = `${knives}刀 · D${D}×${cylH}`;
+  document.getElementById('cylBlankNote').textContent = `${knives}刀 · D${D}×${_b1(cylH)}`;
   const grade = document.getElementById('grade').value;
   const cylP = getCylPrice(D, grade);
   if (cylP > 0) document.getElementById('cylPrice').value = cylP;
@@ -8483,10 +8615,8 @@ function calculateDisc() {
   const _pfHoleEl = document.getElementById('pfHoleDia');
   // [v5.6.38] 补「有内径」分支：v5.6.34 起内径由 ringInnerD 承载、不再写 pfHoleDia，旧判据会把纯内径圆环误判成普通圆片（掉一档）
   const _isRingOrStep = _discIsStepped || (parseFloat((document.getElementById('ringInnerD') || {}).value) || 0) > 0 || (!!_pfDrillEl && _pfDrillEl.checked && !!_pfHoleEl && (parseFloat(_pfHoleEl.value) || 0) > 0);
-  if (D >= 50)      { chamferNeeded = true; autoChamfer = 1.0; }
-  else if (D >= 40) { chamferNeeded = true; autoChamfer = _isRingOrStep ? 0.4 : 0.3; }
-  else if (D >= 30) { chamferNeeded = true; autoChamfer = _isRingOrStep ? 0.3 : 0.2; }
-  else if (D >= 18 && H >= 2) { chamferNeeded = true; autoChamfer = _isRingOrStep ? 0.2 : 0.15; }
+  const _cfTierD = chamferTierOf(CHAMFER_TIERS_DISC, D, H);
+  if (_cfTierD) { chamferNeeded = true; autoChamfer = _isRingOrStep ? _cfTierD.ring : _cfTierD.plain; }
   if (chamferNeeded) {
     chamferHint.textContent = '（自动）';
     chamferHint.style.color = 'var(--blue-dark)';
@@ -8500,7 +8630,7 @@ function calculateDisc() {
     chamferHint.textContent = '';
   }
   const _platingType = document.getElementById('plating').value;
-  const _minPa = PLATING_MIN_AREA[_platingType] ?? 40;
+  const _minPa = platingMinArea(_platingType);
 
   // ===== Phase 2: 倒角 & 车肩费设定 =====
 
@@ -8567,7 +8697,7 @@ function calculateDisc() {
   const _isManualCoef = _pcManual || !_expectCoefs.some(v => Math.abs(platingCoef - v) <= 1e-8);
   // 优先级：面积>阈值翻倍 ＞ 轴>30系数 ＞ 基准（手动填写已在上面最优先）
   const _shouldDouble = _dt && prodArea > _dt;
-  const _platingCoefAdj = _isManualCoef ? platingCoef : (_shouldDouble ? _baseCoef * 2 : (_axisOver30 && _ax30 !== undefined ? _ax30 : _baseCoef));
+  const _platingCoefAdj = platingCoefOf({ manual: _isManualCoef, manualValue: platingCoef, shouldDouble: _shouldDouble, axisOver30: _axisOver30, ax30: _ax30, baseCoef: _baseCoef });
   if (!_isManualCoef) {
     if (_pcEl) _pcEl.value = _platingCoefAdj.toFixed(5);
   }
@@ -8643,6 +8773,65 @@ function calculateDisc() {
   let bestStockBlockVol = Infinity;// 已选档的坯体积（平局时按 [算法文档 8.5]「相同选体积小的」取舍）
   const DEAL_TIE_EPS = 1e-9;       // 成交报价「相等」判定容差（吸收浮点噪声，量级远小于真实报价差）
   
+  // ===== [v5.6.41] 圆片孔口径上下文（与路线无关）：五条路线共用同一组孔定义 =====
+  const _discHoleInner = parseFloat(document.getElementById('ringInnerD')?.value) || 0;
+  const _discHoleExtra = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
+  const _discHole = _discHoleInner > 0 ? _discHoleInner : _discHoleExtra;
+  const _discHasHole = !!document.getElementById('pfDrill')?.checked && _discHole > 0;
+  const _discRouteFees = (o) => {
+    let prodC3 = o.c3, c2v = o.c2, segCutFee = 0, segDrill = null, segInfo = null;
+    if (D <= 2) {
+      const clSeg = segmentForCenterless(o.barH, H, o.t3, D);
+      if (clSeg) {
+        if (discCutDir === 'radial') { c2v = clSeg.K_total; } else { prodC3 = clSeg.K_total; }
+        segCutFee = clSeg.segCutFee; segInfo = clSeg.segInfo;
+      }
+    } else if (_discHasHole) {
+      const seg = applySeg(o.c3, o.barH, H, _discHole, D);
+      if (seg.segInfo) {
+        if (discCutDir === 'radial') { c2v = seg.c3; } else { prodC3 = seg.c3; }
+      }
+      segCutFee = seg.cutFee; segDrill = seg.drill; segInfo = seg.segInfo;
+    }
+    const _autoGrind = (D <= 3.5) ? (D <= 1 ? 0.3 : D <= 2 ? 0.2 : 0.1) / (discCutDir === 'axial' ? prodC3 : c2v) : 0;
+    const _autoOrSpoken = (typeof _centerlessPerBarOverride !== 'undefined' && _centerlessPerBarOverride >= 0)
+      ? (_clUnit === '片' ? _centerlessPerBarOverride : _centerlessPerBarOverride / (discCutDir === 'axial' ? prodC3 : c2v))
+      : _autoGrind;
+    const grindFee = (D <= 3.5) ? pfManualOrCalc('pfCenterlessManual', _autoOrSpoken) : 0;
+    let drillFee = 0, coreRecovery = 0;
+    if (document.getElementById('pfDrill')?.checked) {
+      const heightKnives = discCutDir === 'axial' ? prodC3 : c2v;
+      const blankHeightAxis = o.barH;
+      const _holes = [];
+      if (_discHoleInner > 0) _holes.push(_discHoleInner);
+      if (_discHoleExtra > 0 && !(_discHoleInner > 0 && _discHoleExtra === _discHoleInner)) _holes.push(_discHoleExtra);
+      const _hf = holeFeesOf({ holes: _holes, coreDia: (_discHoleInner > 0 ? _discHoleInner : _discHoleExtra), blankH: blankHeightAxis, knives: heightKnives, segDrill: segDrill, scrapPrice: scrapPrice });
+      drillFee = _hf.drill; coreRecovery = _hf.core;
+    }
+    return { c2: c2v, prodC3, segCutFee, segDrill, segInfo, grindFee, drillFee, coreRecovery };
+  };
+  // ===== [v5.6.42] 合适方块坯：与方块形状同一套（fitCalcWithBase 双候选 [64,54,36] / [65,55,38]，
+  //   含 L/W swap，按「每片坯料体积 = 坯体积 ÷ 出刀数」取低），**不再从选中的通用档反推**
+  //   老板 2026-11-11：任何方坯都是三刀（c1*c2*c3），前段计算同一套；只有圆柱坯是一刀（cylKnives）
+  const _fitAxisDims = (discCutDir === 'axial') ? [side, side, H] : [side, H, side];
+  const _fitCands = [[64,54,36],[65,55,38]]
+    .map(b => fitCalcWithBase(_fitAxisDims[0], _fitAxisDims[1], _fitAxisDims[2], b, FT, FT, FT))
+    .filter(Boolean);
+  let _fitWin = _fitCands[0] || null;
+  if (_fitCands.length === 2) {
+    const _perPieceV = (c) => ((c.k1 * c.k2 * c.k3) > 0 ? c.vol / (c.k1 * c.k2 * c.k3) : Infinity);
+    _fitWin = (_perPieceV(_fitCands[1]) < _perPieceV(_fitCands[0])) ? _fitCands[1] : _fitCands[0];
+  }
+  const _fitFallback = !_fitWin;
+  const _fitR10 = (v) => Math.ceil((v - 1e-10) * 10) / 10;
+  const fitC1 = _fitWin ? _fitWin.k1 : computeDiscAxisKnives(64, _fitAxisDims[0], FT);
+  const fitC2 = _fitWin ? _fitWin.k2 : computeDiscAxisKnives(54, _fitAxisDims[1], FT);
+  const fitC3 = _fitWin ? _fitWin.k3 : computeDiscAxisKnives(36, _fitAxisDims[2], FT);
+  const fitKT = fitC1 * fitC2 * fitC3;
+  const _fitSize = _fitWin ? _fitWin.size
+    : _fitR10((_fitAxisDims[0] + FT) * fitC1 + 2.0).toFixed(1) + '*' + _fitR10((_fitAxisDims[1] + FT) * fitC2 + 2.0).toFixed(1) + '*' + _fitR10((_fitAxisDims[2] + FT) * fitC3 + 2.0).toFixed(1);
+  window.__fitCut = { shape:'disc', c1:fitC1, c2:fitC2, c3:fitC3, t1:FT, t2:FT, t3:FT, knifeTotal:fitKT, dir:discCutDir, fitFallback:_fitFallback };
+  if (fitKT > 0) document.getElementById('fitBlock').value = _fitSize;
   for (const gb of [...GENERIC_BLANKS, ...customBlkArr]) {
     const isCustomRound = isCustomDisc && gb.length === 3 && gb[0] === curStkParts[0] && gb[1] === curStkParts[1] && gb[2] === curStkParts[2];
     const _gbL = gb[0], _gbW = gb[1], _gbH = gb[2];
@@ -8663,32 +8852,12 @@ function calculateDisc() {
     // ===== 分段拦截 =====
     // [v5.6.35] 分段只按「内径孔」判定：圆环是先成环再钻额外孔，额外孔不参与分段（老板 2026-11-07 工艺事实）
     //   圆环(有内径) → 只看 ringInnerD；非圆环(无内径，如圆片/大小头) → 仍按显式孔 pfHoleDia（原行为不变）
-    const _segInnerDia = parseFloat(document.getElementById('ringInnerD')?.value) || 0;
-    const _segExtraDia = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
-    const holeDia = _segInnerDia > 0 ? _segInnerDia : _segExtraDia;
-    const hasHole = document.getElementById('pfDrill')?.checked && holeDia > 0;
     const barH = (discCutDir === 'axial') ? _gbH : _gbW;
     _prodC3 = _c3, _segCutFee = 0, _segDrill = null, _segInfo = null;
-
-    // 无心磨分段 D≤2（优先；打孔分段降级，因段已够短）
-    if (D <= 2) {
-      const clSeg = segmentForCenterless(barH, H, _t3, D);
-      if (clSeg) {
-        // 径向：分段轴是 _gbW（厚度方向），结果应修正 _c2；_prodC3 保留 H 轴直径方向
-        if (discCutDir === 'radial') { _c2 = clSeg.K_total; }
-        else { _prodC3 = clSeg.K_total; }
-        _segCutFee = clSeg.segCutFee; _segInfo = clSeg.segInfo;
-      }
-    } else if (hasHole) {
-      const seg = applySeg(_c3, barH, H, holeDia, D);
-      // 仅当真正发生分段（孔≤2mm 且料够长）才按方向修正钻孔/分段轴；
-      // 无分段时 applySeg 返回 segInfo:null、c3 原值，保持原轴不覆盖（否则径向会错把 _c2 覆成 _c3，圆环径向算错 5×）
-      if (seg.segInfo) {
-        if (discCutDir === 'radial') { _c2 = seg.c3; }
-        else { _prodC3 = seg.c3; }
-      }
-      _segCutFee = seg.cutFee; _segDrill = seg.drill; _segInfo = seg.segInfo;
-    }
+    // [v5.6.41] 分段 / 无心磨 / 打孔·套孔 / 芯回收 统一由单路线包算；本处＝通用方块该档（入参与旧实现一致）
+    const _fees = _discRouteFees({ barH, c2: _c2, c3: _c3, blankHeightAxis: barH, t3: _t3 });
+    _c2 = _fees.c2; _prodC3 = _fees.prodC3;
+    _segCutFee = _fees.segCutFee; _segDrill = _fees.segDrill; _segInfo = _fees.segInfo;
     // ===== 拦截结束 =====
     const _kt = _c1 * _c2 * _prodC3;
     if (_kt <= 0) continue;
@@ -8698,22 +8867,11 @@ function calculateDisc() {
     //   径向 _c2（L5641 分段时已覆写为 K_total，本就是分段后，不动）。
     //   原写 _c3（分段前）→ 分段场景分母偏大、每片分摊偏低：如 D1.5*3 分段后每根只出 9 片却除 10。
     //   ⚠ 与 L5656 `_kt = _c1*_c2*_prodC3` 对齐（总出刀数本就用分段后值）。
-    const _autoGrind = (D <= 3.5) ? (
-      D <= 1 ? 0.3 : D <= 2 ? 0.2 : 0.1
-    ) / (discCutDir === 'axial' ? _prodC3 : _c2) : 0;
-    // [v5.6.27] 无心磨口语识别：口语值作为 pfManualOrCalc 的 autoVal 传入
-    //   ⇒ 手动框非空永远优先（用户随时可手填覆盖）；框空 → 口语值；无口语 → 自动三档（见定稿 F7）
-    //   单位：'条' = 元/条 ÷ 刀数（轴向 _prodC3 / 径向 _c2，均为分段后 K_total）；'片' = 元/片直接用
-    const _autoOrSpoken = (typeof _centerlessPerBarOverride !== 'undefined' && _centerlessPerBarOverride >= 0)
-      ? ( _clUnit === '片'
-            ? _centerlessPerBarOverride
-            : _centerlessPerBarOverride / (discCutDir === 'axial' ? _prodC3 : _c2) )
-      : _autoGrind;
-    const _grindFee = (D <= 3.5) ? pfManualOrCalc('pfCenterlessManual', _autoOrSpoken) : 0;
+    // [v5.6.41] 无心磨费由单路线包给出：分母＝本路线分段后出刀；
+    //   手工值（元/片原样、元/条 ÷ 本路线刀数）与口语值同一口径，均在包内处理
+    const _grindFee = _fees.grindFee;
     const _bv = _gbL * _gbW * _gbH;
-    const _bw = _bv * DENSITY / 1000;
-    const _bp = _bw * unitPrice;
-    const _sm = _bp / _kt;
+    const { weight: _bw, price: _bp, perPiece: _sm } = materialPerPiece(_bv, unitPrice, _kt);
     // 通用方块有余料回收（calcScrap 用原_c3条数，物理尺寸不变）
     const _scr = calcScrap(_gbL, _gbW, _gbH,
       discCutDir==='axial' ? side : side, discCutDir==='axial' ? side : H, discCutDir==='axial' ? H : side,
@@ -8728,9 +8886,9 @@ function calculateDisc() {
     } else {
       _barSliceArea = (_sliceSide * _gbW + _sliceSide * _gbW) / _c2;
     }
-    const _barSliceFee = pfManualOrCalc('pfSliceManual', _barSliceArea * sc);
+    const _barSliceFee = sliceFeeOf(_barSliceArea, sc);
     const _totalSlice = _barSliceFee + discSliceFee;
-    const _matNet = _sm - _spp;
+    const _matNet = _sm - _spp;   // 原材料净额（不含芯回收，芯回收在下方 _matNetX 合并）
     // 圆环打孔/套孔：D≤2走分段新公式，2<D<6走旧表，≥6套孔
     let _drillFee = 0, _coreRecovery = 0;
     // ===== [v5.6.34/v5.6.35] 圆环「内径孔 ＋ 额外孔」两孔计价·六条规则（维护必读）=====
@@ -8742,36 +8900,8 @@ function calculateDisc() {
     //   ⑤ qr 取最重不叠加：两孔径取最小判档（任一 ≤2 → 扣10%；都 >2 → 扣5%）
     //   ⑥ 分段只按内径孔（v5.6.35）：圆环先成环再钻额外孔，额外孔不参与分段；非圆环仍按显式孔
     //   附：电镀面积只扣内径孔（额外孔不计入面积）；分母 heightKnives 两孔共用
-    if (document.getElementById('pfDrill')?.checked) {
-      const heightKnives = discCutDir === 'axial' ? _prodC3 : _c2;
-      const blankHeightAxis = discCutDir === 'axial' ? _gbH : _gbW;
-      const _holeInner = parseFloat(document.getElementById('ringInnerD')?.value) || 0;
-      const _holeExtra = parseFloat(document.getElementById('pfHoleDia')?.value) || 0;
-      const _holes = [];
-      if (_holeInner > 0) _holes.push(_holeInner);
-      if (_holeExtra > 0 && !(_holeInner > 0 && _holeExtra === _holeInner)) _holes.push(_holeExtra);   // [v5.6.34] 同孔判定=数值严格相等（老板 2026-11-07 否掉容差）
-      if (_holes.length && blankHeightAxis > 0 && heightKnives > 0) {
-        let _segUsed = false;
-        for (const _hd of _holes) {
-          if (_hd >= 6) {
-            _drillFee += _hd * 3.14 * blankHeightAxis * 0.0009 / heightKnives;
-            // [v5.6.36] 芯回收只对「内径孔」算一次（老板 2026-11-07 工艺事实：内径已回收芯料，额外孔产出按废料处理不抵扣）
-            //   圆环(有内径) → 只有内径孔算芯回收；非圆环(无内径，如圆片/大小头) → 该孔本身算，原行为不变
-            const _coreHole = _holeInner > 0 ? _holeInner : _hd;
-            if (_hd === _coreHole) {
-              const coreR = (_hd - 1.8) / 2;
-              _coreRecovery += -1 * coreR * coreR * 3.14 * blankHeightAxis * DENSITY / 1000 * scrapPrice / heightKnives;
-            }
-          } else if (_hd <= 2 && _segDrill !== null && !_segUsed) {
-            _drillFee += _segDrill; // D≤2 打孔：总孔深×0.02/K_total（每棒只分一次段）
-            _segUsed = true;
-          } else {
-            const perBar = pfManualOrCalc('pfDrillManual', getDrillPerBarDefault(_hd));
-            _drillFee += perBar / heightKnives;
-          }
-        }
-      }
-    }
+    // [v5.6.41] 打孔/套孔 + 芯回收由单路线包给出：分母＝本路线分段后出刀、料高轴＝本路线坯高轴
+    _drillFee = _fees.drillFee; _coreRecovery = _fees.coreRecovery;
     // 识别词典优化：按片打孔费（打孔费0.2 = ¥0.2/片）
     // 2026-08-17 修复双倍bug：原为 `+=`（叠加在孔径费之上），但"打孔费2"会被两条规则同时捕获——
     //   ①L3207 pfFeePatterns → pfDrillManual=2 → 上面 L7366 算出 perBar/heightKnives
@@ -8783,36 +8913,44 @@ function calculateDisc() {
       if (!document.getElementById('pfDrill')?.checked) document.getElementById('pfDrill').checked = true;
       _drillFee = _discDrillFeePerPiece;
     }
-    const _rawCost = _matNet + _totalSlice + platingFee + chamferFee + _grindFee + _drillFee + _coreRecovery + discShoulderFee + _segCutFee + discProcFee;
+    const _matNetX = _matNet + _coreRecovery;   // [v5.6.39] 芯回收（负值）折进材料净额
+    const _rawCost = _matNetX + _totalSlice + platingFee + chamferFee + _grindFee + _drillFee + discShoulderFee + _segCutFee + discProcFee;
     const _af = assembleFinalCost(_rawCost, sQR, sPR, sOQ, sFF);
     const _yieldCost = _af.yieldCost, _quote = _af.quote;
     // —— [v5.6.12] 本档「成交路线」试算：合适方块 + 合适圆柱（均复用本档算出的共用加工费）——
     //   与 Phase4/5/6 同式，纯计算不写 DOM；只用于跨档比较，选中档后仍由 Phase4/5/6 正式重算。
-    const _pC1 = computeDiscAxisKnives(_gbL, side, FT);
-    const _pC2 = computeDiscAxisKnives(_gbW, _c2sStd, FT);
-    const _pC3 = computeDiscAxisKnives(_gbH, _c3sStd, FT);
-    const _pKT = _pC1 * _pC2 * _pC3;
+    // [v5.6.42] 合适方块（三刀桶）与档无关：用循环外按方块同款算好的坯与出刀
+    const _pC1 = fitC1, _pC2 = fitC2, _pC3 = fitC3;
+    const _pKT = fitKT;
     let _fitQuoteTry = Infinity;
     if (_pKT > 0) {
-      const _rpL = Math.ceil((_pC1 * (side + FT) + endWaste) * 10) / 10 + safetyMargin;
-      const _rpW = Math.ceil((_pC2 * (_c2sStd + FT) + endWaste) * 10) / 10 + safetyMargin;
-      const _rpH = Math.ceil((_pC3 * (_c3sStd + FT) + endWaste) * 10) / 10 + safetyMargin;
+      const _fitSz = _fitSize.split('*').map(Number);
+      const _rpL = _fitSz[0], _rpW = _fitSz[1], _rpH = _fitSz[2];
       const _rVol = _rpL * _rpW * _rpH;
-      const _rMat = (_rVol * DENSITY / 1000 * unitPrice) / _pKT;
+      const _rMat = materialPerPiece(_rVol, unitPrice, _pKT).perPiece;
       const _rBarSlice = (discCutDir === 'axial')
         ? (side * _rpH + side * _rpH) / (_pC3 || _c3)
         : (side * _rpW + side * _rpW) / (_pC2 || _c2);
-      const _rSlice = pfManualOrCalc('pfSliceManual', _rBarSlice * sc) + discSliceFee;
-      const _rRaw = _rMat + _rSlice + platingFee + chamferFee + _grindFee + discShoulderFee
-        + _drillFee + _coreRecovery + _segCutFee + discProcFee;
+      const _rSlice = sliceFeeOf(_rBarSlice, sc) + discSliceFee;
+      // [v5.6.41] 合适方坯试算：加工费按「合适方坯自己的坯高轴 / 出刀」算，不借通用那份
+      const _rbH = (discCutDir === 'axial') ? _rpH : _rpW;
+      const _fFit = _discRouteFees({ barH: _rbH, c2: _pC2, c3: _pC3, blankHeightAxis: _rbH, t3: FT });
+      const _rDrill = (_discDrillFeePerPiece > 0) ? _discDrillFeePerPiece : _fFit.drillFee;
+      const _rMatNet = _rMat + _fFit.coreRecovery;   // [v5.6.39] 芯回收折进材料净额
+      const _rRaw = _rMatNet + _rSlice + platingFee + chamferFee + _fFit.grindFee + discShoulderFee
+        + _rDrill + _fFit.segCutFee + discProcFee;
       _fitQuoteTry = assembleFinalCost(_rRaw, sQR, sPR, sOQ, sFF).quote;
     }
     let _cylQuoteTry = Infinity;
     if (D > 3.5 && cylDVal > 0 && cylHVal > 0 && cylKnives > 0 && cylPriceVal > 0) {
       const _cVol = 3.14 * (cylDVal / 2) * (cylDVal / 2) * cylHVal;
-      const _cMat = (_cVol * DENSITY / 1000 * cylPriceVal) / cylKnives;
-      const _cRaw = _cMat + cylSliceFeeStd + platingFee + chamferFee + discShoulderFee
-        + _drillFee + _coreRecovery + _segCutFee + discProcFee;
+      const _cMat = materialPerPiece(_cVol, cylPriceVal, cylKnives).perPiece;
+      // [v5.6.41] 圆柱坯试算：加工费按「圆柱坯自己的坯高轴(坯长) / 刀数」算
+      const _fCyl = _discRouteFees({ barH: cylHVal, c2: cylKnives, c3: cylKnives, blankHeightAxis: cylHVal, t3: FT });
+      const _cDrill = (_discDrillFeePerPiece > 0) ? _discDrillFeePerPiece : _fCyl.drillFee;
+      const _cMatNet = _cMat + _fCyl.coreRecovery;   // [v5.6.39] 芯回收折进材料净额
+      const _cRaw = _cMatNet + cylSliceFeeStd + platingFee + chamferFee + _fCyl.grindFee + discShoulderFee
+        + _cDrill + _fCyl.segCutFee + discProcFee;
       _cylQuoteTry = assembleFinalCost(_cRaw, sQR, sPR, sOQ, sFF).quote;
     }
     const _dealQuote = Math.min(_quote, _fitQuoteTry, _cylQuoteTry);   // 本档成交最优报价
@@ -8828,18 +8966,16 @@ function calculateDisc() {
     //   因跳过下方组装而从未进任何对象。修复=自定义轮用本轮局部变量独立组装（字段与
     //   L5913-5923 同款 + routeSpec/_blkDims 供卡片）。
     if (isCustomRound) {
-      customStockResult = {
+      customStockResult = buildDiscRoute({
+        kind: 'customStock', rawCost: _rawCost, qr: sQR, pr: sPR, oq: sOQ, ff: sFF, knives: _kt,
         blankVol: _bv, blankWeight: _bw, blankPrice: _bp,
-        singleMaterial: _sm, scrapPerPiece: _spp,
-        slicArea: _barSliceArea + discSliceArea, slicingArea: _barSliceArea + discSliceArea,
-        platingArea: prodArea, platingAreaEffective: effPa, minPlatingArea: _minPa,
-        slicingFee: _totalSlice, barSliceFee: _barSliceFee, discSliceFee,
+        singleMaterial: _sm, materialNet: (_matNet + _coreRecovery), scrapPerPiece: _spp,
+        slicingArea: _barSliceArea + discSliceArea, slicingFee: _totalSlice, barSliceFee: _barSliceFee, discSliceFee,
+        platingArea: prodArea, effPa, minPa: _minPa,
         platingFee, chamferFee, grindFee: _grindFee, drillFee: _drillFee, coreRecovery: _coreRecovery, shoulderFee: discShoulderFee, segCutFee: _segCutFee, segInfo: _segInfo, discProcFee,
-        rawCost: _rawCost, yieldCost: _yieldCost, quote: _quote,
-        totalValue: _af.totalValue,
-        scrapInfo: _scr, totalBlankWeight: Math.ceil(sOQ * getLossRate(_kt, sOQ) / _kt) * _bw, blanksNeeded: Math.ceil(sOQ * getLossRate(_kt, sOQ) / _kt), lossRate: getLossRate(_kt, sOQ), knifeTotal: _kt,
-        routeSpec: curStk, _blkDims: curStkParts, _routeType: 'customStock'
-      };
+        scrapInfo: _scr, lossRate: getLossRate(_kt, sOQ),
+        extra: { knifeTotal: _kt, routeSpec: curStk, _blkDims: curStkParts, _routeType: 'customStock' }
+      });
     }
     if (!isCustomRound && (!stockResult || _dealQuote < bestDealQuote - DEAL_TIE_EPS || (_dealTie && _bv < bestStockBlockVol))) {
       bestDealQuote = _dealQuote;
@@ -8847,17 +8983,15 @@ function calculateDisc() {
       bestStockBlock = gb;
       bestKnifeC1 = _c1; bestKnifeC2 = _c2; bestKnifeC3 = _c3;
       bestSegResult = _segInfo; // 存分段信息
-      stockResult = {
+      stockResult = buildDiscRoute({
+        kind: 'stock', rawCost: _rawCost, qr: sQR, pr: sPR, oq: sOQ, ff: sFF, knives: _kt,
         blankVol: _bv, blankWeight: _bw, blankPrice: _bp,
-        singleMaterial: _sm, scrapPerPiece: _spp,
-        slicArea: _barSliceArea + discSliceArea, slicingArea: _barSliceArea + discSliceArea,
-        platingArea: prodArea, platingAreaEffective: effPa, minPlatingArea: _minPa,
-        slicingFee: _totalSlice, barSliceFee: _barSliceFee, discSliceFee,
+        singleMaterial: _sm, materialNet: (_matNet + _coreRecovery), scrapPerPiece: _spp,
+        slicingArea: _barSliceArea + discSliceArea, slicingFee: _totalSlice, barSliceFee: _barSliceFee, discSliceFee,
+        platingArea: prodArea, effPa, minPa: _minPa,
         platingFee, chamferFee, grindFee: _grindFee, drillFee: _drillFee, coreRecovery: _coreRecovery, shoulderFee: discShoulderFee, segCutFee: _segCutFee, segInfo: _segInfo, discProcFee,
-        rawCost: _rawCost, yieldCost: _yieldCost, quote: _quote,
-        totalValue: _af.totalValue,
-        scrapInfo: _scr, totalBlankWeight: Math.ceil(sOQ * getLossRate(_kt, sOQ) / _kt) * _bw, blanksNeeded: Math.ceil(sOQ * getLossRate(_kt, sOQ) / _kt), lossRate: getLossRate(_kt, sOQ)
-      };
+        scrapInfo: _scr, lossRate: getLossRate(_kt, sOQ)
+      });
     }
   }
   // 更新块选择框为最优块，同步出刀值
@@ -8865,6 +8999,8 @@ function calculateDisc() {
   if (bestStockBlock && !isCustomDisc) {
     document.getElementById('stockBlock').value = bestStockBlock.join('*');
   }
+  // [v5.6.40] 透出「36/34 档择优实际用到的坯档」：只供审计/三方喂参，不参与算价
+  if (stockResult && bestStockBlock && bestStockBlock.length === 3) stockResult._blkDims = bestStockBlock.slice();
   // 重新设定 knifeTotal（最优块的出刀可能不同）
   const c1 = bestKnifeC1, c2 = bestKnifeC2, c3 = bestKnifeC3;
   const segK = bestSegResult ? bestSegResult.K_total : 0;
@@ -8896,28 +9032,14 @@ function calculateDisc() {
   // ===== Phase 4: 出刀结果回写 & 合适方块坯推算 =====
   // 合适毛坯（方案乙：一律 0.27 多线刀厚，用户2026-07-25）
   // [v5.6.12] FT / endWaste / safetyMargin 已前移至 Phase3（坯档逐档试算需要）
-  const _gb = (bestStockBlock && bestStockBlock.length === 3) ? bestStockBlock : [64,54,36];
-  const _bL = _gb[0], _bW = _gb[1], _bH = _gb[2];
-  const _c2s = (discCutDir === 'axial') ? side : H;
-  const _c3s = (discCutDir === 'axial') ? H : side;
-  const fitC1 = computeDiscAxisKnives(_bL, side, FT);
-  const fitC2 = computeDiscAxisKnives(_bW, _c2s, FT);
-  const fitC3 = computeDiscAxisKnives(_bH, _c3s, FT);
-  const fitKT = fitC1 * fitC2 * fitC3;
-  window.__fitCut = { shape:'disc', c1:fitC1, c2:fitC2, c3:fitC3, t1:FT, t2:FT, t3:FT, knifeTotal:fitKT, dir:discCutDir };
-  let refitL = fitC1 * (side + FT) + endWaste;
-  let refitW = fitC2 * (_c2s + FT) + endWaste;
-  let refitH = fitC3 * (_c3s + FT) + endWaste;
-  refitL = Math.ceil(refitL * 10) / 10 + safetyMargin;
-  refitW = Math.ceil(refitW * 10) / 10 + safetyMargin;
-  refitH = Math.ceil(refitH * 10) / 10 + safetyMargin;
-  document.getElementById('fitBlock').value = `${refitL.toFixed(1)}*${refitW.toFixed(1)}*${refitH.toFixed(1)}`;
+  // [v5.6.42] 合适方块坯已在坯档循环前按「方块同款」算好（fitCalcWithBase 双候选）
+  document.getElementById('fitBlock').value = _fitSize;
 
   // ===== Phase 5: 方案2 合适方块毛坯 =====
   const fbd = document.getElementById('fitBlock').value.trim().split('*').map(Number);
   const fitVol = (fbd.length === 3) ? fbd[0] * fbd[1] * fbd[2] : 0;
-  const fitWeight = fitVol * DENSITY / 1000;
-  const fitPrice = fitWeight * unitPrice;
+  const fitMat = materialPerPiece(fitVol, unitPrice, fitKT || knifeTotal);
+  const fitWeight = fitMat.weight, fitPrice = fitMat.price;
   // 合适方块用自己的毛坯尺寸重新算切条费（方向相关）；出刀一律 0.27（fitC1/2/3）
   let fitBarSliceArea;
   if (discCutDir === 'axial') {
@@ -8925,64 +9047,61 @@ function calculateDisc() {
   } else {
     fitBarSliceArea = (side * (fbd[1] || 0) + side * (fbd[1] || 0)) / (fitC2 || c2);
   }
-  const fitBarSliceFee = pfManualOrCalc('pfSliceManual', fitBarSliceArea * sc);
+  const fitBarSliceFee = sliceFeeOf(fitBarSliceArea, sc);
   const fitTotalSlice = fitBarSliceFee + discSliceFee;
-  const fitSingleMat = fitPrice / (fitKT || knifeTotal);
-  const fitRawCost = fitSingleMat + fitTotalSlice + platingFee + chamferFee + (stockResult.grindFee || 0) + discShoulderFee + (stockResult.drillFee || 0) + (stockResult.coreRecovery || 0) + (stockResult.segCutFee || 0) + discProcFee;
+  const fitSingleMat = fitMat.perPiece;
+  // [v5.6.41] 合适方坯：加工费（无心磨 / 打孔·套孔 / 芯回收 / 分段）全部按合适方坯自己的坯高轴与出刀算
+  const _fbH = (discCutDir === 'axial') ? (fbd[2] || 0) : (fbd[1] || 0);
+  const _fitFees = _discRouteFees({ barH: _fbH, c2: fitC2, c3: fitC3, blankHeightAxis: _fbH, t3: FT });
+  const _fitDrill = (_discDrillFeePerPiece > 0) ? _discDrillFeePerPiece : _fitFees.drillFee;
+  const fitRawCost = fitSingleMat + fitTotalSlice + platingFee + chamferFee + _fitFees.grindFee + discShoulderFee + _fitDrill + _fitFees.coreRecovery + _fitFees.segCutFee + discProcFee;
   const _fitAf = assembleFinalCost(fitRawCost, sQR, sPR, sOQ, sFF);
   const fitYieldCost = _fitAf.yieldCost, fitQuote = _fitAf.quote, fitTotalValue = _fitAf.totalValue;
   const fitLossRate = getLossRate(fitKT || knifeTotal, sOQ);
   const fitBn = Math.ceil(sOQ * fitLossRate / (fitKT || knifeTotal));
   const fitTotalBlankWeight = fitBn * fitWeight;
 
-  const fitResult = {
+  const fitResult = buildDiscRoute({
+    kind: 'fit', rawCost: fitRawCost, qr: sQR, pr: sPR, oq: sOQ, ff: sFF, knives: (fitKT || knifeTotal),
     blankVol: fitVol, blankWeight: fitWeight, blankPrice: fitPrice,
-    singleMaterial: fitSingleMat, scrapPerPiece: 0,
-    slicArea: fitBarSliceArea + discSliceArea, slicingArea: fitBarSliceArea + discSliceArea,
-    platingArea: prodArea, platingAreaEffective: effPa, minPlatingArea: _minPa,
-    slicingFee: fitTotalSlice, barSliceFee: fitBarSliceFee, discSliceFee,
-    platingFee, chamferFee, grindFee: (stockResult.grindFee || 0), shoulderFee: discShoulderFee, segCutFee: (stockResult.segCutFee || 0), discProcFee,
-    drillFee: (stockResult.drillFee || 0), coreRecovery: (stockResult.coreRecovery || 0),
-    rawCost: fitRawCost, yieldCost: fitYieldCost, quote: fitQuote, totalValue: fitTotalValue,
-    scrapInfo: null, totalBlankWeight: fitTotalBlankWeight, blankCount: fitBn, blanksNeeded: fitBn, lossRate: fitLossRate,
-    c1: fitC1, c2: fitC2, c3: fitC3, t1: FT, t2: FT, t3: FT, knifeTotal: fitKT
-  };
+    singleMaterial: fitSingleMat, materialNet: fitSingleMat + _fitFees.coreRecovery, scrapPerPiece: 0,
+    slicingArea: fitBarSliceArea + discSliceArea, slicingFee: fitTotalSlice, barSliceFee: fitBarSliceFee, discSliceFee,
+    platingArea: prodArea, effPa, minPa: _minPa,
+    platingFee, chamferFee, grindFee: _fitFees.grindFee, drillFee: _fitDrill, coreRecovery: _fitFees.coreRecovery, shoulderFee: discShoulderFee, segCutFee: _fitFees.segCutFee, segInfo: _fitFees.segInfo, discProcFee,
+    scrapInfo: null, lossRate: fitLossRate,
+    extra: { c1: fitC1, c2: fitC2, c3: fitC3, t1: FT, t2: FT, t3: FT, knifeTotal: fitKT }
+  });
 
   // ===== Phase 6: 方案3 合适圆柱毛坯 =====
   // [v5.6.12] cylDVal / cylHVal / cylPriceVal / cylKnives 已前移至 Phase3（坯档逐档试算需要）
   let cylResult = null;
   if (D > 3.5 && cylDVal > 0 && cylHVal > 0 && cylKnives > 0 && cylPriceVal > 0) {
     const cylVol = 3.14 * (cylDVal/2) * (cylDVal/2) * cylHVal;
-    const cylWeight = cylVol * DENSITY / 1000;
-    const cylBlankPrice = cylWeight * cylPriceVal;
-    const cylSingleMat = cylBlankPrice / cylKnives;
+    const cylMat = materialPerPiece(cylVol, cylPriceVal, cylKnives);
+    const cylWeight = cylMat.weight, cylBlankPrice = cylMat.price, cylSingleMat = cylMat.perPiece;
     // 圆柱切片：只有圆面切片，无方磨圆
     const cylSliceFee = discSliceArea * sc;
-    const cylRawCost = cylSingleMat + cylSliceFee + platingFee + chamferFee + discShoulderFee + (stockResult.drillFee || 0) + (stockResult.coreRecovery || 0) + (stockResult.segCutFee || 0) + discProcFee;
+    // [v5.6.41] 合适圆柱：加工费按「圆柱坯自己的坯长 / 刀数」算（旧实现直接借通用方坯那份）
+    const _cylFees = _discRouteFees({ barH: cylHVal, c2: cylKnives, c3: cylKnives, blankHeightAxis: cylHVal, t3: FT });
+    const _cylDrill = (_discDrillFeePerPiece > 0) ? _discDrillFeePerPiece : _cylFees.drillFee;
+    const cylRawCost = cylSingleMat + cylSliceFee + platingFee + chamferFee + _cylFees.grindFee + discShoulderFee + _cylDrill + _cylFees.coreRecovery + _cylFees.segCutFee + discProcFee;
     const _cylAf = assembleFinalCost(cylRawCost, sQR, sPR, sOQ, sFF);
     const cylYieldCost = _cylAf.yieldCost, cylQuote = _cylAf.quote, cylTotalValue = _cylAf.totalValue;
     const cylLossRate = getLossRate(cylKnives, sOQ);
     const cylBn = Math.ceil(sOQ * cylLossRate / cylKnives);
     const cylTotalBlankWt = cylBn * cylWeight;
 
-    cylResult = {
+    cylResult = buildDiscRoute({
+      kind: 'cyl', rawCost: cylRawCost, qr: sQR, pr: sPR, oq: sOQ, ff: sFF, knives: cylKnives,
       blankVol: cylVol, blankWeight: cylWeight, blankPrice: cylBlankPrice,
-      // [v5.6.13·2026-10-08] 补刀厚字段：圆柱路线的实际算价刀厚恒为 FT=0.27（L8059/L7687），
-      //   **不读页面框**——页面框此时可能是 0.4/0.35（通用方坯默认），与 cyl 算价无关。
-      //   此前 cylResult 不带 t1/t2/t3，导致下游（dump 对拍 L441）只能退回顶层 a.t1/t2/t3 取到
-      //   通用方坯的 0.4，与 CSV 记录的 0.27 形成 44/164 条**假差异**。此处补齐后口径自洽。
-      //   ⚠ 这是**字段透出**，不改变任何算价：cylRawCost / cylQuote 的计算早已用 FT(0.27)。
-      t1: FT, t2: FT, t3: FT,
-      singleMaterial: cylSingleMat, scrapPerPiece: 0,
-      slicArea: discSliceArea, slicingArea: discSliceArea,
-      platingArea: prodArea, platingAreaEffective: effPa, minPlatingArea: _minPa,
-      slicingFee: cylSliceFee, barSliceFee: 0, discSliceFee: cylSliceFee,
-      platingFee, chamferFee, grindFee: 0, shoulderFee: discShoulderFee, segCutFee: (stockResult.segCutFee || 0), discProcFee,
-      drillFee: (stockResult.drillFee || 0), coreRecovery: (stockResult.coreRecovery || 0),
-      rawCost: cylRawCost, yieldCost: cylYieldCost, quote: cylQuote, totalValue: cylTotalValue,
-      scrapInfo: null, totalBlankWeight: cylTotalBlankWt, blankCount: cylBn, blanksNeeded: cylBn, lossRate: cylLossRate, cylKnives,
-      routeSpec: 'D' + cylDVal + '×' + (parseFloat(cylHVal.toFixed(2))) + 'mm（' + cylKnives + '刀）'   // [五路同侧·Step A3] 卡片规格（自动值，不受自定义 DOM 恢复影响）
-    };
+      singleMaterial: cylSingleMat, materialNet: cylSingleMat + _cylFees.coreRecovery, scrapPerPiece: 0,
+      // [v5.6.13] 圆柱路线实际算价刀厚恒为 FT=0.27（不读页面框）：字段透出，不改算价
+      slicingArea: discSliceArea, slicingFee: cylSliceFee, barSliceFee: 0, discSliceFee: cylSliceFee,
+      platingArea: prodArea, effPa, minPa: _minPa,
+      platingFee, chamferFee, grindFee: _cylFees.grindFee, drillFee: _cylDrill, coreRecovery: _cylFees.coreRecovery, shoulderFee: discShoulderFee, segCutFee: _cylFees.segCutFee, segInfo: _cylFees.segInfo, discProcFee,
+      scrapInfo: null, lossRate: cylLossRate,
+      extra: { t1: FT, t2: FT, t3: FT, cylKnives: cylKnives, routeSpec: 'D' + cylDVal + '×' + _b1(cylHVal) + 'mm（' + cylKnives + '刀）' }
+    });
   }
 
   // ===== [五路同侧·Step A2] 自定义圆柱（库存圆柱）独立路线：_cylCustomSpec 时按快照另算 =====
@@ -8993,27 +9112,25 @@ function calculateDisc() {
     const cD = _customCylSnap.D, cH = _customCylSnap.H, cP = _customCylSnap.price;
     const cKn = Math.max(1, Math.floor((cH - 2.0) / (H + FT)));   // [五路同侧·bugfix] t3 未在 calculateDisc 作用域声明（shim 静默兜底致字符串拼接）；FT=0.27 与 cylResult/onCylManual 同口径
     const cVol = 3.14 * (cD/2) * (cD/2) * cH;
-    const cWeight = cVol * DENSITY / 1000;
-    const cBlankPrice = cWeight * cP;
-    const cSingleMat = cBlankPrice / cKn;
+    const cMat = materialPerPiece(cVol, cP, cKn);
+    const cWeight = cMat.weight, cBlankPrice = cMat.price, cSingleMat = cMat.perPiece;
     const cSliceFee = discSliceArea * sc;
-    const cRaw = cSingleMat + cSliceFee + platingFee + chamferFee + discShoulderFee + (stockResult.drillFee || 0) + (stockResult.coreRecovery || 0) + (stockResult.segCutFee || 0) + discProcFee;
+    // [v5.6.41] 自定义圆柱：加工费按「该自定义圆柱自己的坯长 / 刀数」算
+    const _cCylFees = _discRouteFees({ barH: cH, c2: cKn, c3: cKn, blankHeightAxis: cH, t3: FT });
+    const _cCylDrill = (_discDrillFeePerPiece > 0) ? _discDrillFeePerPiece : _cCylFees.drillFee;
+    const cRaw = cSingleMat + cSliceFee + platingFee + chamferFee + _cCylFees.grindFee + discShoulderFee + _cCylDrill + _cCylFees.coreRecovery + _cCylFees.segCutFee + discProcFee;
     const _cAf = assembleFinalCost(cRaw, sQR, sPR, sOQ, sFF);
     const cBn = Math.ceil(sOQ * getLossRate(cKn, sOQ) / cKn);
-    customCylResult = {
+    customCylResult = buildDiscRoute({
+      kind: 'customCyl', rawCost: cRaw, qr: sQR, pr: sPR, oq: sOQ, ff: sFF, knives: cKn,
       blankVol: cVol, blankWeight: cWeight, blankPrice: cBlankPrice,
-      singleMaterial: cSingleMat, scrapPerPiece: 0,
-      slicArea: discSliceArea, slicingArea: discSliceArea,
-      platingArea: prodArea, platingAreaEffective: effPa, minPlatingArea: _minPa,
-      slicingFee: cSliceFee, barSliceFee: 0, discSliceFee: cSliceFee,
-      platingFee, chamferFee, grindFee: 0, shoulderFee: discShoulderFee, segCutFee: (stockResult.segCutFee || 0), discProcFee,
-      drillFee: (stockResult.drillFee || 0), coreRecovery: (stockResult.coreRecovery || 0),
-      rawCost: cRaw, yieldCost: _cAf.yieldCost, quote: _cAf.quote, totalValue: _cAf.totalValue,
-      t1: FT, t2: FT, t3: FT,
-      scrapInfo: null, totalBlankWeight: cBn * cWeight, blankCount: cBn, blanksNeeded: cBn, lossRate: getLossRate(cKn, sOQ), cylKnives: cKn,
-      routeSpec: 'D' + cD + '×' + cH + 'mm（' + cKn + '刀）',
-      isCustom: true, _routeType: 'customCyl'
-    };
+      singleMaterial: cSingleMat, materialNet: cSingleMat + _cCylFees.coreRecovery, scrapPerPiece: 0,
+      slicingArea: discSliceArea, slicingFee: cSliceFee, barSliceFee: 0, discSliceFee: cSliceFee,
+      platingArea: prodArea, effPa, minPa: _minPa,
+      platingFee, chamferFee, grindFee: _cCylFees.grindFee, drillFee: _cCylDrill, coreRecovery: _cCylFees.coreRecovery, shoulderFee: discShoulderFee, segCutFee: _cCylFees.segCutFee, segInfo: _cCylFees.segInfo, discProcFee,
+      scrapInfo: null, lossRate: getLossRate(cKn, sOQ),
+      extra: { t1: FT, t2: FT, t3: FT, cylKnives: cKn, routeSpec: 'D' + cD + '×' + _b1(cH) + 'mm（' + cKn + '刀）', isCustom: true, _routeType: 'customCyl' }
+    });
   }
 
   // disc 加工费回填 _lastPf：仅 精雕/颗粒磨/镭雕/喷码/多级冲；
@@ -9033,11 +9150,19 @@ function calculateDisc() {
       c1, c2, c3, prodC3: _prodC3, t1: parseFloat(document.getElementById('knifeThick1').value) || 0.4,
       t2: parseFloat(document.getElementById('knifeThick2').value) || 0.4,
       t3: parseFloat(document.getElementById('knifeThick3').value) || 0.4,
-      sbd: curStkParts, fbd: fbd,
+      sbd: curStkParts, sbdUsed: (stockResult && stockResult._blkDims) || curStkParts, fbd: fbd,
       stockVol: stockResult ? stockResult.blankVol : 0, fitVol: fitResult ? fitResult.blankVol : 0,
       unitPrice, platingCoef: _platingCoefAdj, slicingCoef, qr: sQR, pr: sPR, oq: sOQ, ff: sFF, scrapPrice,
       prodArea, minPa: _minPa, swapUsed: false, grindAxis: null,
-      stockSr: stockResult, fitSr: fitResult, cylSr: cylResult, pf: _lastPf, prodVol
+      stockSr: stockResult, fitSr: fitResult, cylSr: cylResult, pf: _lastPf, prodVol,
+      // [收尾] 自定义两条路线也透出（只透出已有对象，不参与任何计算；让 A/B 能看见它们）
+      customStockSr: customStockResult, customCylSr: customCylResult,
+      // [v5.6.41] 五路线加工费明细（各算各的，供对拍/证据；不改算价）
+      routeFees: {
+        stock: stockResult ? { grindFee: stockResult.grindFee, drillFee: stockResult.drillFee, coreRecovery: stockResult.coreRecovery, segCutFee: stockResult.segCutFee } : null,
+        fit: fitResult ? { grindFee: fitResult.grindFee, drillFee: fitResult.drillFee, coreRecovery: fitResult.coreRecovery, segCutFee: fitResult.segCutFee, barH: (discCutDir === 'axial') ? fbd[2] : fbd[1], c2: fitC2, c3: fitC3 } : null,
+        cyl: cylResult ? { grindFee: cylResult.grindFee, drillFee: cylResult.drillFee, coreRecovery: cylResult.coreRecovery, segCutFee: cylResult.segCutFee, barH: cylHVal, c2: cylKnives, c3: cylKnives } : null
+      }
     };
     if (!window.__audit) console.error('AUDIT_HOOK_FAIL disc', e && e.message);
   } catch (e) { console.error('AUDIT_HOOK_ERR disc', e && e.message, e && e.stack); }
@@ -9129,7 +9254,7 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal, customCyl, cus
     // [五路同侧·Step A3] cyl 卡规格用 _autoCylVals（自动值）——A2v2 恢复自定义 DOM 后框值=自定义，读框会错位（EX42 显 D?×28）
     const _acv = (_autoCylVals && _autoCylVals.D > 0) ? _autoCylVals : null;
     const _cylSpecStr = _acv ? ('D' + _acv.D + '×' + parseFloat(_acv.H.toFixed(2)) + 'mm（' + _acv.knives + '刀）')
-                             : ('D' + _discD + '×' + parseFloat((parseFloat(document.getElementById('cylH').value) || 0).toFixed(2)) + 'mm（' + cyl.cylKnives + '刀）');
+                             : ('D' + _discD + '×' + _b1(parseFloat(document.getElementById('cylH').value) || 0) + 'mm（' + cyl.cylKnives + '刀）');
     csRoutes.push(
       {label:'合适圆柱', result:cyl, blankSpec:_cylSpecStr, cuts:[], thicknesses:[], knifeTotal:cyl.cylKnives}
     );
@@ -9168,13 +9293,13 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal, customCyl, cus
   const cylD = parseFloat(document.getElementById('cylD').value) || 0;
   const cylH = parseFloat(document.getElementById('cylH').value) || 0;
   if (cylD > 0 && cylH > 0 && D > 3.5) {
-    sb.textContent += ' | 定制圆柱: D' + cylD + '×' + cylH + ' (>300kg)';
+    sb.textContent += ' | 定制圆柱: D' + cylD + '×' + _b1(cylH) + ' (>300kg)';
   }
 
   // Warnings
   const ws = [];
   const platingType = document.getElementById('plating').value;
-  const minArea = PLATING_MIN_AREA[platingType] ?? 40;
+  const minArea = platingMinArea(platingType);
   if (stock.platingArea < minArea) ws.push(`电镀面积 ${stock.platingArea.toFixed(1)}mm² < 最小${minArea}，已按最小面积计算`);
   if (stock.totalBlankWeight > 300) ws.push(`毛坯总重 ${stock.totalBlankWeight.toFixed(1)}kg > 300kg，可使用合适毛坯报价`);
   const spr = parseFloat(document.getElementById('stockProfitRate').value);
@@ -9307,7 +9432,7 @@ function renderDiscCalcDetail(stock, fit, cyl, knifeTotal, customCyl, customStoc
 
 function renderDiscColumn(r, anyScrap, anyBarSlice, anyOther, otherItems, up, qr, pr, oq, sC, pC, knifeTotal, cylP) {
   const res = r.res;
-  const matNet = res.singleMaterial - (res.scrapPerPiece||0);
+  const matNet = (res.materialNet != null) ? res.materialNet : (res.singleMaterial - (res.scrapPerPiece||0));
   const chf = res.chamferFee||0;
   const grf = res.grindFee||0;
   const shf = res.shoulderFee||0;
@@ -9340,7 +9465,7 @@ function renderDiscColumn(r, anyScrap, anyBarSlice, anyOther, otherItems, up, qr
   } else if (r.isCyl) {
     const cylDVal = parseFloat(document.getElementById('cylD').value) || 0;
     const cylHVal = parseFloat(document.getElementById('cylH').value) || 0;
-    h += '<div class="cd-line"><span class="s">毛坯 D' + cylDVal + '×' + parseFloat(cylHVal.toFixed(2)) + 'mm → 出刀 ' + r.kt + '刀/块</span></div>';
+    h += '<div class="cd-line"><span class="s">毛坯 D' + cylDVal + '×' + _b1(cylHVal) + 'mm → 出刀 ' + r.kt + '刀/块</span></div>';
   }
   h += '</div>';
 
@@ -9507,7 +9632,7 @@ function buildCostStrip(routes) {
   const showLabel = useCols === 1 && routes.length > 1;
   for (const r of routes) {
     const res = r.result;
-    const matNet = res.singleMaterial - res.scrapPerPiece;
+    const matNet = (res.materialNet != null) ? res.materialNet : (res.singleMaterial - res.scrapPerPiece);
     const pfFolded = (typeof shapeMode !== 'undefined' && (shapeMode === 'block' || shapeMode === 'irregular' || shapeMode === 'tile'));
     const chamferV = res.chamferFee + (pfFolded ? (res.grindFee || 0) : 0);
     // 拆分加工费和纯倒角费：block/irregular/tile 把加工费叠加进了 chamferFee
@@ -9994,7 +10119,7 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
     const cylUtil = (cyl.cylKnives > 0 && cyl.blankVol > 0) ? (cyl.cylKnives * (prodVol||0) / cyl.blankVol * 100) : 0;
     var cylBlanksNeeded = cyl.blanksNeeded || cyl.blankCount || 0;
     var cylLossRate = cyl.lossRate || 1.05;
-    var cylSpec = (cylD>0?('Φ'+parseFloat(cylD.toFixed(2))):'--') + '×' + (cylH>0?parseFloat(cylH.toFixed(2)):'--');
+    var cylSpec = (cylD>0?('Φ'+parseFloat(cylD.toFixed(2))):'--') + '×' + (cylH>0?_b1(cylH):'--');
     html += '<div style="background:rgba(255,255,255,.45);border-radius:var(--radius);padding:8px 10px;border:1px solid rgba(0,0,0,.04);line-height:1.5">';
     html += '<div style="font-weight:600;color:var(--text);margin-bottom:2px;font-size:13px">◧ 合适圆柱毛坯</div>';
     html += '<div style="color:var(--sub);font-size:12px;margin-bottom:4px">' + cylSpec + 'mm &nbsp;|&nbsp; ¥' + cyl.blankPrice.toFixed(2) + '/kg</div>';
@@ -10490,6 +10615,9 @@ function _saveTempQuoteNow() {
     ringH: (ringOuterDVal && ringInnerDVal) ? ringHVal : '',
     discDrillFeePerPiece: (typeof _discDrillFeePerPiece !== 'undefined') ? _discDrillFeePerPiece : 0,
     // 瓦片参数
+    // [同步] 无心磨口语值快照（与引擎 engine_core.js 同款字段，仅供排查/离线分析）
+    centerlessPerBar: (typeof _centerlessPerBarOverride !== 'undefined') ? _centerlessPerBarOverride : -1,
+    clUnit: (typeof _clUnit !== 'undefined') ? _clUnit : '条',
     tileROuter: tileROuterVal, tileRInner: tileRInnerVal,
     tileLen: tileLenVal, tileChord: tileChordVal,
     tileWall: tileWallVal, tileArchH: tileArchHVal,
@@ -10536,7 +10664,7 @@ function cleanQuoteHistory() {
       const spec = (h.spec || '').toString().trim();
       if (!spec || _isPlace(spec)) return false;
       if (_qNum(h.quote) <= 0) return false;
-      if (!h.grade || !h.plating || !h.qty) return false;
+      // [审核·§12.3a] 缺牌号/镀层/数量的老记录不再静默删除（原始记录是只读事实）；这类记录不参与补全
       return true;
     });
     if (cleaned.length !== before) {
@@ -11724,10 +11852,12 @@ function buildDiscRouteRows(sheetName, mode, now, discData){
   out.push({cells:[{t:'s',v:'三、单颗成本明细(元/片)',style:'Sec2',merge:3}]});
   var grossMat = _xlsNum(res.singleMaterial);
   var scrap = _xlsNum(res.scrapPerPiece||0);
-  var netMat = grossMat - scrap;
+  var coreAbs = Math.abs(_xlsNum(res.coreRecovery)||0);
+  var netMat = (res.materialNet != null) ? _xlsNum(res.materialNet) : (grossMat - scrap - coreAbs);
   var cItems = [
     {label:'单颗材料费(毛坯)', v:grossMat, t:'n'},
     {label:'余料扣减', v:-scrap, t:'n'},
+    {label:'芯回收扣减', v:-coreAbs, t:'n'},
     {label:'单颗材料费(净)', v:netMat, t:'n', strong:true},
     {label:'切条费', v:_xlsNum(res.barSliceFee), t:'n'},
     {label:'切颗粒费', v:_xlsNum(res.discSliceFee), t:'n'},
@@ -11743,7 +11873,7 @@ function buildDiscRouteRows(sheetName, mode, now, discData){
   if (seg>0.0001) cItems.push({label:'分段切割费', v:seg, t:'n'});
   var core = _xlsNum(res.coreRecovery);
   if (Math.abs(core)>0.0001) cItems.push({label:'芯回收', v:core, t:'n'});
-  var procTotal = _xlsNum((res.grindFee||0)+(res.shoulderFee||0)+(res.drillFee||0)+(res.segCutFee||0)+(res.coreRecovery||0));
+  var procTotal = _xlsNum((res.grindFee||0)+(res.shoulderFee||0)+(res.drillFee||0)+(res.segCutFee||0));   // [v5.6.39] 不含芯回收
   cItems.push({label:'加工费合计', v:procTotal, t:'n', strong:true});
   cItems.push({label:'无合格率成本(元/片)', v:_xlsNum(res.rawCost), t:'n'});
   cItems.push({label:'合格率成本(元/片)', v:_xlsNum(res.yieldCost), t:'n', strong:true});
@@ -12002,7 +12132,9 @@ function rebuildHistoryDetails(){
   var history=[]; try { history=JSON.parse(localStorage.getItem('quoteHistory')||'[]'); } catch(e){}
   if (!history.length){ showToast('没有记录','error'); return; }
   var snap=_snapInputs();
-  var need=history.filter(function(h){ return !h.costDetail; });
+  var needAll=history.filter(function(h){ return !h.costDetail; });
+  var need=needAll.filter(function(h){ return h.spec && h.grade && h.plating && h.qty; });   // [审核·§12.3a] 不得用推定值：缺镀层/牌号/数量的记录不补
+  var skippedIncomplete=needAll.length-need.length;
   if (need.length===0){ showToast('所有记录已有明细，无需补全','success'); _restoreInputs(snap); return; }
   var done=0, fail=0; var failed=[];
   for (var i=0;i<need.length;i++){
@@ -12011,8 +12143,18 @@ function rebuildHistoryDetails(){
       if (typeof applyAndCalculate==='function') applyAndCalculate();
       var cd=getAllProcessingCost();
       if (!cd || (cd.quote||0)<=0) throw new Error('计算结果无效');
+      // [审核·§12.3a] 补全必须可追溯：标来源 / 时间 / 当时所用镀层 / 与记录原报价的差
+      cd.source='rebuild'; cd.builtAt=new Date().toISOString(); cd.platingUsed=document.getElementById('plating').value;
+      var _oldQ=parseFloat(String(need[i].quote||'').replace(/[^\d.\-]/g,''))||0;
+      cd.rebuildQuote=cd.quote||0; cd.rebuildDelta=(_oldQ>0)?(cd.rebuildQuote-_oldQ):null;
+      cd.rebuildWarn=(_oldQ>0 && Math.abs(cd.rebuildDelta)>0.01*_oldQ) ? 'delta>1%' : null;   // 明细与原始报价差 >1% 时留痕
       var idx=history.findIndex(function(h){ return String(h.id)===String(need[i].id); });
-      if (idx>=0) history[idx].costDetail=cd;
+      if (idx>=0) {
+        history[idx].costDetail=cd;
+        if (need[i].shapeMode==='disc' && typeof _lastDisc!=='undefined' && _lastDisc && _lastDisc.stock) {
+          try { history[idx].discRoutes=safeDeepClone(_lastDisc); } catch(e2) {}
+        }
+      }
       done++;
     } catch(err){ fail++; failed.push((need[i].spec||need[i].id)+'('+(err.message||'')+')'); }
   }
@@ -12020,6 +12162,7 @@ function rebuildHistoryDetails(){
   _restoreInputs(snap);
   try { showHistory(); renderHistoryList(); } catch(e){}
   var msg='已补全 '+done+' 条记录明细';
+  if (skippedIncomplete>0) msg+='；跳过 '+skippedIncomplete+' 条缺镀层/牌号/数量（不按推定值算）';
   if (fail>0) msg+='；'+fail+' 条规格异常已跳过（详见浏览器控制台）';
   showToast(msg, fail>0?'warn':'success');
 }
@@ -13416,9 +13559,23 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
-      <tr><td>v5.6.38</td><td>圆环倒角掉档修复（2026-11-08）：<b>判据 `_isRingOrStep` 补「有内径」分支</b>——v5.6.34 起内径改由 ringInnerD 承载、不再写 pfHoleDia，旧判据 `_discIsStepped || (pfDrill勾选 且 孔径>0)` 把纯内径圆环误判为普通圆片，导致倒角掉一档。修复后：D20圆环 0.15→<b>0.20</b>、D30圆环 0.20→<b>0.30</b>、D40圆环 0.30→<b>0.40</b>；圆片(D20*5) 仍 0.15、显式打孔(打孔φ2) 仍 0.20、手填倒角(倒角0.1) 仍 0.10，三者零变化。仅倒角判据一行，未动其他算价逻辑；门禁 1657/1657、回归无退步。</td></tr>\n      <tr><td>v5.6.37</td><td>删除「无镀层输入时自动补 NI」的默认行为（2026-11-08 老板裁决：没有镀层输入 → 不进行计算，不默认 NI；定性为早期遗留问题）。改动：①applyParse 的 else 分支不再写 NI（老工具 L3600 / 引擎 L848），改为空值交由 onPlatingChange 的 warn 分支（clearCalcDetail+clearResults+toast「请选择镀层」）②plating 初始值 NI→空（老工具 L2242）③下拉标签「镍」→「请选择镀层」（L2244）。验证：圆片/瓦片/方块 无镀层三条均不出价且有提示；有镀层三条价格逐位不变；门禁 1657/1657、回归无退步。</td></tr>
-      <tr><td>v5.6.36</td><td>芯回收只对内径孔算一次（2026-11-07 老板第七轮工艺事实）：圆环 D内 那一道已回收过芯料，之后再钻的额外孔（打孔φN/套孔φN）产出是废料，<b>不参与成本抵扣</b>——额外孔即使 ≥6 也只加打孔费、不再算芯回收。非圆环（圆片/大小头，无内径）仍按该孔算，原行为不变。影响：`D30*D20*5 打孔10` 加工费 −0.608334804→−0.369226002（+0.239108802，正好是取消的 φ10 芯回收）；`NB-05` 金标 chf/rc/单价 三值同步更新。打孔费/qr/分段零改动。</td></tr>
-      <tr><td>v5.6.35</td><td>取消「额外孔参与分段」（2026-11-07 老板工艺事实）：圆环先成环再钻额外孔，<b>分段只按内径孔 ringInnerD 判定</b>，额外孔再小也不触发分段；非圆环（圆片/大小头）仍按显式孔，原行为不变。影响：`D20*D8*5 打孔D2` 由「有分段 0.1256 + 分段孔深费」改为「无分段、走价目表」，加工费 0.432413896→0.248953438（−0.18346/件）。另将两孔六条规则收成总注释（字段/同孔/累加/芯回收/取重/分段）便于维护。</td></tr>
+            <tr><td>v5.6.52</td><td>引擎剩余口径同步 + 全量老工具对照 + 识别规则回灌（2026-11-12，<b>算价零改动</b>）：① getAllProcessingCost 补 _lastPf 的 laser/jet/multiPunch/carve/granule/grind/shoulder 兜底；② sanitizeRecordSettings 补 rec.prices 数值规范化（NaN/负→0）；③ calculateDisc 读合适坯前先写回 _fitSize（与工具同序）；④ 把引擎 v5.6.28 的两条识别规则回灌老工具（数量 token 数字位扩到 1–3 位并整体剥离、孤立≥3位数剥离），乱序串不再误判。全量对照：880 样本老工具真机跑两遍，回灌前 877/877 价格 0 差异、1 条自制锚点引擎能识别而老工具拒绝；回灌后 878/878 价格 0 差异、胜出 0 差异、ok 0 不一致，原有 877 行结果 0 变化。门禁 1696/1696、回归 0/0、三方 878:878。</td></tr>
+      <tr><td>v5.6.51</td><td>新引擎同步（2026-11-12，<b>算价零改动</b>）：把工具侧 v5.6.39 起的「材料净额」口径同步进引擎——① 成本条/成本明细的材料费优先 materialNet；② 圆片 Excel 明细补「芯回收扣减」行、净材料按 materialNet 取；③ 圆片「加工费合计」去掉芯回收（v5.6.39 起芯回收在材料侧扣减）；④ 记录字段集对齐（工具补 centerlessPerBar/clUnit，引擎瓦片字段已在）。双载体同名函数体对比：逐字相同从 287 升到 290，剩 29 处全为「渲染门控/文案正则/导出兜底」，不含算价表达式。验收：引擎 880 行 0 差异、真机 74/74 价格 0 差异、门禁 1696/1696、回归 0/0、三方 878:878。</td></tr>
+      <tr><td>v5.6.50</td><td>历史补全审核修复（2026-11-11，<b>算价零改动</b>）：① 加载时不再静默删除缺镀层/牌号/数量的老记录（改前会被 cleanQuoteHistory 直接删掉，实测复现）；② 补全不再按推定值算——缺镀层等三要素的记录跳过并在提示里报数；③ 补全明细写入来源标记（source/builtAt/platingUsed/rebuildQuote/rebuildDelta，差 >1% 打 rebuildWarn）；④ 圆片补全同时写 discRoutes，圆片明细导出不再缺；⑤ 顺带修掉更新日志所在 script 块的反引号语法错误（v5.6.35/36/38/42/47/48/49 行），11 个 script 块语法全部通过。验收：引擎 880 行 0 差异、真机 74/74 与引擎逐位一致、门禁 1696/1696、回归 0/0、三方 878/878；132 条历史演练：补全 121、跳过 11（9 条无镀层）、圆片补路线明细 19。</td></tr>
+      <tr><td>v5.6.49</td><td>毛坯精度统一（2026-11-11）：<b>圆柱坯高最多 1 位小数</b>（向上取整到 0.1，与合适坯同款 _b1）——推导坯高、芯片、卡片规格、明细行、报价记录导出全部 1 位；圆柱输入框同步写 1 位，不再出现 28.349999999999998 这类浮点尾巴。口径变更影响：圆片/圆环/大小头/圆柱胜出 cyl 路线 <b>213/880</b> 行，材料费/rc/单价 +0.13%~0.45%（最大 0.178 元/片），胜出路线翻转 0；金标按新口径重录 <b>195 行</b>（.bak-毛坯1位-20261111），门禁 1696/1696、回归 0/0、三方 878/878 全绿。</td></tr>
+      <tr><td>v5.6.48</td><td>收尾（2026-11-11，<b>算价零改动</b>）：审计钩子补齐<b>自定义两条路线</b>——window.__audit 新增 customStockSr/customCylSr（只透出已有结果对象，不参与任何计算），浏览器取数脚本与三方公共件同步摘取；从此自定义方块/自定义圆柱也能进全量 A/B，不再是验证盲区。验收：引擎 880 行值差异 0、字段集变化<b>恰好只有这两项</b>（879 行各 +2 键、1 行无 audit）；真机 72 样本值差异 0、各 +2 键；GC-EX42 的 customCylSr.quote=2.45456727579（显示 2.4546）、GC-EX39/GC-EX158 自定义方块真机与引擎逐位相同（8.81971335 / 5.495382695250001）；门禁 1696/1696、三方 878/878。</td></tr>
+      <tr><td>v5.6.47</td><td>归一 R4 · 四轮收口（2026-11-11，<b>算价零改动</b>）：圆片 5 条路线（通用方块/自定义方块/合适方坯/合适圆柱/自定义圆柱）的结果对象、assembleFinalCost 收尾、blanksNeeded/totalBlankWeight 全部收进单一工厂 <b>buildDiscRoute</b>——5 段字面量 + 5 次收尾 → 1 处；<b>rc 仍由各站点按原式算好传入，求和顺序一字不动</b>；字段集不增不减。方块/瓦片保持 calcOne 的「工艺费合计」口径不动（与圆片分列费项口径不同，硬合并会改价）。验收：引擎 880 行 4a/4b/4c 三步逐步 <b>0 差异、字段集 0 变化</b>；真机 72 样本 <b>0 差异</b>（72/72 出价）；门禁 1696/1696；三方 878/878。归一四轮（R0 等值校验器 → R1 材料/切片 → R2 电镀/倒角 → R3 孔费/芯回收 → R4 装配）全部落地，累计 <b>0 次价变</b>。</td></tr>
+      <tr><td>v5.6.46</td><td>归一 R3（2026-11-11，<b>算价零改动</b>）：打孔/套孔 + 芯回收从<b>两套实现</b>收敛成一个纯函数 <b>holeFeesOf</b>——方块·瓦片（单孔，分母 c3）与圆片（双孔+分段，分母=本路线分段后出刀、料高=本路线坯高轴）改调同一函数；「内径孔优先归属芯回收 / 额外孔只收加工费」「同孔=数值严格相等只算一次」「≤2 且分段只取一次 segDrill」「料高或分母为 0 整段不收」四条规则逐字保留，公式与运算顺序原样照搬。验收：引擎 880 行 <b>0 差异</b>（重点行：打孔 62 / 芯回收 54 / 分段 21 / 双孔 8 / 径向 20，全 0 差异；segCutFee 43/43 逐位相同）、真机 <b>72 样本 0 差异</b>（出价 72/72）、门禁 1696/1696、三方 878/878。</td></tr>
+      <tr><td>v5.6.45</td><td>归一 R2（2026-11-11，<b>算价零改动</b>）：① 电镀系数决策链（手动 ＞ 面积&gt;阈值翻倍 ＞ 轴&gt;30 ＞ 基准）三处收敛到 <b>platingCoefOf</b>；② 最小电镀面积 6 处收敛到 <b>platingMinArea</b>（含派生说明的显示兜底）；③ 倒角档位从 3 段 if/else 改为 <b>3 张常量表 + chamferTierOf</b>——方块/异形/瓦片/圆片(含圆环·大小头)价表原样搬运、<b>两套价仍各自独立</b>，DOM 写入与 cfAuto 状态机留在原处。验收：引擎 880 行 dump 逐步（2a/2b/2c）逐位 0 差异、真机 52 样本 0 差异、门禁 1696/1696、三方 878/878。⚠ 修正：方块倒角新代码误把引擎的 __el 写进工具，真机 4 条方块掉价，已改回 document.getElementById 并复测 52/52。</td></tr>
+      <tr><td>v5.6.44</td><td>归一 R1（2026-11-11，<b>算价零改动</b>）：把「坯重→坯价→单件材料」与「切片费」抽成全形状共用的两个纯函数 materialPerPiece / sliceFeeOf——方块·瓦片·异形（calcOne）与圆片 5 条路线（通用方块 / 合适方坯试算 / 圆柱试算 / 合适结果 / 圆柱结果 / 自定义圆柱）共 11 处改调同一批函数，运算顺序逐字不变（volume*DENSITY/1000 原序）。验收：引擎 880 行 dump 逐位 0 差异（含 audit 中间量与三路线对象）、工具 52 条样本真机 0 差异、门禁 1696/1696、三方 878/878 差异 0。</td></tr>
+      <tr><td>v5.6.43</td><td>方块/异形/瓦片的「合适坯、自定义坯」加工费改用各自的出刀与料高（2026-11-11 老板拍板「分母也是他们各自的」）：打孔/套孔、芯回收不再借用主路线 c3 与库存坯第 3 轴——合适坯用 fbd[2] 与 fit 刀数、自定义坯用快照坯高与快照刀数；getProcessFees 新增 blankHOverride。工具/引擎同款，三方言一致。</td></tr>
+ <tr><td>v5.6.42</td><td>圆片计算归并成两桶（2026-11-11 老板拍板）：**三刀桶**（通用方块 / 合适方块 / 自定义方块，同一套前段 + 同一套加工费）+ **一刀桶**（合适圆柱 / 自定义圆柱，单轴 cylKnives）。本条把最后一处特例收掉——合适方块坯改为与方块形状同款 fitCalcWithBase 双候选（[64,54,36] / [65,55,38]，含 L/W swap，按每片坯料体积取低），**不再从选中的 36/34 通用档反推**；通用/圆柱两桶数值与 v5.6.41 逐位相同，合适方块出刀 161 行变化、成交价 41 行变化，金标同步重录。</td></tr>
+ <tr><td>v5.6.41</td><td>圆片五路线加工费各自独立（2026-11-11 老板拍板）：通用方块 / 合适方块 / 合适圆柱 / 自定义方块 / 自定义圆柱 的「打孔·套孔费、芯回收、无心磨费、分段费」全部改用本路线自己的坯高轴与出刀数，不再共用通用方坯那一份（旧实现三条路线直接借 stockResult）。新增 _discRouteFees 单路线加工费包，坯档择优与成交价按各路线的真实报价比较；audit 增 routeFees 明细。金标按新口径重录受影响行。</td></tr>
+ <tr><td>v5.6.40</td><td>圆片三路线材料净额补全（2026-11-11，算价零改动）：合适方坯 / 圆柱坯 / 自定义圆柱三个结果对象的 materialNet 原用作用域内恒为 0 的 _coreRecovery，改为 stockResult.coreRecovery ⇒ 材料净额不再少扣一次芯回收（48 行受影响，rc/单价逐位不变）；审计新增 sbdUsed（36/34 档择优实际用到的坯档），供三方比对喂参。</td></tr>
+ <tr><td>v5.6.39</td><td>芯回收归材料费（2026-11-11，算价总额零改动）：芯回收从「加工费」移到「材料侧抵减」——材料费显示净额（原材料 − 余料 − 芯回收）、加工费不再为负；工具/引擎/预言机三端同口径，金标 48 行 8 列重录；rc、单价、总价逐位不变（880 行实测 0 差异）；门禁 1696/1696。</td></tr>
+      <tr><td>v5.6.38</td><td>圆环倒角掉档修复（2026-11-08）：<b>判据 \_isRingOrStep\ 补「有内径」分支</b>——v5.6.34 起内径改由 ringInnerD 承载、不再写 pfHoleDia，旧判据 \_discIsStepped || (pfDrill勾选 且 孔径>0)\ 把纯内径圆环误判为普通圆片，导致倒角掉一档。修复后：D20圆环 0.15→<b>0.20</b>、D30圆环 0.20→<b>0.30</b>、D40圆环 0.30→<b>0.40</b>；圆片(D20*5) 仍 0.15、显式打孔(打孔φ2) 仍 0.20、手填倒角(倒角0.1) 仍 0.10，三者零变化。仅倒角判据一行，未动其他算价逻辑；门禁 1657/1657、回归无退步。</td></tr>\n      <tr><td>v5.6.37</td><td>删除「无镀层输入时自动补 NI」的默认行为（2026-11-08 老板裁决：没有镀层输入 → 不进行计算，不默认 NI；定性为早期遗留问题）。改动：①applyParse 的 else 分支不再写 NI（老工具 L3600 / 引擎 L848），改为空值交由 onPlatingChange 的 warn 分支（clearCalcDetail+clearResults+toast「请选择镀层」）②plating 初始值 NI→空（老工具 L2242）③下拉标签「镍」→「请选择镀层」（L2244）。验证：圆片/瓦片/方块 无镀层三条均不出价且有提示；有镀层三条价格逐位不变；门禁 1657/1657、回归无退步。</td></tr>
+      <tr><td>v5.6.36</td><td>芯回收只对内径孔算一次（2026-11-07 老板第七轮工艺事实）：圆环 D内 那一道已回收过芯料，之后再钻的额外孔（打孔φN/套孔φN）产出是废料，<b>不参与成本抵扣</b>——额外孔即使 ≥6 也只加打孔费、不再算芯回收。非圆环（圆片/大小头，无内径）仍按该孔算，原行为不变。影响：\D30*D20*5 打孔10\ 加工费 −0.608334804→−0.369226002（+0.239108802，正好是取消的 φ10 芯回收）；\NB-05\ 金标 chf/rc/单价 三值同步更新。打孔费/qr/分段零改动。</td></tr>
+      <tr><td>v5.6.35</td><td>取消「额外孔参与分段」（2026-11-07 老板工艺事实）：圆环先成环再钻额外孔，<b>分段只按内径孔 ringInnerD 判定</b>，额外孔再小也不触发分段；非圆环（圆片/大小头）仍按显式孔，原行为不变。影响：\D20*D8*5 打孔D2\ 由「有分段 0.1256 + 分段孔深费」改为「无分段、走价目表」，加工费 0.432413896→0.248953438（−0.18346/件）。另将两孔六条规则收成总注释（字段/同孔/累加/芯回收/取重/分段）便于维护。</td></tr>
       <tr><td>v5.6.34</td><td>圆环「内径孔 + 额外孔」两孔计价（2026-11-07 老板拍板）：①内径孔(ringInnerD)与额外孔(pfHoleDia)分离，内径不再覆盖显式孔 ②同孔判定=数值相等（不加容差），相等只收一次 ③两孔各算打孔费/芯回收并累加 ④qr 按最小孔径取最重不叠加 ⑤分段只分一次 ⑥电镀面积只扣内径孔。另修工序文案：圆环显示「打孔 Ø内径(内径) + Ø额外」，方块/瓦片/圆片/大小头文案与算价零变化。</td></tr>
       <tr><td>v5.6.33</td><td>修复圆片「打孔φN」解析失败（2026-11-06 DSH 量化实验：25 组里唯一失败组合＝圆片+打孔φN，且静默不出价）：根因＝canonicalShapeCheck L2978 打孔剥离正则只写 [Dd]? 缺 Φφ，φ2 残留成第3个数 → 圆片「恰2数」校验失败 → 退回方块且无结果；套孔那条 L2979 本就有 Φφ。本次补齐 Φφ（两处同源正则），并新增解析失败 showToast 兜底提示。算价公式零改动。</td></tr>
       <tr><td>v5.6.32</td><td>修复圆片/圆环/大小头「成本构成」不显示（2026-11-06 老板报）：displayDiscResults 漏调 buildCostStrip，导致 costStrip 停留清场占位；v5.6.25 开发副本 L8719 本有调用，迁移中丢失。本次只补一次渲染调用（csRoutes 已完成 5 路构造与 isBest 标注），算价公式零改动。</td></tr>
