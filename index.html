@@ -16,7 +16,7 @@
 <!-- [v5.6.30·2026-11-04 报价卡渲染修复] displayResults 补调 buildPriceOverview（瓦片/异形算价后占位残留根因）+_placeholder 占位卡兼容——渲染层，算价公式零改动
      [v5.6.29·2026-11-04 清场文案场景化] L7181占位+L10462/L10477正则+clearResults(reason)——仅文案/提示层，算价公式零改动
      [v5.6.28·2026-10-28 两档制阶段7] 合适坯双候选+极限提示+A1瓦片恒择优+B1批量档读stockBlock实际值+cyl引用修复(L7041 _cylCand恒null)——算价公式零改动 -->
-<title>昊铭磁材报价计算工具 v5.6.58</title>
+<title>昊铭磁材报价计算工具 v5.6.59</title>
 <style>
 /* ===== 移动端浏览器适配 ===== */
 @viewport { width: device-width; zoom: 1; }
@@ -2091,7 +2091,7 @@ body { color: var(--text); font-size: 13px; font-weight: 400; line-height: 1.48;
   <div class="logo" data-page-node-id="ylNhH7noqgLThFYkQItJPe">
     <div class="icon" data-page-node-id="IK7HOjdPssHBWI2vby8gyp"><svg width="30" height="30" viewBox="0 0 30 30" data-page-node-id="DGnpDk7bPourF5dCvxJ8bX"><defs data-page-node-id="dcCCWcer9gq0cUj6HEJWCn"><linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1" data-page-node-id="UWkEgrZiZ8SSyqCNATcOkM"><stop offset="0" stop-color="#25517d" data-page-node-id="lQxgmsBgFKMyNXCTetAuMG"/><stop offset="1" stop-color="#1a3c5e" data-page-node-id="Iyc5wzFvKiXuKZQYp16Z8g"/></linearGradient></defs><rect x="0.5" y="0.5" width="29" height="29" rx="8" fill="url(#logoGrad)" stroke="rgba(255,255,255,.14)" stroke-width="0.75" data-page-node-id="ZZ2ZDLsjixOmx9x9PqWHsV"/><circle cx="15" cy="15" r="8.5" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="3S9BUVpYosJmBybRBjNt3R"/><line x1="15" y1="6.5" x2="15" y2="23.5" stroke="rgba(255,255,255,.92)" stroke-width="1.6" data-page-node-id="j44TwGtwVOeHJQnXKgoZcV"/><path d="M15 6.5 A8.5 8.5 0 0 1 15 23.5" fill="rgba(255,255,255,.16)" data-page-node-id="OykzW2DXOoyCLji0yeFeNJ"/><path d="M4.5 15 A10.5 10.5 0 0 1 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="POZl2W02XWN8FQYNyB8LKP"/><path d="M4.5 15 A10.5 10.5 0 0 0 25.5 15" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" data-page-node-id="MUOixidgn5oVYCi1MaFEeI"/></svg></div>
     <div class="text" data-page-node-id="gDvLzKxTiGlUSccIQdgjZf">
-      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.58</span></h1>
+      <h1 data-page-node-id="zFhnZV02aEsPKHRgxZj1h4">昊铭磁材 <span class="ver-badge" data-page-node-id="j26i78RQer9CtHOmahl8UT">v5.6.59</span></h1>
       <div class="sub" data-page-node-id="UvHGcgUzDiZELAEMK8oAeu">钕铁硼报价计算 <a href="#" style="text-decoration:none;color:var(--sub2);margin-left:8px;border-bottom:1px dashed var(--border)" data-page-node-id="CB5ZanmXm5ZcB965zGtf5r"><svg class="ic" aria-hidden="true" data-page-node-id="AB3kje5FnnjIZadjNi6fN6"><use href="#ic-book" data-page-node-id="nzDPiuDLfk7FprfRlk0qAR"/></svg> 使用说明</a></div>
     </div>
   </div>
@@ -2989,7 +2989,7 @@ function canonicalShapeCheck(t) {
     .replace(/\s+/g, ' ').trim();
   // 无维度符号则拒识
   if (!/[x*×]/.test(s) && !/[Dd]\s*\d/.test(s)) {
-    return { ok: false, hint: '规格无法识别，请使用：方块 L*W*H · 圆片 D*H · 圆环 D外*D内*H · 大小头 D大*H大/D小*H小' };
+    return { ok: false, hint: '没认出规格。可写成：方块 20*10*2 ｜ 圆片 D10*5 ｜ 圆环 D20*D10*5 ｜ 瓦片 R20*R18*22*7*1.5 ｜ 大小头 D20*5/D10*3' };
   }
   var nums = (s.match(/[\d.]+/g) || []);
   var n = nums.length;
@@ -2997,19 +2997,19 @@ function canonicalShapeCheck(t) {
   if (s.indexOf('*') >= 0 || s.indexOf('×') >= 0 || s.indexOf('x') >= 0 || s.indexOf('X') >= 0) {
     if (dCount === 0) {
       if (n >= 2) return { ok: true, shape: '方块' };
-      return { ok: false, hint: '方块格式：L*W*H 或 L×W×H' };
+      return { ok: false, hint: '方块写 3 个数：长*宽*高，如 20*10*2' };
     }
     if (dCount === 1) {
       if (n === 2) return { ok: true, shape: '圆片' };
       // 仅首数字带 D 却有 ≥3 个数字 → 既非圆片(需2数) 也非圆环(需内径D)
-      return { ok: false, hint: '圆片为 D*H（如 D10*3）；圆环需 D外*D内*H（内径带D）' };
+      return { ok: false, hint: '圆片写 2 个数：D*H（如 D10*5）；圆环写 3 个且内径带 D（如 D20*D10*5）' };
     }
     if (dCount >= 2) {
       if (s.indexOf('*') >= 0) return { ok: true, shape: '圆环' };
-      return { ok: false, hint: '圆环格式：D外*D内*H（内径带D），如 D10*D5*3' };
+      return { ok: false, hint: '圆环要写：D外*D内*H，内径也带 D，如 D20*D10*5' };
     }
   }
-  return { ok: false, hint: '规格无法识别，请使用：方块 L*W*H · 圆片 D*H · 圆环 D外*D内*H · 大小头 D大*H大/D小*H小' };
+  return { ok: false, hint: '没认出规格。可写成：方块 20*10*2 ｜ 圆片 D10*5 ｜ 圆环 D20*D10*5 ｜ 瓦片 R20*R18*22*7*1.5 ｜ 大小头 D20*5/D10*3' };
 }
 
 // 中文数字→阿拉伯数字（覆盖常用数量词：五百/两千/五万/十五/二十五 等；纯阿拉伯数字原样返回；0-99999）
@@ -3641,7 +3641,7 @@ function applyParse(ctx) {
     if (_wasDrillChk && !ctx.hasDrill) {
       document.getElementById('pfHoleDia').value = '';
     }
-    if ((ctx.hasGranule || ctx.hasCarveWord) && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.90'; updateQrHint('基础90%(颗粒磨/精雕)', true); }
+    if ((ctx.hasGranule || ctx.hasCarveWord) && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.90'; updateQrHint('基础 90%（颗粒磨/精雕）', true); }
     if (ctx.ringHasHole) {
       document.getElementById('pfDrill').checked = true;
       // 🔴 [2026-10-12 · 修 cyl 计算状态污染] 圆环有孔时**直接**勾 pfDrill，不经过 _chk()，
@@ -3736,12 +3736,14 @@ function applyParse(ctx) {
       _lastOverrides.qr = 1; qrPrChanged = true;
       _qrManualOverride = true;
       document.getElementById('stockQualifyRate').value = ctx.qualifyRate;
-      updateQrHint('智能输入指定', false);
+      window._qrLossBoth = (ctx.lossRateOverride >= 1.0);
+      updateQrHint('按识别串写的合格率算' + (window._qrLossBoth ? '（同时写了损耗，以合格率优先）' : ''), false);
     } else if (ctx.qualifyRate >= 1 && ctx.qualifyRate <= 100) {
       _lastOverrides.qr = 1; qrPrChanged = true;
       _qrManualOverride = true;
       document.getElementById('stockQualifyRate').value = (ctx.qualifyRate / 100).toFixed(2);
-      updateQrHint('智能输入指定', false);
+      window._qrLossBoth = (ctx.lossRateOverride >= 1.0);
+      updateQrHint('按识别串写的合格率算' + (window._qrLossBoth ? '（同时写了损耗，以合格率优先）' : ''), false);
     } else if (_lastOverrides.qr) {
       _lastOverrides.qr = 0;
       _qrManualOverride = false;
@@ -3792,7 +3794,7 @@ function applyParse(ctx) {
       _lastOverrides.loss = 1;
       document.getElementById('stockQualifyRate').value = (Math.round((2 - ctx.lossRateOverride) * 10000) / 10000).toFixed(2);
       _qrManualOverride = true;
-      updateQrHint('识别串指定损耗', false);
+      updateQrHint('按你写的损耗 ' + ctx.lossRateOverride + ' 折算：合格率 = 2 − ' + ctx.lossRateOverride + ' = ' + (2 - ctx.lossRateOverride).toFixed(2), false);
     } else if (_lastOverrides.loss && ctx.qualifyRate <= 0) {
       _lastOverrides.loss = 0;
       _qrManualOverride = false;
@@ -3993,17 +3995,17 @@ function renderResult(ctx) {
   var hint = document.getElementById('smartHint');
   if (!ctx._unrecognized) {
     if (!ctx.spec && !ctx.grade && !ctx.plating && !ctx.qty && !ctx.batch && !ctx.cutDir && !ctx.blankSpecOverride && ctx.blankSpecList.length === 0) {
-      if (hint) { hint.style.display = ''; hint.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 规格文本无法识别，请检查格式（例：20*10*2 / D10*5 / R外*R内*弦*长*壁）'; }
+      if (hint) { hint.style.display = ''; hint.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 没认出规格。写法：20*10*2（方块）/ D10*5（圆片）/ D20*D10*5（圆环）/ R外*R内*长*弦*壁（瓦片）'; }
     } else {
       if (hint) {
         var parts = [];
-        if (!ctx.spec) parts.push('规格未识别');
-        if (!ctx.grade) parts.push('牌号未识别');
-        if (!ctx.plating) parts.push('镀层未识别');
-        if (!ctx.qty) parts.push('数量未识别');
+        if (!ctx.spec) parts.push('规格');
+        if (!ctx.grade) parts.push('牌号');
+        if (!ctx.plating) parts.push('镀层');
+        if (!ctx.qty) parts.push('数量');
         if (parts.length > 0) {
           var _blockAuto = (!ctx.spec || !ctx.grade || !ctx.plating || !ctx.qty);
-          hint.style.display = ''; hint.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> ' + parts.join('、') + (_blockAuto ? '，补全后自动报价' : '，将使用默认值');
+          hint.style.display = ''; hint.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 还差：' + parts.join('、') + (_blockAuto ? '；补上才自动报价' : '，其余用默认值');
         } else {
           hint.style.display = 'none';
         }
@@ -4151,7 +4153,7 @@ function applyAndCalculate() {
   if (_pendingGrade) { const _pg_cur = document.getElementById('grade').value; if (_pg_cur !== _pendingGrade) { document.getElementById('grade').value = _pendingGrade; onGradeChange(); } }
   if (_pendingPlating) document.getElementById('plating').value = _pendingPlating;
   if (_pendingQty) document.getElementById('stockOrderQty').value = _pendingQty;
-  if (_pendingQr) { document.getElementById('stockQualifyRate').value = _pendingQr; _qrManualOverride = true; updateQrHint('智能输入指定', false); }
+  if (_pendingQr) { document.getElementById('stockQualifyRate').value = _pendingQr; _qrManualOverride = true; updateQrHint('按识别串写的合格率算' + (window._qrLossBoth ? '（同时写了损耗，以合格率优先）' : ''), false); }
   if (_pendingPr) { document.getElementById('stockProfitRate').value = _pendingPr; }
   if (_pendingGrindAxis) _grindAxis = _pendingGrindAxis;
   // 更新磨型轴标签显示
@@ -5214,7 +5216,7 @@ function parseSpec() {
     // 大小头默认合格率 85%（用户手动设过则不覆盖）
     // [v5.6.17·2026-10-09 修正] 原代码写 '0.90' 与本行注释（85%）**不一致** → 按注释口径改为 0.85。
     //   工具实测 fitSr（大小头）：qr=0.85（见无头 dump `_真值_大小头_干净状态_20261009.json`）。
-    if (!_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.85'; updateQrHint('基础85%(大小头)', true); }
+    if (!_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.85'; updateQrHint('基础 85%（大小头）', true); }
     onDiscSpecChange();
     return;
   }
@@ -5239,7 +5241,7 @@ function parseSpec() {
     // 圆环默认合格率 90%（用户手动设过则不覆盖）
     // [v5.6.17·2026-10-09 修正] 原注释写「85%」但代码是 0.90、提示也是「基础90%(圆环)」→ **注释写错**，已订正为 90%。
     //   口径依据：圆环带内孔（D*D*H）本身已含「孔>2mm 扣 5%」等降档，故基础值取 90% 而非 85%。
-    if (innerD && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.90'; updateQrHint('基础90%(圆环)', true); }
+    if (innerD && !_qrManualOverride) { document.getElementById('stockQualifyRate').value = '0.90'; updateQrHint('基础 90%（圆环）', true); }
     // 同步圆环快捷栏：仅真圆环（有内径 innerD）才填，避免普通圆片污染 ring 字段
     if (innerD) {
       document.getElementById('ringOuterD').value = dVal;
@@ -5877,7 +5879,7 @@ function updateQrHint(txt, warn) {
 function computeQualifyRate() {
   if (_qrManualOverride) { // 手动优先，完全跳过自动逻辑；已有更具体来源标签（读取历史记录/智能输入指定）时不覆盖
     var _curHint = document.getElementById('qrReasonHint');
-    if (!_curHint || !_curHint.textContent || _curHint.textContent === '手动指定，自动调整已停用') updateQrHint('手动指定，自动调整已停用', false);
+    if (!_curHint || !_curHint.textContent || _curHint.textContent === '手动填的合格率，自动调整已暂停') updateQrHint('手动填的合格率，自动调整已暂停', false);
     // [v5.5.65] 手动模式下底部全局条数字也需跟随输入框实时值（保留 ◉/◈ + % 原格式）
     var _bv = document.getElementById('bottomQrVal');
     var _in = document.getElementById('stockQualifyRate');
@@ -6008,12 +6010,12 @@ function computeQualifyRate() {
       if (geoDelta === procDelta && geoWhy && procWhy) _why = geoWhy + ' / ' + procWhy;
       else _why = (geoDelta >= procDelta) ? geoWhy : procWhy;
       var _basePct = Math.round(base * 100);
-      var _txt = '基础' + _basePct + '%' + (baseWhy ? ('(' + baseWhy + ')') : '') + ' − ' + Math.round(_applied * 100) + '%(' + _why + ')';
+      var _txt = '合格率 ' + Math.round(qr * 100) + '%：基础 ' + _basePct + '%' + (baseWhy ? ('（' + baseWhy + '）') : '') + '，' + _why + '再降 ' + Math.round(_applied * 100) + '%';
       // [v5.6.20] 原此处有 `if ((base - _applied) < C.floor) _txt += ' → 保底xx%'`，
       //   随computeQualifyRate 第5 步的保底下限一并删除（该分支恒不成立，纯误导性死代码）。
       updateQrHint(_txt, true);
     } else if (baseDrop > 0) {
-      updateQrHint('基础' + Math.round(base * 100) + '%(' + baseWhy + ')', true);
+      updateQrHint('合格率 ' + Math.round(base * 100) + '%（' + baseWhy + '）', true);
     } else {
       updateQrHint('', false);
     }
@@ -6394,18 +6396,18 @@ function calculate() {
   }
 
   let _s = sr, _f = fr;
+  let _leadWarn = [];
   if (!sr && !fr) {
-    showBlankWarning('库存毛坯(' + (document.getElementById('stockBlock').value || '').trim() + ')装不下此产品（出刀=0），未计算。请放大库存毛坯，或切「合适毛坯」模式填定制坯。');
+    showBlankWarning('库存毛坯 ' + ((document.getElementById('stockBlock').value || '').trim().replace(/\*/g, '×')) + ' 装不下这个产品，本次没有报价。把库存坯放大，或改用「合适毛坯」填定制尺寸。');
   } else {
     if (!sr && fr) {
       _s = fr; _f = null; if (_s) _s._isFitOnly = true;
-      const wbox = document.getElementById('warningsBox');
-      if (wbox) wbox.innerHTML = '<div style="margin:8px 0;padding:10px 14px;border:1px solid #dd9966;border-radius:6px;background:rgba(221,153,102,0.10);color:#9a6b2f;font-size:14px;line-height:1.6">⚠ 通用毛坯装不下此产品（出刀=0），已用「合适毛坯（定制坯）」报价展示。如需对比请放大通用毛坯。</div>';
+      _leadWarn.push('通用毛坯装不下这个产品，已改用「合适毛坯」报价；要对比请把通用坯放大');
     }
     // [P3] 填了库存坯但排不出刀 → 卡片提示（不影响算价）
   window.__blankNotUsed = (_isCustomBlk && !customSr) ? ((_customBlkSnap && _customBlkSnap.str) || document.getElementById('stockBlock').value) : null;
   displayResults(_s, _f, customSr, prodVol);   // [五路同侧·B3] 第5路：自定义库存方块
-    checkWarnings(_s, _f, knifeTotal);
+    checkWarnings(_s, _f, knifeTotal, _leadWarn);
   }
   renderCalcDetail(_s, _f);
   // —— 审计只读钩子（零算法改动，仅暴露 calcOne 权威结果供字段级对账）——
@@ -6611,18 +6613,18 @@ function calculateTile() {
 
   // 统一走结构化显示
   let _s = sr, _f = fr;
+  let _leadWarn = [];
   if (!sr && !fr) {
-    showBlankWarning('库存毛坯(' + (document.getElementById('stockBlock').value || '').trim() + ')装不下此产品（出刀=0），未计算。请放大库存毛坯，或切「合适毛坯」模式填定制坯。');
+    showBlankWarning('库存毛坯 ' + ((document.getElementById('stockBlock').value || '').trim().replace(/\*/g, '×')) + ' 装不下这个产品，本次没有报价。把库存坯放大，或改用「合适毛坯」填定制尺寸。');
   } else {
     if (!sr && fr) {
       _s = fr; _f = null; if (_s) _s._isFitOnly = true;
-      const wbox = document.getElementById('warningsBox');
-      if (wbox) wbox.innerHTML = '<div style="margin:8px 0;padding:10px 14px;border:1px solid #dd9966;border-radius:6px;background:rgba(221,153,102,0.10);color:#9a6b2f;font-size:14px;line-height:1.6">⚠ 通用毛坯装不下此产品（出刀=0），已用「合适毛坯（定制坯）」报价展示。如需对比请放大通用毛坯。</div>';
+      _leadWarn.push('通用毛坯装不下这个产品，已改用「合适毛坯」报价；要对比请把通用坯放大');
     }
     // [P3] 同上（瓦片）
   window.__blankNotUsed = (_tileIsCustom && !customSr) ? ((_tileBlkSnap && _tileBlkSnap.str) || document.getElementById('stockBlock').value) : null;
   displayResults(_s, _f, customSr, prodVol, '未自定义库存毛胚');   // [五路同侧·T3] 第3路+瓦片占位文案（老板 UI 要求：无自定义坯时卡片显示占位不隐藏）
-    checkWarnings(_s, _f, kt);
+    checkWarnings(_s, _f, kt, _leadWarn);
   }
   renderCalcDetail(_s, _f);
   // —— 审计只读钩子（零算法改动，仅暴露 calcOne 权威结果供字段级对账）——
@@ -7278,59 +7280,74 @@ function tileRHint(text, shape) {
     if (/R\s*\d+(?:\.\d+)?\s*[*x×]\s*R\s*\d/i.test(s)) return '';
     var m = s.match(/(?:^|[^0-9A-Za-z])R\s*(\d+(?:\.\d+)?)\s*[*x×]\s*(\d+(?:\.\d+)?)\s*[*x×]\s*(\d+(?:\.\d+)?)\s*[*x×]\s*(\d+(?:\.\d+)?)\s*[*x×]\s*(\d+(?:\.\d+)?)/i);
     if (!m) return '';
-    return '识别串疑似瓦片规格（R外*R内*长*弦*壁），少写了一个 R：当前按异形 ' + m[2] + '×' + m[3] + '×' + m[4] + ' 计算；按瓦片算请写成 R' + m[1] + '*R' + m[2] + '*' + m[3] + '*' + m[4] + '*' + m[5] + '（若确实是异形请忽略本条）';
+    return '这条像瓦片，少写了一个 R：瓦片要写 R外*R内*长*弦*壁；现在按异形 ' + m[2] + '×' + m[3] + '×' + m[4] + ' 算，正确写法 R' + m[1] + '*R' + m[2] + '*' + m[3] + '*' + m[4] + '*' + m[5] + '（若确实是异形可忽略）';
   } catch (e) { return ''; }
 }
-function checkWarnings(stock, fit, knifeTotal) {
+// [P5·20261112] 电镀/总重/利润率三条共用一份文案（方块/瓦片 checkWarnings 与圆片 displayDiscResults 同源，禁止两套）
+function stockWarnTexts(stock) {
+  var out = [];
+  try {
+    var plating = document.getElementById('plating').value;
+    var minArea = platingMinArea(plating);
+    var doubleT = PLATING_DOUBLE_THRESHOLD[plating];
+    if (stock.platingArea < minArea) out.push('零件电镀面积 ' + stock.platingArea.toFixed(0) + 'mm²，不足最低 ' + minArea + 'mm²，电镀费按 ' + minArea + 'mm² 收');
+    if (doubleT && stock.platingArea > doubleT) out.push('电镀面积 ' + stock.platingArea.toFixed(0) + 'mm² 超过 ' + doubleT + 'mm²，电镀费按 2 倍收');
+    if (stock.totalBlankWeight > 300) out.push('毛坯总重约 ' + (stock.totalBlankWeight / 1000).toFixed(1) + ' 吨（超过 300kg），改用「合适毛坯」可能更省');
+    var spr = parseFloat(document.getElementById('stockProfitRate').value);
+    if (spr < 1.0) out.push('利润率 ' + spr + ' 低于 1.0，这个价低于成本');
+  } catch (e) {}
+  return out;
+}
+function checkWarnings(stock, fit, knifeTotal, leadMsgs) {
   const ws = [];
   // 出刀数为0（毛坯放不下产品）时优先提示，此时 sr 为 null 也不能漏
   if (knifeTotal <= 0) {
     if (stock && stock._isFitOnly) return; // fit-only 已有橙字提示，不再写"无法放下"红字
-    const wbox = document.getElementById('warningsBox');
-    wbox.className = 'warn-box warn';
-    wbox.innerHTML = '<div><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 毛坯无法放下当前产品（出刀数=0），请检查毛坯尺寸或产品规格</div>';
-    return;
+    if (stock) {
+      // [P5] 主路线已有结果：0 刀来自用户自定义库存坯（5*5*5 装不下），提示但不吞掉其它警告
+      var _bn = window.__blankNotUsed;
+      ws.push(_bn ? ('你填的库存坯 ' + String(_bn).replace(/\*/g, '×') + ' 装不下这个产品（该卡不出价）；下面按自动通用坯算') : '当前库存坯装不下这个产品（一刀都排不出）；放大毛坯或改产品规格');
+    } else {
+      const wbox = document.getElementById('warningsBox');
+      wbox.className = 'warn-box warn';
+      wbox.innerHTML = '<div><svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 毛坯装不下这个产品（一刀都排不出）；放大毛坯或改产品规格</div>';
+      return;
+    }
   }
   if (!stock) { document.getElementById('warningsBox').innerHTML = ''; return; }
-  // [P4·20261112] 瓦片少写第二个 R → 明确提示（只提示，不改算价）
-  var _rh = tileRHint(document.getElementById('smartInput') ? document.getElementById('smartInput').value : '', shapeMode);
-  if (_rh) ws.push('<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> ' + _rh);
-  const plating = document.getElementById('plating').value;
-  const minArea = platingMinArea(plating);
-  const doubleT = PLATING_DOUBLE_THRESHOLD[plating];
-  if (stock.platingArea < minArea) ws.push(`电镀面积 ${stock.platingArea.toFixed(1)}mm² < 最小面积 ${minArea}，已按最小面积计算`);
-  if (doubleT && stock.platingArea > doubleT) ws.push(`电镀面积 ${stock.platingArea.toFixed(1)}mm² > ${doubleT}，系数应翻倍`);
-  if (knifeTotal > 0 && knifeTotal < 100) ws.push(`出刀数 ${knifeTotal} < 100，已自动添加切片系数 0.0004`);
-  if (knifeTotal <= 0) ws.push(`<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 毛坯无法放下当前产品（出刀数=0），请检查毛坯尺寸或产品规格`);
+  if (Array.isArray(leadMsgs) && leadMsgs.length) ws.unshift.apply(ws, leadMsgs);
+  ws.push.apply(ws, stockWarnTexts(stock));
+  if (knifeTotal > 0 && knifeTotal < 100) ws.push('这批只出 ' + knifeTotal + ' 刀（不足 100 刀），已自动加切片费');
   const stk = document.getElementById('stockBlock').value.trim();
-  if (stk === '64*54*36' || stk === '64*54*34') ws.push(`当前使用通用毛坯 ${stk}，正式下单前建议核实实际库存`);
-  if (stock.totalBlankWeight > 300) ws.push(`毛坯总重 ${stock.totalBlankWeight.toFixed(1)}kg > 300kg，可使用合适毛坯报价`);
-  const spr = parseFloat(document.getElementById('stockProfitRate').value);
-  if (spr < 1.0) ws.push(`<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 订单利润率 ${spr}<1.0，报价将低于成本`);
-  // 损耗率提示
-  // [P1P2·20261112] 删除死代码：getLossRate 已把回显夹取到 [1.0,1.5]，此两条告警永不触发
+  if (stk === '64*54*36' || stk === '64*54*34') ws.push('按通用毛坯 ' + stk.replace(/\*/g, '×') + ' 算的；下单前请确认库存有这款');
+  // [P5] 瓦片/异形默认自动勾磨型：首次算价提示一次，避免用户不知道被加了磨型费
+  try {
+    if ((shapeMode === 'tile' || shapeMode === 'irregular') && document.getElementById('pfGrind').checked && window._pfGrindAuto) {
+      ws.push('瓦片/异形默认带磨型费；不需要请取消「磨型」（切换形状会重置）');
+    }
+  } catch (e) {}
   // 合适毛坯不可用
-  if (!fit && document.getElementById('fitBlock').value.trim() === '') ws.push(`合适毛坯未设置，建议输入合适毛坯尺寸对比`);
+  if (!fit && document.getElementById('fitBlock').value.trim() === '') ws.push('没填合适毛坯；填上可对比是否更省料');
   // 方磨圆 D≤3.5提醒无心磨
   if (typeof shapeMode !== 'undefined' && shapeMode === 'disc') {
     var dVal2 = parseFloat(document.getElementById('dimD')?.value) || parseFloat(document.getElementById('discD')?.value) || 0;
-    if (dVal2 > 0 && dVal2 <= 3.5) ws.push(`D=${dVal2}mm ≤3.5，需无心磨加工`);
+    if (dVal2 > 0 && dVal2 <= 3.5) ws.push(`直径 D${dVal2} 小于 3.5mm，要加无心磨费`);
   }
   // [v5.6.27] 无心磨口语值「写了没生效」提示（与引擎 engine_core.js L4209-4219 同构）
   if (typeof _centerlessPerBarOverride !== 'undefined' && _centerlessPerBarOverride >= 0) {
     var _clSpoken = '¥' + _centerlessPerBarOverride + '/' + _clUnit;
     if (typeof shapeMode !== 'undefined' && shapeMode === 'disc') {
       if (!(dVal2 > 0 && dVal2 <= 3.5)) {
-        ws.push(`已识别无心磨 ${_clSpoken}，但 D=${dVal2}>3.5 不计无心磨费（含圆柱坯路线），口语值未生效`);
+        ws.push('你写了「无心磨 ' + _centerlessPerBarOverride + '」，但直径 ' + dVal2 + 'mm 不用无心磨（圆柱坯也不算），这行没生效');
       }
     } else {
-      ws.push(`已识别无心磨 ${_clSpoken}，但当前形状（方块/瓦片/异形）不计算无心磨费，口语值未生效`);
+      ws.push('你写了「无心磨 ' + _centerlessPerBarOverride + '」，但方块/瓦片/异形不算无心磨，这行没生效');
     }
   }
   const wbox = document.getElementById('warningsBox');
   if (ws.length > 0) {
-    const hasWarn = ws.some(w=>w.includes('#ic-alert')||w.includes('翻倍')||w.includes('异常'));
-    const cls = hasWarn ? 'warn' : (ws.some(w=>w.includes('#ic-check')||w.includes('合适')) ? 'success' : 'info');
+    const hasWarn = ws.some(w=>/#ic-alert|2 倍|装不下|低于成本|没生效|磨型费|不足最低/.test(w));
+    const cls = hasWarn ? 'warn' : (ws.some(w=>w.includes('#ic-check')) ? 'success' : 'info');
     wbox.className = 'warn-box ' + cls;
     wbox.innerHTML = ws.map(w => `<div>${w}</div>`).join('');
   } else { wbox.className = ''; wbox.innerHTML = ''; }
@@ -7637,6 +7654,7 @@ function switchShape(mode) {
   document.getElementById('scrapPrice').value='100';document.getElementById('chamferFee').value='0';
   // 瓦片默认开磨型，异形默认开磨型
   document.getElementById('pfGrind').checked = (mode==='tile'||mode==='irregular');
+  window._pfGrindAuto = (mode==='tile'||mode==='irregular');   // [P5] 供首次算价提示「默认带磨型」
   document.getElementById('pfGranule').checked = false;
   document.getElementById('pfCarve').checked = false;
   document.getElementById('pfDrill').checked = false;
@@ -7676,6 +7694,11 @@ function switchShape(mode) {
   setDiscCutDir('axial');
 }
 
+// [P5] 用户手动改过磨型勾选后，不再提示「默认带磨型」
+document.addEventListener('change', function (e) {
+  if (e && e.target && e.target.id === 'pfGrind') window._pfGrindAuto = false;
+});
+
 // ==== 瓦片 ====
 // 瓦片几何合法性【硬校验】：R内>0、弦宽>0、弦宽≤2×R内（防畸形参数静默通过）
 // 注意：返回非空 = 硬拦截（调用方 clearResults 并 return）。R外不参与此处校验——
@@ -7683,9 +7706,9 @@ function switchShape(mode) {
 function validateTileGeometry() {
   const RInner = parseFloat(document.getElementById('tileRInner').value) || 0;
   const chord = parseFloat(document.getElementById('tileChord').value) || 0;
-  if (!(RInner > 0)) return 'R内须>0';
-  if (!(chord > 0)) return '弦宽须>0';
-  if (chord > 2 * RInner) return '弦宽须≤2×R内（' + chord + '>' + (2*RInner).toFixed(2) + '）';
+  if (!(RInner > 0)) return 'R内要大于 0';
+  if (!(chord > 0)) return '弦宽要大于 0';
+  if (chord > 2 * RInner) return '弦宽 ' + chord + ' 不能大于 2×R内（' + (2*RInner).toFixed(2) + '）';
   return '';
 }
 
@@ -7698,10 +7721,10 @@ function tileSoftWarn() {
   const RInner = parseFloat(document.getElementById('tileRInner')?.value) || 0;
   const wall   = parseFloat(document.getElementById('tileWall')?.value) || 0;
   if (!(ROuter > 0) || !(RInner > 0)) return '';          // R外留空是正常用法，不打扰
-  if (ROuter <= RInner) return 'R外 ' + ROuter + ' ≤ R内 ' + RInner + '，请确认是否填反';
+  if (ROuter <= RInner) return 'R外 ' + ROuter + ' 比 R内 ' + RInner + ' 还小，是不是填反了？';
   const _gap = ROuter - RInner;
   if (wall > 0 && Math.abs(wall - _gap) > 0.5) {
-    return '壁厚 ' + wall + ' 与 R外−R内 = ' + _gap.toFixed(2) + ' 不符，按壁厚 ' + wall + ' 计算，请确认';
+    return '壁厚 ' + wall + ' 和 R外−R内=' + _gap.toFixed(2) + ' 对不上，现按壁厚 ' + wall + ' 算，请确认';
   }
   return '';
 }
@@ -9354,14 +9377,8 @@ function displayDiscResults(stock, fit, cyl, prodVol, knifeTotal, customCyl, cus
     sb.textContent += ' | 定制圆柱: D' + cylD + '×' + _b1(cylH) + ' (>300kg)';
   }
 
-  // Warnings
-  const ws = [];
-  const platingType = document.getElementById('plating').value;
-  const minArea = platingMinArea(platingType);
-  if (stock.platingArea < minArea) ws.push(`电镀面积 ${stock.platingArea.toFixed(1)}mm² < 最小${minArea}，已按最小面积计算`);
-  if (stock.totalBlankWeight > 300) ws.push(`毛坯总重 ${stock.totalBlankWeight.toFixed(1)}kg > 300kg，可使用合适毛坯报价`);
-  const spr = parseFloat(document.getElementById('stockProfitRate').value);
-  if (spr < 1.0) ws.push(`<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg> 利润率 ${spr}<1.0，报价将低于成本`);
+  // Warnings [P5] 与方块/瓦片共用同一份文案，禁止两套维护
+  const ws = stockWarnTexts(stock);
   const wbox = document.getElementById('warningsBox');
   if (ws.length) { wbox.className = 'warn-box info'; wbox.innerHTML = ws.map(w => `<div>${w}</div>`).join(''); }
   else { wbox.className = ''; wbox.innerHTML = ''; }
@@ -10058,7 +10075,7 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
   html += '<div style="font-weight:600;color:var(--text);margin-bottom:2px;font-size:13px">◧ 通用毛坯' + (_suActive ? '（自动通用坯）' : '') + '</div>';
   html += '<div style="color:var(--sub);font-size:12px;margin-bottom:4px">' + stockSpec + 'mm &nbsp;|&nbsp; ¥' + stock.blankPrice.toFixed(2) + '/kg</div>';
   // [P3] 填了毛坯但没生成路线：明确告知，避免以为按用户坯报价
-  if (window.__blankNotUsed) html += '<div style="color:var(--warn);font-size:12px;margin-bottom:4px">你填的库存坯 ' + window.__blankNotUsed + ' 装不下或排不出刀，本卡按自动通用坯计算</div>';
+  if (window.__blankNotUsed) html += '<div style="color:var(--warn);font-size:12px;margin-bottom:4px">你填的库存坯 ' + String(window.__blankNotUsed).replace(/\*/g, '×') + ' 装不下，这张卡按自动通用坯算</div>';
   // 出刀明细（复核用）
   var ktd1=(_suActive && parseFloat(_su.t1))?parseFloat(_su.t1):(parseFloat(document.getElementById('knifeThick1').value)||0.4), ktd2=(_suActive && parseFloat(_su.t2))?parseFloat(_su.t2):(parseFloat(document.getElementById('knifeThick2').value)||0.4), ktd3=(_suActive && parseFloat(_su.t3))?parseFloat(_su.t3):(parseFloat(document.getElementById('knifeThick3').value)||0.4);
   var pH = parseFloat(document.getElementById('dimH').value)||0;
@@ -10276,8 +10293,8 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
 
   // 对比提示：未形成对比时温和引导（#4 体验缺口）
   let _cmpHints = [];
-  if (!fit) _cmpHints.push('输入合适毛坯尺寸（如 64×54×34）即可对比省料/费料幅度');
-  if (!cyl || cyl.blankWeight <= 0) _cmpHints.push('输入圆柱毛坯规格（D×H）将自动对比圆柱方案');
+  if (!fit) _cmpHints.push('填个合适毛坯（如 64×54×34）就能对比省料/费料');
+  if (!cyl || cyl.blankWeight <= 0) _cmpHints.push('填圆柱坯（D×H）会自动对比圆柱方案');
   if (_cmpHints.length > 0) {
     html += '<div style="margin-top:4px;padding:5px 10px;border-radius:6px;background:rgba(255,255,255,.3);border:1px dashed rgba(0,0,0,.08);color:var(--sub2);font-size:12px;line-height:1.6"><svg class="ic" aria-hidden="true"><use href="#ic-help"/></svg> ' + _cmpHints.join('；') + '</div>';
   }
@@ -10323,12 +10340,12 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
       const stockColor = diff >= warnThreshold ? '#e74c3c' : (diff > closeBand ? '#e67e22' : (diff >= -closeBand ? 'var(--sub)' : 'var(--warn)'));
       const icon = diff >= warnThreshold ? '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg>' : (diff > closeBand ? '<svg class="ic" aria-hidden="true"><use href="#ic-arrow-right"/></svg>' : (diff >= -closeBand ? '<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>' : '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg>'));
       const msg = diff >= warnThreshold
-        ? '通用毛坯每片比合适多用料 ' + diff.toFixed(1) + '%，建议换合适毛坯'
+        ? '通用坯每片多用料 ' + diff.toFixed(1) + '%，建议改用合适毛坯'
         : (diff > closeBand
-          ? '通用毛坯每片比合适多用料 ' + diff.toFixed(1) + '%，尚在可接受范围'
+          ? '通用坯每片多用料 ' + diff.toFixed(1) + '%，差距不大，可接受'
           : (diff >= -closeBand
-            ? '两者用料接近'
-            : '合适毛坯每片比通用多用料 ' + (-diff).toFixed(1) + '%，合适未必更省料'));
+            ? '两种坯用料差不多'
+            : '合适坯每片多用料 ' + (-diff).toFixed(1) + '%，不一定更省'));
       wr.style.display = '';
       wr.innerHTML = '<span>' + icon + ' 通用 <b>' + stockDecomp.pNet.toFixed(1) + '%</b> | 合适 <b>' + fitDecomp.pNet.toFixed(1) + '%</b></span>'
         + ' <span style="color:' + stockColor + ';font-weight:600">' + msg + '</span>';
@@ -10344,12 +10361,12 @@ function buildBlankParams(stock, fit, cyl, platingCoef, slicingCoef, prodVol) {
       const stockColor = diff >= warnThreshold ? '#e74c3c' : (diff > closeBand ? '#e67e22' : (diff >= -closeBand ? 'var(--sub)' : 'var(--warn)'));
       const icon = diff >= warnThreshold ? '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg>' : (diff > closeBand ? '<svg class="ic" aria-hidden="true"><use href="#ic-arrow-right"/></svg>' : (diff >= -closeBand ? '<svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>' : '<svg class="ic" aria-hidden="true"><use href="#ic-alert"/></svg>'));
       const msg = diff >= warnThreshold
-        ? '通用毛坯每片比合适多用料 ' + diff.toFixed(1) + '%，建议换合适毛坯'
+        ? '通用坯每片多用料 ' + diff.toFixed(1) + '%，建议改用合适毛坯'
         : (diff > closeBand
-          ? '通用毛坯每片比合适多用料 ' + diff.toFixed(1) + '%，尚在可接受范围'
+          ? '通用坯每片多用料 ' + diff.toFixed(1) + '%，差距不大，可接受'
           : (diff >= -closeBand
-            ? '两者用料接近'
-            : '合适毛坯每片比通用多用料 ' + (-diff).toFixed(1) + '%，合适未必更省料'));
+            ? '两种坯用料差不多'
+            : '合适坯每片多用料 ' + (-diff).toFixed(1) + '%，不一定更省'));
       wr.style.display = '';
       wr.innerHTML = '<span>' + icon + ' 通用 <b>' + stockDecomp.pNet.toFixed(1) + '%</b> | 合适 <b>' + fitDecomp.pNet.toFixed(1) + '%</b></span>'
         + ' <span style="color:' + stockColor + ';font-weight:600">' + msg + '</span>';
@@ -13639,6 +13656,7 @@ const _TUTORIAL_HTML = `
       <h2><svg class="ic" aria-hidden="true"><use href="#ic-refresh"/></svg><span>2026-08 迭代精选</span></h2>
       <table>
 <tr><th>版本</th><th>更新亮点</th></tr>
+            <tr><td>v5.6.59</td><td>提示词统一（2026-11-12，<b>算价零改动</b>）：① 瓦片格式提示改成正确顺序 R外*R内*长*弦*壁，并补进所有“没认出规格”的示例；② 电镀/切片/通用坯/总重/利润率/无心磨等警告全部改大白话，去掉“系数/出刀数”这类内部词；③ 修掉警告互相覆盖：装不下改用合适毛坯的说明不会再被通用警告盖掉；④ 瓦片/异形自动勾磨型首次提示；⑤ 合格率提示补最终值，同时写损耗+合格率时明确“以合格率优先”；⑥ 少写 R 的提示只在底部条出现，去掉警告区重复。</td></tr>
             <tr><td>v5.6.58</td><td>少 R 提示挪到显眼处（2026-11-12）：把「识别串疑似瓦片、少写了一个 R」的提示从警告区**同时显示到底部智能提示条**（利用率对比条最上方，红色加粗），不用再往上看；识别与算价仍不变。</td></tr>
             <tr><td>v5.6.57</td><td>少写一个 R 的识别提示（2026-11-12，<b>只提示不改价</b>）：识别串形如 R17.6*16.2*22*6.9*1.4（只有开头一个 R、后接 5 组数字）时，警告区明确提示「疑似瓦片、少写了一个 R」并给出正确写法 R外*R内*长*弦*壁；当前识别与价格不变（仍按异形算）。灵枢报价页同步显示该提示；2R…、R…*R…、明确写「异形」的串不提示。</td></tr>
             <tr><td>v5.6.56</td><td>圆环毛坯规格 + 装不下提示（2026-11-12）：① 圆环/任何含第二个 D 的规格写「毛坯规格」不再被静默忽略，能装下就出库存坯方案（主价不变）；② 装不下时通用毛坯卡明确提示「你填的库存坯 X 装不下，本卡按自动通用坯计算」；③ 通用毛坯卡/计算明细在圆片自定义坯时也显示实际算价坯；④ 历史记录保存各方案单价/需坯/毛坯（老记录兼容）。</td></tr>
@@ -14445,7 +14463,7 @@ window._renderSsCosts   = _renderSsCosts;   // 阶段3 去重新增（3E）
   _jb('id', 'platingDimL', 0, 'change', function(event){ autoCalcAndRun() });
   _jb('id', 'platingDimW', 0, 'change', function(event){ autoCalcAndRun() });
   _jb('id', 'platingDimH', 0, 'change', function(event){ autoCalcAndRun() });
-  _jb('id', 'stockQualifyRate', 0, 'change', function(event){ _qrManualOverride=true;updateQrHint('手动指定，自动调整已停用',false);sanitizeQualifyRate('stockQualifyRate');calculate() });
+  _jb('id', 'stockQualifyRate', 0, 'change', function(event){ _qrManualOverride=true;updateQrHint('手动填的合格率，自动调整已暂停',false);sanitizeQualifyRate('stockQualifyRate');calculate() });
   _jb('data-page-node-id', 'urCTFPKABkkniYOxFRauTZ', 0, 'click', function(event){ openQRSettings() });
   _jb('id', 'stockProfitRate', 0, 'change', function(event){ sanitizeProfitRate('stockProfitRate');calculate() });
   _jb('id', 'stockFixtureFee', 0, 'change', function(event){ calculate() });
@@ -14454,10 +14472,10 @@ window._renderSsCosts   = _renderSsCosts;   // 阶段3 去重新增（3E）
   _jb('id', 'pfGrind', 0, 'change', function(event){ calculate() });
   _jb('id', 'pfGrindManual', 0, 'change', function(event){ calculate() });
   _jb('id', 'pfGrindPasses', 0, 'change', function(event){ calculate();updateProcReadout() });
-  _jb('id', 'pfGranule', 0, 'change', function(event){ if(this.checked){document.getElementById('stockQualifyRate').value='0.90';updateQrHint('基础90%(颗粒磨)',true);}calculate() });
+  _jb('id', 'pfGranule', 0, 'change', function(event){ if(this.checked){document.getElementById('stockQualifyRate').value='0.90';updateQrHint('基础 90%（颗粒磨）',true);}calculate() });
   _jb('id', 'pfGranuleManual', 0, 'change', function(event){ calculate() });
   _jb('id', 'pfGranulePasses', 0, 'change', function(event){ calculate();updateProcReadout() });
-  _jb('id', 'pfCarve', 0, 'change', function(event){ if(this.checked){document.getElementById('stockQualifyRate').value='0.90';updateQrHint('基础90%(精雕)',true);}calculate() });
+  _jb('id', 'pfCarve', 0, 'change', function(event){ if(this.checked){document.getElementById('stockQualifyRate').value='0.90';updateQrHint('基础 90%（精雕）',true);}calculate() });
   _jb('id', 'pfCarveManual', 0, 'change', function(event){ calculate() });
   _jb('id', 'pfCarvePasses', 0, 'change', function(event){ calculate();updateProcReadout() });
   _jb('id', 'pfDrill', 0, 'change', function(event){ calculate() });
